@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, merge, debounce, difference } from 'lodash';
+import { cloneDeep, merge, debounce } from 'lodash';
 
 import {
   imageBorderModifier,
@@ -238,7 +238,8 @@ export default {
       elementMappings: [],
       isShowMappingContentChange: false, // for editing content of text/image
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
-      sheetMappingConfig: {}
+      sheetMappingConfig: {},
+      projectMappingConfig: {}
     };
   },
   computed: {
@@ -313,13 +314,16 @@ export default {
       if (newVal !== oldVal) updateBringToFrontPageNumber(window.printCanvas);
     }
   },
-  mounted() {
+  async mounted() {
     this.setAutosaveTimer();
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
+
+    const bookId = this.$route.params.bookId;
+    this.projectMappingConfig = await this.getMappingConfig(bookId);
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -2039,22 +2043,20 @@ export default {
     iconCustomMapping(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
 
-      const mappingElementIds = this.elementMappings.map(
-        el => el.digitalElementId
-      );
+      const mapIds = this.elementMappings.map(el => el.digitalElementId);
 
-      const printIds = Object.keys(this.digitalObjects);
-
-      const mappingIds = difference(printIds, mappingElementIds);
+      const isSecondary = isSecondaryFormat(this.projectMappingConfig);
+      const digitalIds = Object.keys(this.digitalObjects);
 
       // the broken icons will show when:
-      // -  if an objects are not in print spread
+      // -  if an objects are not in digital frames, print is secondary
       // -  object in `elementMappings`
-
       fbObjects.forEach(o => {
-        if (mappingIds.includes(o.id)) return;
-
-        o.mappingInfo = getBrokenCustomMapping(o);
+        if (
+          mapIds.includes(o.id) ||
+          (isSecondary && !digitalIds.includes(o.id))
+        )
+          o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
 
@@ -2291,19 +2293,16 @@ export default {
     async handleShowCustomChangeModal() {
       const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
 
-      const bookId = this.$route.params.bookId;
-      const projectConfig = await this.getMappingConfig(bookId);
-      const sheetConfig = await this.getSheetMappingConfig(
-        this.pageSelected.id
-      );
-
       const nonConnections = this.elementMappings.length === 0;
 
       if (
         isHideMess ||
-        !isAllowSyncLayoutData(projectConfig, sheetConfig) ||
+        !isAllowSyncLayoutData(
+          this.projectMappingConfig,
+          this.sheetMappingConfig
+        ) ||
         nonConnections ||
-        !isSecondaryFormat(projectConfig)
+        !isSecondaryFormat(this.projectMappingConfig)
       )
         return;
 

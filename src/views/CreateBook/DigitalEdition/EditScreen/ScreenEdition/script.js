@@ -146,7 +146,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
-import { cloneDeep, debounce, merge, difference } from 'lodash';
+import { cloneDeep, debounce, merge } from 'lodash';
 import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus, usePhotos } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -320,7 +320,8 @@ export default {
       isShowCustomMappingModal: false, // for editing object or adding new object on custom mapping mode
       isShowMappingVideoContentChange: false, // for adding video when digital is the primary format
       isRenderingObjects: null,
-      sheetMappingConfig: {}
+      sheetMappingConfig: {},
+      projectMappingConfig: {}
     };
   },
   computed: {
@@ -555,6 +556,7 @@ export default {
       this.isJustEnteringEditor = true;
 
       this.setAutosaveTimer();
+      this.getProjectMappingConfig();
 
       this.undoRedoCanvas = new UndoRedoCanvas({
         canvas: this.digitalCanvas,
@@ -2203,22 +2205,17 @@ export default {
     iconCustomMapping(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
 
-      const mappingElementIds = this.elementMappings.map(
-        el => el.digitalElementId
-      );
+      const mapIds = this.elementMappings.map(el => el.digitalElementId);
 
       const printIds = Object.keys(this.printObjects);
-
-      const mappingIds = difference(printIds, mappingElementIds);
+      const isScondary = isSecondaryFormat(this.projectMappingConfig, true);
 
       // the broken icons will show when:
       // -  if an objects are not in print spread
       // -  object in `elementMappings`
-
       fbObjects.forEach(o => {
-        if (mappingIds.includes(o.id)) return;
-
-        o.mappingInfo = getBrokenCustomMapping(o);
+        if (mapIds.includes(o.id) || (isScondary && !printIds.includes(o.id)))
+          o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
 
@@ -2969,18 +2966,19 @@ export default {
      */
     async handleShowCustomChangeModal() {
       const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
-      const bookId = this.$route.params.bookId;
-      const projectConfig = await this.getMappingConfig(bookId);
 
       const isSupplemental = !this.currentFrame.fromLayout;
       const nonConnections = this.elementMappings.length === 0;
 
       if (
         isHideMess ||
-        !isAllowSyncLayoutData(projectConfig, this.sheetMappingConfig) ||
+        !isAllowSyncLayoutData(
+          this.projectMappingConfig,
+          this.sheetMappingConfig
+        ) ||
         isSupplemental ||
         nonConnections ||
-        !isSecondaryFormat(projectConfig, true)
+        !isSecondaryFormat(this.projectMappingConfig, true)
       )
         return;
 
@@ -2995,16 +2993,17 @@ export default {
      */
     async handleShowCustomMappingModal() {
       const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
-      const bookId = this.$route.params.bookId;
-      const projectConfig = await this.getMappingConfig(bookId);
 
       const isSupplemental = !this.currentFrame.fromLayout;
 
       if (
         isHideMess ||
-        !isAllowSyncCustomData(projectConfig, this.sheetMappingConfig) ||
+        !isAllowSyncCustomData(
+          this.projectMappingConfig,
+          this.sheetMappingConfig
+        ) ||
         isSupplemental ||
-        !isSecondaryFormat(projectConfig, true)
+        !isSecondaryFormat(this.projectMappingConfig, true)
       )
         return;
 
@@ -3219,6 +3218,13 @@ export default {
         element.id, // digital element id
         false // mapped
       );
+    },
+    /**
+     * Get project mappping config
+     */
+    async getProjectMappingConfig() {
+      const bookId = this.$route.params.bookId;
+      this.projectMappingConfig = await this.getMappingConfig(bookId);
     }
   }
 };
