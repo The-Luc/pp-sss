@@ -26,7 +26,10 @@ import {
   mappingQuadrantFrames,
   modifyQuadrantObjects,
   updateImageZoomLevel,
-  deleteNonMappedObjects
+  deleteNonMappedObjects,
+  calcQuadrantIndexOfFrame,
+  modifyDigitalQuadrantObjects,
+  copyObjectsFrameObjectsToPrint
 } from '@/common/utils';
 import {
   projectMapping,
@@ -38,7 +41,8 @@ import {
   useAppCommon,
   useModal,
   useSyncLayoutMapping,
-  useFrameAction
+  useFrameAction,
+  useSavePageData
 } from '@/hooks';
 import {
   CONTENT_CHANGE_MODAL,
@@ -46,7 +50,7 @@ import {
   COVER_TYPE,
   PRIMARY_FORMAT_TYPES
 } from '@/common/constants';
-import { getSheetInfoApi } from '@/api/sheet';
+import { getSheetInfoApi, updateSheetApi } from '@/api/sheet';
 import { getItem } from '@/common/storage';
 
 const addingParams = values => {
@@ -582,6 +586,7 @@ export const useContentChanges = () => {
 
 export const useQuadrantMapping = () => {
   const { updateFramesAndThumbnails, getSheetFrames } = useFrameAction();
+  const { savePageData } = useSavePageData();
   const { getBookInfo, currentSheet } = useGetters({
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO,
     currentSheet: PRINT_GETTERS.CURRENT_SHEET
@@ -601,7 +606,7 @@ export const useQuadrantMapping = () => {
 
     const sheet = { isHardCover, type: currentSheet.value.type };
 
-    // remove objects that are not mapping
+    // remove PRINT objects that are not mapping, meaning not sync these objects
     deleteNonMappedObjects(objects, elementMappings);
 
     // Divide into 4 quadrants (1 quadrant = 1/2 page);
@@ -619,8 +624,8 @@ export const useQuadrantMapping = () => {
     // `quadrantFrames`: [{objects: q1, frameId: 123}]
     const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
 
-    // keep broken objects of digital frames
-    keepBrokenObjectsOfFrames(quadrantFrames, frames, elementMappings);
+    // keep broken DIGITAL objects of digital frames
+    keepBrokenObjectsOfFrames(quadrantFrames, frames);
 
     // // update frames objects, and visited
     const willUpdateFrames = quadrantFrames.map(qd => ({
@@ -633,11 +638,43 @@ export const useQuadrantMapping = () => {
   };
 
   const quadrantSyncToPrint = async (sheetId, frame, elementMappings) => {
-    console.log('quadrantSyncToPrint =====================');
-    console.log('sheetId', sheetId);
-    console.log('objects ', frame);
-    console.log('element mappings ', elementMappings);
-    //
+    // if this is supplemental frame => no mapping need
+    if (frame.isSupplemental) return;
+
+    const frames = await getSheetFrames(sheetId);
+
+    const { coverOption } = getBookInfo.value;
+    const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
+
+    /*
+     Get print objects & MUTATE this `printObjects` array to update objects from digital frame
+     Then call mutation to generate thumbnail & save data of this array as spread data
+    */
+    const sheet = await getSheetInfoApi(sheetId);
+    const printObjects = cloneDeep(sheet.objects);
+    const fObjects = cloneDeep(frame.objects);
+
+    // remove DIGITAL objects that are not mapping, meaning not sync these objects
+    deleteNonMappedObjects(fObjects, elementMappings);
+
+    // get frame quadrant index: handle case COVER and supplemental
+    //  quadrantIndex: 0, 1, 2 or 3 these are possible value
+    const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
+
+    // modify object's positions and dimensions based on theirs quadrant
+    modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
+
+    // update image zoom level
+    await Promise.all(fObjects.map(o => updateImageZoomLevel(o)));
+
+    // SYNC DATA DIRECTION: printObjects <== fObjects
+    copyObjectsFrameObjectsToPrint(printObjects, fObjects);
+
+    const promise = [savePageData(sheetId, printObjects)];
+    !sheet.isVisited &&
+      promise.push(updateSheetApi(sheetId, { isVisited: true }));
+
+    await Promise.all(promise);
   };
 
   return { quadrantSyncToDigital, quadrantSyncToPrint };
@@ -690,7 +727,6 @@ export const useSyncData = () => {
 
     // custom mapping
     return quadrantSyncToPrint(sheetId, frame, elementMappings);
-    //
   };
 
   return { syncToDigital, syncToPrint };
