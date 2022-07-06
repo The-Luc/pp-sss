@@ -11,7 +11,8 @@ import {
   isEmpty,
   getPrintCanvasSize,
   isBackground,
-  isCoverSheetChecker
+  isCoverSheetChecker,
+  isHalfRight
 } from '@/common/utils';
 
 /**
@@ -117,14 +118,14 @@ export const updateCanvasMapping = (elementIds, canvas) => {
  * @param {Object} objects pp objects
  * @returns array of quadrants [q1, q2, q3, q4]
  */
-export const divideObjectsIntoQuadrants = (sheet, objects) => {
-  const { isHardCover, type } = sheet;
+export const divideObjectsIntoQuadrants = (sheet, objects, isHardCover) => {
+  const { type } = sheet;
   const { sheetWidth, sheetHeight } = getPrintCanvasSize(type, isHardCover);
 
   const midX = sheetWidth / 2;
   const midY = sheetHeight / 2;
 
-  const quadrants = [];
+  const quadrants = Array(4).fill(null);
 
   objects.forEach(o => {
     if (!o.coord || isBackground(o)) return;
@@ -160,8 +161,8 @@ export const divideObjectsIntoQuadrants = (sheet, objects) => {
 };
 
 // modify object's positions and dimensions based on theirs quadrant
-export const modifyQuadrantObjects = (sheet, objects) => {
-  const { isHardCover, type } = sheet;
+export const modifyQuadrantObjects = (sheet, objects, isHardCover) => {
+  const { type } = sheet;
   const { sheetWidth, sheetHeight } = getPrintCanvasSize(type, isHardCover);
 
   const midX = sheetWidth / 2;
@@ -183,21 +184,54 @@ export const modifyQuadrantObjects = (sheet, objects) => {
   });
 };
 
+export const modifyDigitalQuadrantObjects = (
+  sheet,
+  objects,
+  qdIndex,
+  isHardCover
+) => {
+  const { type } = sheet;
+  const { sheetWidth, sheetHeight } = getPrintCanvasSize(type, isHardCover);
+
+  const midX = sheetWidth / 2;
+  const midY = sheetHeight / 2;
+
+  const ratioX = DIGITAL_PAGE_SIZE.PDF_WIDTH / midX;
+  const ratioY = DIGITAL_PAGE_SIZE.PDF_HEIGHT / midY;
+
+  const sizeOptions = {
+    0: { x: 0, y: 0 },
+    1: { x: 0, y: midY },
+    2: { x: midX, y: 0 },
+    3: { x: midX, y: midY }
+  };
+  const size = sizeOptions[qdIndex];
+
+  objects.forEach(o => {
+    if (!o.coord || isBackground(o)) return;
+
+    // update object dimensions
+    o.size.width = o.size.width / CUSTOM_MAPPING_CONVERT_RATIO;
+    o.size.height = o.size.height / CUSTOM_MAPPING_CONVERT_RATIO;
+
+    // update object coordinate
+    o.coord.x = o.coord.x / ratioX + size.x;
+    o.coord.y = o.coord.y / ratioY + size.y;
+  });
+};
+
+/**
+ * mapping frames id and quadrants
+ * @return: [{objects: q1, frameId: 123}]
+ */
 export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
-  const isCoverSheet = isCoverSheetChecker(sheet);
+  let order = [0, 1, 2, 3];
+  // front cover first then back cover
+  if (isCoverSheetChecker(sheet) || isHalfRight(sheet)) order = [2, 3, 0, 1];
 
-  if (isCoverSheet) {
-    const coverOrders = [2, 3, 0, 1]; // front cover first then back cover
-    return frameIds.map((frameId, idx) => ({
-      frameId,
-      objects: quadrants[coverOrders[idx]]
-    }));
-  }
-
-  const notNullQuadrants = quadrants.filter(Boolean);
   return frameIds.map((frameId, idx) => ({
     frameId,
-    objects: notNullQuadrants[idx] || []
+    objects: quadrants[order[idx]] || []
   }));
 };
 
@@ -208,13 +242,14 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
  * @param {Array} frames array of frame data
  */
 export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
+  const objectIds = quadrants.map(q => q.objects.map(o => o.id)).flat();
+
   frames.forEach(f => {
     const quadrant = quadrants.find(q => q.frameId === f.id);
 
     if (quadrant === undefined) return;
 
     const frameObjects = f.objects;
-    const objectIds = quadrant.objects.map(o => o.id);
 
     frameObjects.forEach((o, idx) => {
       if (!objectIds.includes(o.id)) {
@@ -224,6 +259,12 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
   });
 };
 
+/**
+ * To remove element in array of objects if object id is in elementMappings
+ *
+ * @param {Array} objects array of objects
+ * @param {Array} elementMappings array of element mapping
+ */
 export const deleteNonMappedObjects = (objects, elementMappings) => {
   elementMappings.forEach(el => {
     const index = objects.findIndex(o => o.id === el.printElementId);
@@ -243,4 +284,63 @@ export const getBrokenCustomMapping = el => {
     mapped: false,
     isCustom: true
   };
+};
+
+/**
+ * Caclculate quadrant index of a frame
+ * @return possible value 0, 1, 2, 3
+ */
+export const calcQuadrantIndexOfFrame = (sheet, frames, frameId) => {
+  const frameIds = frames
+    .filter(f => f.fromLayout)
+    .map(f => f.id)
+    .sort((a, b) => Number(a) - Number(b));
+
+  const isCoverSheet = isCoverSheetChecker(sheet);
+
+  const index = frameIds.indexOf(frameId);
+
+  if (isCoverSheet) {
+    const coverOrders = [2, 3, 0, 1]; // front cover first then back cover
+    return coverOrders[index];
+  }
+
+  if (isHalfRight(sheet)) {
+    return [2, 3][index];
+  }
+
+  return index;
+};
+
+/**
+ * SYNC DATA DIRECTION: printObjects <== fObjects
+ * Replace objects in printObjects by objects in fObjects
+ *
+ * @param {Array} printObjects
+ * @param {Array} fObjects
+ */
+export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
+  const pObjectIds = printObjects.map(o => o.id);
+
+  fObjects.forEach((o, idx) => {
+    if (isBackground(o)) return;
+
+    if (!pObjectIds.includes(o.id)) {
+      // find index of existing element
+      const prvItemIndex =
+        idx === 0
+          ? -1
+          : printObjects.findIndex(pOjb => pOjb.id === fObjects[idx - 1].id);
+
+      // insert new object
+      printObjects.splice(prvItemIndex + 1, 0, o);
+      return;
+    }
+
+    // find index of existing element
+    const index = printObjects.findIndex(pOjb => pOjb.id === o.id);
+
+    // replace existing element by new element
+    printObjects.splice(index, 1, o);
+  });
 };

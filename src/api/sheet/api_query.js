@@ -32,6 +32,7 @@ export const getSheetInfoApi = async id => {
 
   const pages = get(response.data, 'sheet.pages', []);
   const bookId = get(response.data, 'sheet.book.id');
+  const isVisited = get(response.data, 'sheet.is_visited');
   const pageIds = pages.map(page => page.id);
   const sheetType = SHEET_TYPE[response.data.sheet.sheet_type];
 
@@ -82,11 +83,12 @@ export const getSheetInfoApi = async id => {
 
   return {
     objects: entitiesToObjects(objects),
-    sheetType,
+    type: sheetType,
     pageNumber,
     spreadInfo,
     pageIds,
-    bookId
+    bookId,
+    isVisited
   };
 };
 
