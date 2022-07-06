@@ -53,7 +53,9 @@ import {
   isSecondaryFormat,
   updateCanvasMapping,
   isLayoutMappingChecker,
-  getBrokenCustomMapping
+  getBrokenCustomMapping,
+  isCustomMappingChecker,
+  isAllowSyncCustomData
 } from '@/common/utils';
 
 import {
@@ -115,7 +117,8 @@ import {
   EDITION,
   PORTRAIT_IMAGE_MASK,
   CUSTOM_CHANGE_MODAL,
-  CONTENT_CHANGE_MODAL
+  CONTENT_CHANGE_MODAL,
+  CUSTOM_MAPPING_MODAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -179,7 +182,8 @@ export default {
     const {
       storeElementMappings,
       getSheetMappingConfig,
-      updateElementMappingByIds
+      updateElementMappingByIds,
+      createSingleElementMapping
     } = useMappingSheet();
     const { toggleModal } = useModal();
     const { getMappingConfig } = useMappingProject();
@@ -210,6 +214,7 @@ export default {
       toggleModal,
       getSheetMappingConfig,
       updateElementMappingByIds,
+      createSingleElementMapping,
       getMappingConfig,
       handleTextContentChange,
       handleImageContentChange
@@ -238,6 +243,7 @@ export default {
       elementMappings: [],
       isShowMappingContentChange: false, // for editing content of text/image
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
+      isShowCustomMappingModal: false, // for editing object or adding new object on custom mapping mode, and print is secondary format
       sheetMappingConfig: {},
       projectMappingConfig: {}
     };
@@ -1074,6 +1080,9 @@ export default {
 
       setCanvasUniformScaling(window.printCanvas, isConstrain);
 
+      // handle show broken custom mapping icon for text
+      this.addingObjectsEvent([object]);
+
       window.printCanvas.add(object);
 
       setTimeout(() => {
@@ -1161,6 +1170,9 @@ export default {
       imageBorderModifier(image.object);
 
       addEventListeners(image?.object, eventListeners);
+
+      // handle show broken custom mapping icon for text
+      this.addingObjectsEvent([image.object]);
 
       window.printCanvas.add(image?.object);
 
@@ -1303,6 +1315,9 @@ export default {
         });
 
         s.object.update({ coord, size });
+
+        // handle show broken custom mapping icon for shapes
+        this.addingObjectsEvent([fabricObject]);
 
         this.addObjectToStore({
           id: s.id,
@@ -1530,6 +1545,9 @@ export default {
 
         s.object.update({ coord });
 
+        // handle show broken custom mapping icon for shapes
+        this.addingObjectsEvent([fabricObject]);
+
         this.addObjectToStore({
           id: s.id,
           newObject: s.object
@@ -1598,6 +1616,8 @@ export default {
       if (isEmpty(element) || element.objectType !== objectType) return;
 
       const newProp = this.updateElementProp(element, prop, objectType);
+
+      this.modifyObjectsEvent(element);
 
       this.updateCurrentObject(element.id, newProp);
 
@@ -2312,6 +2332,28 @@ export default {
       });
     },
     /**
+     * Handle to show custom mapping modal when editing / adding objects
+     */
+    async handleShowCustomMappingModal() {
+      const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
+      const isNotAllowSyncCustom = !isAllowSyncCustomData(
+        this.projectMappingConfig,
+        this.sheetMappingConfig
+      );
+
+      if (
+        isHideMess ||
+        isNotAllowSyncCustom ||
+        !isSecondaryFormat(this.projectMappingConfig)
+      )
+        return;
+
+      this.isShowCustomMappingModal = true;
+      this.toggleModal({
+        isOpenModal: true
+      });
+    },
+    /**
      *   Custom adding object on mapped sheet
      *  To hide the warning modal and save user setting if any
      *
@@ -2342,6 +2384,22 @@ export default {
       if (!isHideMess) return;
 
       setItem(CONTENT_CHANGE_MODAL, true);
+    },
+    /**
+     *  Custom mapping modal when edit object or adding new objects
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItCustomMappingModal(isHideMess) {
+      this.isShowCustomMappingModal = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CUSTOM_MAPPING_MODAL, true);
     },
     /**
      * Trigger when user switch sheet / apply new layout
@@ -2430,6 +2488,46 @@ export default {
      */
     canvasDidChanged() {
       this.isCanvasChanged = true;
+    },
+
+    /**
+     * The function is triggered when new objects are added on canvas via creation tool
+     *
+     * @param {Array} objects fabric array of objects adding on canvas
+     */
+    addingObjectsEvent(objects) {
+      this.iconCustomMapping(objects);
+      this.handleShowCustomMappingModal();
+    },
+    /**
+     * The function is triggered when objects are modified
+     *
+     */
+    modifyObjectsEvent(element) {
+      const isNonMappedElement = element?.mappingInfo?.mapped === false;
+      const isScondary = isSecondaryFormat(this.projectMappingConfig);
+
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isNonMappedElement ||
+        !isScondary
+      )
+        return;
+
+      this.handleShowCustomMappingModal();
+
+      // break the connection
+      element.mappingInfo = getBrokenCustomMapping(element);
+
+      this.printCanvas.requestRenderAll();
+
+      this.createSingleElementMapping(
+        this.pageSelected.id,
+        this.currentFrameId,
+        element.id, // print element id
+        element.id, // digital element id
+        false // mapped
+      );
     }
   }
 };

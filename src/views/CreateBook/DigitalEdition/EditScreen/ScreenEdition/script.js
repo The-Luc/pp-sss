@@ -2969,13 +2969,14 @@ export default {
 
       const isSupplemental = !this.currentFrame.fromLayout;
       const nonConnections = this.elementMappings.length === 0;
+      const isNotAllowSyncLayout = !isAllowSyncLayoutData(
+        this.projectMappingConfig,
+        this.sheetMappingConfig
+      );
 
       if (
         isHideMess ||
-        !isAllowSyncLayoutData(
-          this.projectMappingConfig,
-          this.sheetMappingConfig
-        ) ||
+        isNotAllowSyncLayout ||
         isSupplemental ||
         nonConnections ||
         !isSecondaryFormat(this.projectMappingConfig, true)
@@ -2993,15 +2994,15 @@ export default {
      */
     async handleShowCustomMappingModal() {
       const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
-
       const isSupplemental = !this.currentFrame.fromLayout;
+      const isNotAllowSyncCustom = !isAllowSyncCustomData(
+        this.projectMappingConfig,
+        this.sheetMappingConfig
+      );
 
       if (
         isHideMess ||
-        !isAllowSyncCustomData(
-          this.projectMappingConfig,
-          this.sheetMappingConfig
-        ) ||
+        isNotAllowSyncCustom ||
         isSupplemental ||
         !isSecondaryFormat(this.projectMappingConfig, true)
       )
@@ -3197,10 +3198,12 @@ export default {
      */
     modifyObjectsEvent(element) {
       const isNonMappedElement = element?.mappingInfo?.mapped === false;
+      const isScondary = isSecondaryFormat(this.projectMappingConfig, true);
 
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
-        isNonMappedElement
+        isNonMappedElement ||
+        !isScondary
       )
         return;
 

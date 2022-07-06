@@ -332,8 +332,9 @@ export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
           ? -1
           : printObjects.findIndex(pOjb => pOjb.id === fObjects[idx - 1].id);
 
-      // insert new objects
+      // insert new object
       printObjects.splice(prvItemIndex + 1, 0, o);
+      return;
     }
 
     // find index of existing element
