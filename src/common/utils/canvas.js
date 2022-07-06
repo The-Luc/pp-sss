@@ -10,7 +10,8 @@ import {
   DIGITAL_DPI,
   PRINT_PAGE_SIZE,
   PAGE_NUMBER_TYPE,
-  EDITION
+  EDITION,
+  SHEET_TYPE
 } from '@/common/constants';
 import { SizeSummary } from '@/common/models';
 import { isEmpty } from './util';
@@ -374,4 +375,21 @@ export const activeCanvasInfo = () => {
   const actualHeight = pxToIn(height / zoom);
 
   return { mid, width: actualWidth, height: actualHeight };
+};
+
+/**
+ * Get print canvas size
+ *
+ * @param {sheetType} Number type of sheet | Cover, front cover, back cover, normal
+ * @param {isHardCover} Boolean whether the book is hard cover book
+ *
+ * @return {sheetWidth, sheetHeight}
+ */
+export const getPrintCanvasSize = (sheetType, isHardCover) => {
+  const isCover = sheetType === SHEET_TYPE.COVER;
+  const { sheetWidth, sheetHeight } = isCover
+    ? getCoverPagePrintSize(isHardCover).inches
+    : getPagePrintSize().inches;
+
+  return { sheetWidth, sheetHeight };
 };

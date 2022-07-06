@@ -5,7 +5,7 @@ import {
   useMutationBook,
   useActionBook,
   useAppCommon,
-  useSyncLayoutMapping
+  useSyncData
 } from '@/hooks';
 
 import { isEmpty, isOk } from '@/common/utils';
@@ -26,7 +26,7 @@ export const useSaveData = () => {
     mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
   });
   const { getInProjectAssets } = usePhotos();
-  const { syncToPrint } = useSyncLayoutMapping();
+  const { syncToPrint } = useSyncData();
 
   const saveEditScreen = async (
     data,
