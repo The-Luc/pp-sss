@@ -33,6 +33,35 @@
           </div>
         </div>
       </div>
+      <div class="reset">
+        <div class="reset__title">
+          Reset Content Mapping:
+          <div
+            :class="[isCustomMapping && 'disable']"
+            class="reset__button item-center pointer"
+            @click="showConfirmReset"
+          >
+            <v-icon>mdi-restart </v-icon>
+            Reset
+          </div>
+        </div>
+      </div>
+      <ConfirmAction
+        v-if="isConfirmResetDisplay"
+        header="Reset Content Mapping"
+        cancel-content="Cancel"
+        action-content="Yes, Reset Content Mapping"
+        width="600"
+        @onAccept="onReset"
+        @onCancel="onCloseConfirmReset"
+      >
+        Warning: If you proceed with resetting the Content Mapping all design
+        will be removed from both the primary and secondary formats. Do you wish
+        to proceed?
+        <p style="margin-top: 20px">
+          Do you wish to proceed?
+        </p>
+      </ConfirmAction>
       <div class="learn-more">
         To learn more about Content Mapping, click
         <a @click="onClickHelp">here</a>.

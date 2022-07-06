@@ -1,5 +1,6 @@
 import Select from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import {
   ICON_LOCAL,
@@ -14,11 +15,13 @@ import {
   useSheet,
   useMappingSheet
 } from '@/hooks';
+import { updateSheetApi } from '@/api/sheet/api_mutation';
 
 export default {
   components: {
     Select,
-    Properties
+    Properties,
+    ConfirmAction
   },
   props: {
     isDigital: {
@@ -54,7 +57,8 @@ export default {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       statusOpts,
-      mappingConfig: null
+      mappingConfig: null,
+      isConfirmResetDisplay: false
     };
   },
   computed: {
@@ -79,15 +83,14 @@ export default {
       const { pageLeftName, pageRightName } = this.currentSheet;
 
       return `${pageLeftName} - ${pageRightName}`;
+    },
+    isCustomMapping() {
+      const customMapping = 'Custom Mapping';
+      return this.mappingType === customMapping ? true : false;
     }
   },
   async mounted() {
-    const [projectConfig, sheetConfig] = await Promise.all([
-      this.getMappingConfig(),
-      this.getSheetMappingConfig(this.currentSheet.id)
-    ]);
-
-    this.mappingConfig = { ...projectConfig, ...sheetConfig };
+    await this.initData();
   },
   methods: {
     async onChangeMappingStatus(item) {
@@ -98,7 +101,28 @@ export default {
 
       this.$root.$emit('drawLayout');
     },
-
+    /**
+     * To show the modal confirm reset content mapping
+     */
+    showConfirmReset() {
+      if (this.isCustomMapping) return;
+      this.toggleModal({
+        isOpenModal: true
+      });
+      this.isConfirmResetDisplay = true;
+    },
+    onCloseConfirmReset() {
+      this.isConfirmResetDisplay = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+    },
+    async onReset() {
+      const params = { typeMapping: MAPPING_TYPES.CUSTOM.value };
+      await updateSheetApi(this.currentSheet.id, params);
+      await this.initData();
+      this.onCloseConfirmReset();
+    },
     /**
      * To show the content mapping overview modal
      */
@@ -109,6 +133,17 @@ export default {
           type: MODAL_TYPES.CONTENT_MAPPING_OVERVIEW
         }
       });
+    },
+    /**
+     * Trigger render component by changing component key
+     */
+    async initData() {
+      const [projectConfig, sheetConfig] = await Promise.all([
+        this.getMappingConfig(),
+        this.getSheetMappingConfig(this.currentSheet.id)
+      ]);
+
+      this.mappingConfig = { ...projectConfig, ...sheetConfig };
     }
   }
 };
