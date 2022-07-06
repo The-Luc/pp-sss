@@ -307,6 +307,7 @@ export default {
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
 
+        await this.getDigitalObjects();
         await this.updateElementMappings();
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
@@ -329,6 +330,7 @@ export default {
     document.body.addEventListener('keyup', this.handleDeleteKey);
 
     await this.getProjectMappingConfig();
+    // get digital object for show mapping icon (when hover)
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -2028,7 +2030,7 @@ export default {
         this.pageSelected.id
       );
 
-      await this.updateMappingIcon(listFabricObjects);
+      this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
@@ -2041,7 +2043,7 @@ export default {
     /**
      * To update value and color of map icon on object (text & image) when hover
      */
-    async updateMappingIcon(fbObjects) {
+    updateMappingIcon(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) {
         // handle case layout mapping
         this.iconLayoutMapping(fbObjects);
@@ -2303,8 +2305,10 @@ export default {
      * Get digital object for show mapping icon
      */
     async getDigitalObjects() {
+      if (!this.pageSelected?.id) return;
+
       const frames = await this.getSheetFrames(this.pageSelected.id);
-      return getDigitalObjectById(frames);
+      this.digitalObjects = getDigitalObjectById(frames);
     },
     /**
      * Show warning modal when having custom changes on renderd mapped layout sheet
@@ -2410,11 +2414,6 @@ export default {
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
-
-      // get digital object for show mapping icon (when hover)
-      this.digitalObjects = isEmpty(this.elementMappings)
-        ? {}
-        : await this.getDigitalObjects();
     },
     /**
      * Handle break mapping connection when text content change,
@@ -2539,7 +2538,10 @@ export default {
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      await this.getProjectMappingConfig();
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+
       await this.drawLayout();
     }
   }

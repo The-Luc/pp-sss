@@ -259,6 +259,8 @@ export const useFrameAction = () => {
   };
 
   const getSheetFrames = async sheetId => {
+    if (!sheetId) return;
+
     const { frames } = await getFramesAndTransitionsApi(sheetId);
     return frames;
   };

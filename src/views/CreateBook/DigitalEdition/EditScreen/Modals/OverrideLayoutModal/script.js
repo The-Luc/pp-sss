@@ -59,7 +59,7 @@ export default {
 
       if (sheetData) {
         this.applyDigitalLayout(sheetData.layout);
-        this.$root.$emit(EVENT_TYPE.DRAW_LAYOUT);
+        this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
       }
 
       this.onCancel();
