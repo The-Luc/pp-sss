@@ -2206,7 +2206,9 @@ export default {
      * @param {Array} fbObjects fabric objects
      */
     iconCustomMapping(fbObjects) {
-      if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
+      const isSupplemental = !this.currentFrame.fromLayout;
+      if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
+        return;
 
       const mapIds = this.elementMappings.map(el => el.digitalElementId);
 
@@ -3202,11 +3204,13 @@ export default {
     modifyObjectsEvent(element) {
       const isNonMappedElement = element?.mappingInfo?.mapped === false;
       const isScondary = isSecondaryFormat(this.projectMappingConfig, true);
+      const isSupplemental = !this.currentFrame.fromLayout;
 
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
         isNonMappedElement ||
-        !isScondary
+        !isScondary ||
+        isSupplemental
       )
         return;
 
