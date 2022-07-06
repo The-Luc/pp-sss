@@ -671,11 +671,7 @@ export const useQuadrantMapping = () => {
     await Promise.all(fObjects.map(o => updateImageZoomLevel(o)));
 
     // SYNC DATA DIRECTION: printObjects <== fObjects
-    console.log('printObjects ', printObjects);
-    console.log('printObjects ', printObjects.length);
     copyObjectsFrameObjectsToPrint(printObjects, fObjects);
-    console.log('printObjects ', printObjects);
-    console.log('printObjects ', printObjects.length);
 
     const promise = [savePageData(sheetId, printObjects)];
     !sheet.isVisited &&
@@ -716,6 +712,8 @@ export const useSyncData = () => {
   };
 
   const syncToPrint = async (sheetId, frame, elementMappings) => {
+    if (!frame.fromLayout) return;
+
     const bookId = generalInfo.value.bookId;
 
     // check mapping config
