@@ -671,7 +671,11 @@ export const useQuadrantMapping = () => {
     await Promise.all(fObjects.map(o => updateImageZoomLevel(o)));
 
     // SYNC DATA DIRECTION: printObjects <== fObjects
+    console.log('printObjects ', printObjects);
+    console.log('printObjects ', printObjects.length);
     copyObjectsFrameObjectsToPrint(printObjects, fObjects);
+    console.log('printObjects ', printObjects);
+    console.log('printObjects ', printObjects.length);
 
     const promise = [savePageData(sheetId, printObjects)];
     !sheet.isVisited &&
