@@ -271,7 +271,7 @@ export default {
       if (!isSupplemental && !shouldShowConfirm) {
         await this.applyDigitalLayout(layout);
 
-        this.$root.$emit(EVENT_TYPE.DRAW_LAYOUT);
+        this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
         this.onCancel();
 
         return;

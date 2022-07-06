@@ -854,7 +854,7 @@ export const useMappingLayout = isDigital => {
    */
   const updateSheet = async sheetId => {
     const mappingType = MAPPING_TYPES.LAYOUT.value;
-    Promise.all([
+    await Promise.all([
       updateSheetMappingConfig(sheetId, { mappingType }),
       updateSheetApi(sheetId, { isVisited: true })
     ]);
