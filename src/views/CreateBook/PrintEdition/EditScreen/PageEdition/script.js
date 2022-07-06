@@ -328,8 +328,7 @@ export default {
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
 
-    const bookId = this.$route.params.bookId;
-    this.projectMappingConfig = await this.getMappingConfig(bookId);
+    await this.getProjectMappingConfig();
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -1958,7 +1957,7 @@ export default {
         [EVENT_TYPE.GENERATE_PDF]: this.handleGeneratePDF,
 
         pageNumber: this.addPageNumber,
-        drawLayout: this.drawLayout
+        [EVENT_TYPE.APPLY_LAYOUT]: this.handleApplyLayout
       };
 
       const events = {
@@ -2528,6 +2527,20 @@ export default {
         element.id, // digital element id
         false // mapped
       );
+    },
+    /**
+     * Get project mappping config
+     */
+    async getProjectMappingConfig() {
+      const bookId = this.$route.params.bookId;
+      this.projectMappingConfig = await this.getMappingConfig(bookId);
+    },
+    /**
+     * Triggered when user apply digital layout
+     */
+    async handleApplyLayout() {
+      await this.getProjectMappingConfig();
+      await this.drawLayout();
     }
   }
 };

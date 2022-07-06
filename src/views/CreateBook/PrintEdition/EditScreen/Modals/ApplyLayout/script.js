@@ -14,6 +14,7 @@ import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   setup() {
@@ -140,7 +141,7 @@ export default {
 
       resetObjects();
 
-      this.$root.$emit('drawLayout');
+      this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
       this.$root.$emit('pageNumber');
       this.onCancel();
     }

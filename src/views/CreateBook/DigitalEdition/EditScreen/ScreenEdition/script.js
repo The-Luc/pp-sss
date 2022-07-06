@@ -722,7 +722,7 @@ export default {
           handler: this.handleSelectAnimationObject
         },
         { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
-        { name: EVENT_TYPE.DRAW_LAYOUT, handler: this.drawLayout }
+        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout }
       ];
 
       const events = [
@@ -3228,6 +3228,13 @@ export default {
     async getProjectMappingConfig() {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
+    },
+    /**
+     * Triggered when user apply digital layout
+     */
+    async handleApplyLayout() {
+      await this.getProjectMappingConfig();
+      await this.drawLayout();
     }
   }
 };
