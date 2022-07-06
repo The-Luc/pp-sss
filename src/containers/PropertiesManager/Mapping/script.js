@@ -5,7 +5,8 @@ import {
   ICON_LOCAL,
   MODAL_TYPES,
   PRIMARY_FORMAT_TYPES,
-  MAPPING_TYPES
+  MAPPING_TYPES,
+  EVENT_TYPE
 } from '@/common/constants';
 import {
   useModal,
@@ -96,7 +97,7 @@ export default {
         mappingStatus
       });
 
-      this.$root.$emit('drawLayout');
+      this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
     },
 
     /**

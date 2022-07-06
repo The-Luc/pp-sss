@@ -35,7 +35,8 @@ export const EVENT_TYPE = {
   ANIMATION_SELECT: 'selectAnimationObject',
   PLAYBACK: 'playback',
   GENERATE_PDF: 'generatePdf',
-  DRAW_LAYOUT: 'drawLayout'
+  DRAW_LAYOUT: 'drawLayout',
+  APPLY_LAYOUT: 'applyLayout'
 };
 
 export const CANVAS_EVENT_TYPE = {

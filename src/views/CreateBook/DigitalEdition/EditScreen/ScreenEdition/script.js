@@ -359,6 +359,9 @@ export default {
         this.setAutosaveTimer();
 
         await this.getDataCanvas();
+        // get print objects
+        await this.getPrintObjects(this.pageSelected.id);
+
         this.sheetMappingConfig = await this.getSheetMappingConfig(val.id);
 
         this.setCurrentFrameId({ id: this.frames[0].id });
@@ -722,7 +725,7 @@ export default {
           handler: this.handleSelectAnimationObject
         },
         { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
-        { name: EVENT_TYPE.DRAW_LAYOUT, handler: this.drawLayout }
+        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout }
       ];
 
       const events = [
@@ -2958,8 +2961,10 @@ export default {
      * @returns list of print object by id
      */
     async getPrintObjects(sheetId) {
+      if (!sheetId) return;
+
       const printSheet = await getSheetInfoApi(sheetId);
-      return getObjectById(printSheet.objects);
+      this.printObjects = getObjectById(printSheet.objects);
     },
     /**
      * Show warning modal when having custom changes on renderd mapped layout sheet
@@ -3088,8 +3093,6 @@ export default {
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
-      // get print objects
-      this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
 
@@ -3228,6 +3231,15 @@ export default {
     async getProjectMappingConfig() {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
+    },
+    /**
+     * Triggered when user apply digital layout
+     */
+    async handleApplyLayout() {
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+      await this.drawLayout();
     }
   }
 };
