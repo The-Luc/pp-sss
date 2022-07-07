@@ -11,6 +11,7 @@ import LOCATION_PURPLE from '@/assets/icons/location-purple.svg';
 import LOCATION_WHITE from '@/assets/icons/location-white.svg';
 import LOCATION_DISABLED_PURPLE from '@/assets/icons/location-disabled-purple.svg';
 import LOCATION_DISABLED_WHITE from '@/assets/icons/location-disabled-white.svg';
+import LOCATION_DISABLED_GRAY from '@/assets/icons/location-disabled-gray.svg';
 import CONTROL_ICON from '@/assets/image/control.png';
 import ADD_TEXT_ICON from '@/assets/image/add-text.jpg';
 import ADD_IMAGE_ICON from '@/assets/image/add-image.jpg';
@@ -33,5 +34,6 @@ export const IMAGE_LOCAL = {
   LOCATION_WHITE,
   LOCATION_PURPLE,
   LOCATION_DISABLED_WHITE,
-  LOCATION_DISABLED_PURPLE
+  LOCATION_DISABLED_PURPLE,
+  LOCATION_DISABLED_GRAY
 };

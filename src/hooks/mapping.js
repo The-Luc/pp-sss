@@ -1,3 +1,5 @@
+import { useGetters } from 'vuex-composition-helpers';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -9,19 +11,46 @@ import {
   getSheetMappingElementsApi,
   deleteElementMappingApi,
   updateElementMappingsApi,
-  getBookConnectionsApi
+  getBookConnectionsApi,
+  createSingleElementMappingApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
-import { isEmpty, isPpTextOrImage, isSecondaryFormat } from '@/common/utils';
+import {
+  divideObjectsIntoQuadrants,
+  isEmpty,
+  isLayoutMappingChecker,
+  isPpTextOrImage,
+  isPrimaryFormat,
+  isSecondaryFormat,
+  keepBrokenObjectsOfFrames,
+  mappingQuadrantFrames,
+  modifyQuadrantObjects,
+  updateImageZoomLevel,
+  deleteNonMappedObjects,
+  calcQuadrantIndexOfFrame,
+  modifyDigitalQuadrantObjects,
+  copyObjectsFrameObjectsToPrint
+} from '@/common/utils';
 import {
   projectMapping,
   projectMappingToApi,
   sheetMappingConfigMapping,
   sheetMappingConfigToApiMapping
 } from '@/common/mapping/mapping';
-import { useAppCommon, useModal } from '@/hooks';
-import { CONTENT_CHANGE_MODAL, PRIMARY_FORMAT_TYPES } from '@/common/constants';
-import { getSheetInfoApi } from '@/api/sheet';
+import {
+  useAppCommon,
+  useModal,
+  useSyncLayoutMapping,
+  useFrameAction,
+  useSavePageData
+} from '@/hooks';
+import {
+  CONTENT_CHANGE_MODAL,
+  CONTENT_VIDEO_CHANGE_MODAL,
+  COVER_TYPE,
+  PRIMARY_FORMAT_TYPES
+} from '@/common/constants';
+import { getSheetInfoApi, updateSheetApi } from '@/api/sheet';
 import { getItem } from '@/common/storage';
 
 const addingParams = values => {
@@ -266,6 +295,11 @@ export const useMappingSheet = () => {
     }, Promise.resolve());
   };
 
+  // params: {sheetId, frameId, printId, digitalId}
+  const createSingleElementMapping = async (...params) => {
+    return createSingleElementMappingApi(...params);
+  };
+
   const deleteElementMappings = async ids => {
     if (isEmpty(ids)) return;
 
@@ -371,6 +405,7 @@ export const useMappingSheet = () => {
     getSheetMappingConfig,
     updateSheetMappingConfig,
     updateElementMappings,
+    createSingleElementMapping,
     getElementMappings,
     storeElementMappings,
     updateElementMappingByIds,
@@ -414,18 +449,14 @@ export const useContentChanges = () => {
     const bookId = generalInfo.value.bookId;
     const projectConfig = await getMappingConfig(bookId);
     const attName = isDigital ? 'digitalElementId' : 'printElementId';
+    if (!isSecondaryFormat(projectConfig, isDigital)) return;
 
     // show warning modal
     const eleMappings = cloneDeep(elementMappings);
     const mapping = eleMappings.find(el => el[attName] === elementId);
 
-    if (!mapping) return;
-
     // only show modal when user in seconday format and the element is mapped
-    const shouldBreakConnection =
-      isSecondaryFormat(projectConfig, isDigital) && mapping.mapped;
-
-    if (!shouldBreakConnection) return;
+    if (!mapping || !mapping.mapped) return;
 
     // call API to break connection
     mapping.mapped = false;
@@ -447,5 +478,261 @@ export const useContentChanges = () => {
     };
   };
 
-  return { handleTextContentChange };
+  const handleImageContentChange = async (
+    elementMappings,
+    elementIds,
+    isDigital,
+    videoIds
+  ) => {
+    const bookId = generalInfo.value.bookId;
+    const projectConfig = await getMappingConfig(bookId);
+    const attName = isDigital ? 'digitalElementId' : 'printElementId';
+
+    /* 
+      if DIGITAL is PRIMARY FORMAT:
+        check if there are videos, break connnection these videos and
+    */
+    if (isDigital && isPrimaryFormat(projectConfig, isDigital)) {
+      return handleVideoContentChange(elementMappings, videoIds);
+    }
+
+    if (!isSecondaryFormat(projectConfig, isDigital)) return;
+
+    // show warning modal
+    const eleMappings = cloneDeep(elementMappings);
+    const breakingPromises = [];
+    const changeMappingIds = [];
+
+    elementIds.forEach(imgElementId => {
+      const mapping = eleMappings.find(el => el[attName] === imgElementId);
+
+      // only show modal when user in seconday format and the element is mapped
+      if (!mapping || !mapping.mapped) return;
+
+      // call API to break connection
+      mapping.mapped = false;
+      breakingPromises.push(breakSingleConnection(mapping.id));
+      changeMappingIds.push(imgElementId);
+    });
+
+    if (isEmpty(breakingPromises)) return;
+
+    await Promise.all(breakingPromises);
+
+    const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
+    if (isHideMess)
+      return {
+        isDrawObjects: true,
+        elementMappings: eleMappings,
+        changeMappingIds
+      };
+
+    toggleModal({
+      isOpenModal: true
+    });
+    return {
+      isDrawObjects: true,
+      elementMappings: eleMappings,
+      isShowModal: true,
+      changeMappingIds
+    };
+  };
+
+  // for primary format
+  const handleVideoContentChange = async (elementMappings, videoIds) => {
+    if (isEmpty(videoIds)) return;
+
+    const eleMappings = cloneDeep(elementMappings);
+    const breakingPromises = [];
+    const changeMappingIds = [];
+
+    videoIds.forEach(videoId => {
+      const mapping = eleMappings.find(el => el.digitalElementId === videoId);
+
+      // only show modal when user in the element is mapped
+      if (!mapping || !mapping.mapped) return;
+
+      // call API to break connection
+      mapping.mapped = false;
+      breakingPromises.push(breakSingleConnection(mapping.id));
+      changeMappingIds.push(videoId);
+    });
+
+    if (isEmpty(breakingPromises)) return;
+
+    await Promise.all(breakingPromises);
+
+    const isHideMess = getItem(CONTENT_VIDEO_CHANGE_MODAL) || false;
+    if (isHideMess)
+      return {
+        isDrawObjects: true,
+        elementMappings: eleMappings,
+        changeMappingIds
+      };
+
+    toggleModal({
+      isOpenModal: true
+    });
+    return {
+      isDrawObjects: true,
+      elementMappings: eleMappings,
+      isShowVideoModal: true,
+      changeMappingIds
+    };
+  };
+
+  return { handleTextContentChange, handleImageContentChange };
+};
+
+export const useQuadrantMapping = () => {
+  const { updateFramesAndThumbnails, getSheetFrames } = useFrameAction();
+  const { savePageData } = useSavePageData();
+  const { getBookInfo } = useGetters({
+    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
+  });
+
+  const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
+    const objects = cloneDeep(pObjects);
+
+    const [frames, sheet] = await Promise.all([
+      getSheetFrames(sheetId),
+      getSheetInfoApi(sheetId)
+    ]);
+
+    const frameIds = frames
+      .filter(f => f.fromLayout)
+      .map(f => f.id)
+      .sort((a, b) => Number(a) - Number(b));
+
+    const { coverOption } = getBookInfo.value;
+    const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
+
+    // remove PRINT objects that are not mapping, meaning not sync these objects
+    deleteNonMappedObjects(objects, elementMappings);
+
+    // Divide into 4 quadrants (1 quadrant = 1/2 page);
+    // `quadrants`: [q1, q2, q3, q4]
+    const quadrants = divideObjectsIntoQuadrants(sheet, objects, isHardCover);
+
+    // modify object's positions and dimensions based on theirs quadrant
+    modifyQuadrantObjects(sheet, objects);
+
+    // update image zoom level
+    await Promise.all(objects.map(o => updateImageZoomLevel(o)));
+
+    // expected there are enough orginal frames (2-4 frames)
+    // mapping frames id and quadrants
+    // `quadrantFrames`: [{objects: q1, frameId: 123}]
+    const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
+
+    // keep broken DIGITAL objects of digital frames
+    keepBrokenObjectsOfFrames(quadrantFrames, frames);
+
+    // // update frames objects, and visited
+    const willUpdateFrames = quadrantFrames.map(qd => ({
+      id: qd.frameId,
+      objects: qd.objects,
+      isVisited: true
+    }));
+
+    await updateFramesAndThumbnails(willUpdateFrames);
+  };
+
+  const quadrantSyncToPrint = async (sheetId, frame, elementMappings) => {
+    // if this is supplemental frame => no mapping need
+    if (frame.isSupplemental) return;
+
+    const [frames, sheet] = await Promise.all([
+      getSheetFrames(sheetId),
+      getSheetInfoApi(sheetId)
+    ]);
+
+    const { coverOption } = getBookInfo.value;
+    const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
+
+    /*
+     Get print objects & MUTATE this `printObjects` array to update objects from digital frame
+     Then call mutation to generate thumbnail & save data of this array as spread data
+    */
+    const printObjects = cloneDeep(sheet.objects);
+    const fObjects = cloneDeep(frame.objects);
+
+    // remove DIGITAL objects that are not mapping, meaning not sync these objects
+    deleteNonMappedObjects(fObjects, elementMappings);
+
+    // get frame quadrant index: handle case COVER and supplemental
+    //  quadrantIndex: 0, 1, 2 or 3 these are possible value
+    const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
+
+    // modify object's positions and dimensions based on theirs quadrant
+    modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
+
+    // update image zoom level
+    await Promise.all(fObjects.map(o => updateImageZoomLevel(o)));
+
+    // SYNC DATA DIRECTION: printObjects <== fObjects
+    copyObjectsFrameObjectsToPrint(printObjects, fObjects);
+
+    const promise = [savePageData(sheetId, printObjects)];
+    !sheet.isVisited &&
+      promise.push(updateSheetApi(sheetId, { isVisited: true }));
+
+    await Promise.all(promise);
+  };
+
+  return { quadrantSyncToDigital, quadrantSyncToPrint };
+};
+
+export const useSyncData = () => {
+  const { generalInfo } = useAppCommon();
+  const { getMappingConfig } = useMappingProject();
+  const { getSheetMappingConfig } = useMappingSheet();
+  const { syncLayoutToDigital, syncLayoutToPrint } = useSyncLayoutMapping();
+  const { quadrantSyncToDigital, quadrantSyncToPrint } = useQuadrantMapping();
+
+  const syncToDigital = async (sheetId, objects, elementMappings) => {
+    const bookId = generalInfo.value.bookId;
+
+    // check mapping config
+    const config = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
+    const isPrintPrimary = isPrimaryFormat(config);
+    const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (!isPrintPrimary || !config.enableContentMapping) return;
+
+    if (isLayoutMapping) {
+      // layout mapping
+      return syncLayoutToDigital(sheetId, objects, elementMappings);
+    }
+
+    // custom mapping
+    return quadrantSyncToDigital(sheetId, objects, elementMappings);
+  };
+
+  const syncToPrint = async (sheetId, frame, elementMappings) => {
+    if (!frame.fromLayout) return;
+
+    const bookId = generalInfo.value.bookId;
+
+    // check mapping config
+    const config = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
+    const isDigitalPrimary = isPrimaryFormat(config, true);
+    const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (!isDigitalPrimary || !config.enableContentMapping) return;
+
+    if (isLayoutMapping) {
+      // layout mapping
+      return syncLayoutToPrint(sheetId, frame, elementMappings);
+    }
+
+    // custom mapping
+    return quadrantSyncToPrint(sheetId, frame, elementMappings);
+  };
+
+  return { syncToDigital, syncToPrint };
 };

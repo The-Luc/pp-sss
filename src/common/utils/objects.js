@@ -35,6 +35,14 @@ export const isPpImageObject = object => {
   return object?.type === OBJECT_TYPE.IMAGE;
 };
 
+export const isPpVideoObject = object => {
+  return object?.type === OBJECT_TYPE.VIDEO;
+};
+
+export const isPpMediaObject = object => {
+  return isPpImageObject(object) || isPpVideoObject(object);
+};
+
 export const isPpTextOrImage = object => {
   return isPpTextObject(object) || isPpImageObject(object);
 };
@@ -43,12 +51,22 @@ export const isFbImageObject = object => {
   return object?.objectType === OBJECT_TYPE.IMAGE;
 };
 
+export const isFbVideoObject = object => {
+  return object?.objectType === OBJECT_TYPE.VIDEO;
+};
+
 export const isFbTextObject = object => {
   return object?.objectType === OBJECT_TYPE.TEXT;
 };
 
 export const isFbTextImageObject = object => {
   return isFbTextObject(object) || isFbImageObject(object);
+};
+
+export const isFbTextMediaObject = object => {
+  return (
+    isFbTextObject(object) || isFbImageObject(object) || isFbVideoObject(object)
+  );
 };
 
 /**
@@ -317,7 +335,19 @@ export const updateContentToObject = async (objA, objB) => {
   objB.hasImage = true;
 
   // set object zoom level
-  const imgObjectB = await createImage(objB);
-  const { zoomLevel } = centercrop(imgObjectB.object);
-  objB.zoomLevel = zoomLevel;
+  await updateImageZoomLevel(objB);
+};
+
+/**
+ * To center crop image without rendering on canvas
+ *
+ * @param {Object} object image object
+ */
+export const updateImageZoomLevel = async object => {
+  if (!object.hasImage) return;
+
+  // set object zoom level
+  const fbObject = await createImage(object);
+  const { zoomLevel } = centercrop(fbObject.object);
+  object.zoomLevel = zoomLevel;
 };

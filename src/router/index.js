@@ -47,8 +47,7 @@ const routes = [
   },
   {
     path: '/',
-    // TODO: remove once integrated with API
-    redirect: '/book/1719/edit/manager',
+    redirect: '/login',
     ...beforeEnterGuard(authGuard)
   },
   {

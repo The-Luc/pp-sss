@@ -16,13 +16,14 @@ export const useSavePageData = () => {
 
   /**
    *
+   * @param {Object} appliedPage optional
    * @param {Object} option {isForceToRight}
-   * isForceToRight: true when use apply on inside front cover sheet, so all object must belong to right page
+   * isForceToRight: true when user apply on inside front cover sheet, so all object must belong to right page
    * @returns
    */
   const savePageData = async (sheetId, objects, appliedPage, option) => {
     const sheet = await getSheetInfoApi(sheetId);
-    const { bookId, pageIds, sheetType } = sheet;
+    const { bookId, pageIds, type: sheetType } = sheet;
 
     const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, sheetType);
 

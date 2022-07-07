@@ -13,7 +13,8 @@ import {
   multiObjectsAnimation,
   waitMiliseconds,
   getRefElement,
-  setActiveEdition
+  setActiveEdition,
+  isBackground
 } from '@/common/utils';
 
 import {
@@ -45,6 +46,8 @@ export default {
   },
   async mounted() {
     window.addEventListener('resize', this.onResized);
+
+    this.correctPlayInOutIds();
 
     this.setLoadingState({ value: true });
     await this.preloadMedia(this.playbackData);
@@ -557,6 +560,22 @@ export default {
         });
         // in case there are nothing to load
         if (loadedElements === totalElements) resolve();
+      });
+    },
+    /**
+     * To add objects ids in to `playInIds` and `playOutIds` arrays, in case if these arrays unset
+     */
+    correctPlayInOutIds() {
+      this.playbackData.forEach(pb => {
+        const { objects, playInIds, playOutIds } = pb;
+
+        const objectIds = objects.filter(o => !isBackground(o)).map(o => o.id);
+
+        if (playInIds.length === 1 && playInIds[0].length === 0)
+          playInIds[0] = [...objectIds];
+
+        if (playOutIds.length === 1 && playOutIds[0].length === 0)
+          playOutIds[0] = [...objectIds];
       });
     }
   }

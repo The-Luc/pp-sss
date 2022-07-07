@@ -1254,16 +1254,19 @@ export const renderMappingIcon = async target => {
     [`${false}-${true}`]: IMAGE_LOCAL.LOCATION_PURPLE,
     [`${false}-${false}`]: IMAGE_LOCAL.LOCATION_DISABLED_PURPLE
   };
-  const iconSrc = iconOptions[`${isTextObject}-${isMapped}`];
+  const customIcon = IMAGE_LOCAL.LOCATION_DISABLED_GRAY;
+
+  const iconSrc = mappingInfo.isCustom
+    ? customIcon
+    : iconOptions[`${isTextObject}-${isMapped}`];
 
   const icon = await createMediaOverlay(iconSrc);
 
   const color = mappingInfo.color;
   const value = mappingInfo.value;
 
-  const [background, foreground] = isTextObject
-    ? [color, 'white']
-    : ['white', color];
+  const [background, foreground] =
+    !isTextObject || mappingInfo.isCustom ? ['white', color] : [color, 'white'];
 
   const { top, left, width, height } = target.getBoundingRect();
   const centerX = left + width / 2;

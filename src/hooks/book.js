@@ -20,6 +20,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { MAPPING_TYPES } from '@/common/constants';
 
 /**
  * The hook trigger action to get book and get book information from store
@@ -75,7 +76,8 @@ export const useBook = () => {
       {
         ...new SheetDetail(),
         order,
-        isVisited: false
+        isVisited: false,
+        mappingType: MAPPING_TYPES.CUSTOM.value
       },
       lastSheetId
     );
