@@ -12,7 +12,8 @@ import {
   getPrintCanvasSize,
   isBackground,
   isCoverSheetChecker,
-  isHalfRight
+  isHalfRight,
+  isPpTextObject
 } from '@/common/utils';
 
 /**
@@ -171,16 +172,25 @@ export const modifyQuadrantObjects = (sheet, objects, isHardCover) => {
   const ratioX = DIGITAL_PAGE_SIZE.PDF_WIDTH / midX;
   const ratioY = DIGITAL_PAGE_SIZE.PDF_HEIGHT / midY;
 
+  const converter = value => Math.round(value * CUSTOM_MAPPING_CONVERT_RATIO);
+
   objects.forEach(o => {
     if (!o.coord || isBackground(o)) return;
 
     // update object dimensions
-    o.size.width = o.size.width * CUSTOM_MAPPING_CONVERT_RATIO;
-    o.size.height = o.size.height * CUSTOM_MAPPING_CONVERT_RATIO;
+    o.size.width = converter(o.size.width * 100) / 100; // to get 2 decimals
+    o.size.height = converter(o.size.height * 100) / 100; // to get 2 decimals
 
     // update object coordinate
     o.coord.x = o.coord.x * ratioX;
     o.coord.y = o.coord.y * ratioY;
+
+    // fix font properties
+    if (isPpTextObject(o)) {
+      o.fontSize = converter(o.fontSize);
+      o.letterSpacing = converter(o.letterSpacing);
+      o.lineSpacing = converter(o.lineSpacing);
+    }
   });
 };
 
@@ -207,16 +217,25 @@ export const modifyDigitalQuadrantObjects = (
   };
   const size = sizeOptions[qdIndex];
 
+  const converter = value => Math.round(value / CUSTOM_MAPPING_CONVERT_RATIO);
+
   objects.forEach(o => {
     if (!o.coord || isBackground(o)) return;
 
     // update object dimensions
-    o.size.width = o.size.width / CUSTOM_MAPPING_CONVERT_RATIO;
-    o.size.height = o.size.height / CUSTOM_MAPPING_CONVERT_RATIO;
+    o.size.width = converter(o.size.width * 100) / 100; // to get 2 decimals
+    o.size.height = converter(o.size.height * 100) / 100; // to get 2 decimals
 
     // update object coordinate
     o.coord.x = o.coord.x / ratioX + size.x;
     o.coord.y = o.coord.y / ratioY + size.y;
+
+    // fix font properties
+    if (isPpTextObject(o)) {
+      o.fontSize = converter(o.fontSize);
+      o.letterSpacing = converter(o.letterSpacing);
+      o.lineSpacing = converter(o.lineSpacing);
+    }
   });
 };
 
