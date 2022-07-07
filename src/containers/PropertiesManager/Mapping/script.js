@@ -14,9 +14,17 @@ import {
   useMappingProject,
   useGetterEditionSection,
   useSheet,
-  useMappingSheet
+  useMappingSheet,
+  useSavePageData,
+  useFrameAction
 } from '@/hooks';
+
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+
 import { updateSheetApi } from '@/api/sheet/api_mutation';
+import { resetObjects } from '@/common/utils';
+import { mapMutations } from 'vuex';
 
 export default {
   components: {
@@ -39,7 +47,8 @@ export default {
       getSheetMappingConfig,
       updateSheetMappingConfig
     } = useMappingSheet();
-
+    const { savePageData } = useSavePageData();
+    const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
     return {
       toggleModal,
       getMappingConfig,
@@ -47,7 +56,10 @@ export default {
       currentSection,
       currentSheet,
       getSheetMappingConfig,
-      updateSheetMappingConfig
+      updateSheetMappingConfig,
+      savePageData,
+      getSheetFrames,
+      updateFramesAndThumbnails
     };
   },
   data() {
@@ -85,15 +97,26 @@ export default {
 
       return `${pageLeftName} - ${pageRightName}`;
     },
-    isCustomMapping() {
+    isDisableReset() {
       const customMapping = 'Custom Mapping';
-      return this.mappingType === customMapping ? true : false;
+      const statusOff = false;
+      return this.mappingType === customMapping ||
+        this.selectedStatus.value === statusOff
+        ? true
+        : false;
     }
   },
   async mounted() {
     await this.initData();
   },
   methods: {
+    ...mapMutations({
+      clearPrintObjects: PRINT_MUTATES.SET_OBJECTS,
+      clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
+      clearDigitalObjectsAndThumbnail:
+        DIGITAL_MUTATES.UPDATE_OBJECTS_AND_THUMBNAIL,
+      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND
+    }),
     async onChangeMappingStatus(item) {
       const mappingStatus = item.value;
       await this.updateSheetMappingConfig(this.currentSheet.id, {
@@ -101,12 +124,13 @@ export default {
       });
 
       this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
+      await this.initData();
     },
     /**
      * To show the modal confirm reset content mapping
      */
     showConfirmReset() {
-      if (this.isCustomMapping) return;
+      if (this.isDisableReset) return;
       this.toggleModal({
         isOpenModal: true
       });
@@ -119,8 +143,45 @@ export default {
       });
     },
     async onReset() {
+      const emptyArray = [];
       const params = { typeMapping: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
+
+      if (this.isDigital) {
+        const frames = await this.getSheetFrames(this.currentSheet.id);
+        const willUpdateFrames = frames
+          .filter(frame => frame.fromLayout)
+          .map(frame => {
+            this.clearDigitalObjectsAndThumbnail({
+              frameId: frame.id,
+              thumbnailUrl: '',
+              objects: emptyArray,
+              playInIds: emptyArray,
+              playOutIds: emptyArray
+            });
+            return {
+              ...frame,
+              objects: [],
+              playInIds: [],
+              playOutIds: [],
+              previewImageUrl: ''
+            };
+          });
+        await this.updateFramesAndThumbnails(willUpdateFrames);
+
+        this.clearDigitalObjects({ objectList: emptyArray });
+        this.deleteBackground();
+
+        resetObjects(this.digitalCanvas);
+      } else {
+        // delelte objects on DB
+        await this.savePageData(this.currentSheet.id, emptyArray);
+        // delete objects in Vuex
+        this.clearPrintObjects({ objectList: emptyArray });
+        // delete objects on canvas
+        resetObjects(this.printCanvas);
+      }
+
       await this.initData();
       this.onCloseConfirmReset();
     },

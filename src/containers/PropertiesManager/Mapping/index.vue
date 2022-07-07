@@ -37,7 +37,7 @@
         <div class="reset__title">
           Reset Content Mapping:
           <div
-            :class="[isCustomMapping && 'disable']"
+            :class="[isDisableReset && 'disable']"
             class="reset__button item-center pointer"
             @click="showConfirmReset"
           >
