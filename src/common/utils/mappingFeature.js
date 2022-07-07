@@ -178,8 +178,8 @@ export const modifyQuadrantObjects = (sheet, objects, isHardCover) => {
     if (!o.coord || isBackground(o)) return;
 
     // update object dimensions
-    o.size.width = converter(o.size.width);
-    o.size.height = converter(o.size.height);
+    o.size.width = converter(o.size.width * 100) / 100; // to get 2 decimals
+    o.size.height = converter(o.size.height * 100) / 100; // to get 2 decimals
 
     // update object coordinate
     o.coord.x = o.coord.x * ratioX;
@@ -223,8 +223,8 @@ export const modifyDigitalQuadrantObjects = (
     if (!o.coord || isBackground(o)) return;
 
     // update object dimensions
-    o.size.width = converter(o.size.width);
-    o.size.height = converter(o.size.height);
+    o.size.width = converter(o.size.width * 100) / 100; // to get 2 decimals
+    o.size.height = converter(o.size.height * 100) / 100; // to get 2 decimals
 
     // update object coordinate
     o.coord.x = o.coord.x / ratioX + size.x;
