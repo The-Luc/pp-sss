@@ -51,8 +51,6 @@ export const useSavePageData = () => {
     const isOnLeft = appliedPage ? appliedPage.isLeft : Boolean(leftPageId);
     const isOnRight = appliedPage ? appliedPage.isRight : Boolean(rightPageId);
 
-    /*eslint no-debugger: 'off'*/
-    debugger;
     if (isOnLeft) {
       savePromises.push(handleUpdatePage(leftPageId, leftLayout, leftUrl));
 
