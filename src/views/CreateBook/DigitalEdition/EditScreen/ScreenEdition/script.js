@@ -345,7 +345,7 @@ export default {
         if (val?.id === oldVal?.id) return;
 
         if (!this.isJustEnteringEditor)
-          await this.saveData(this.currentFrameId);
+          await this.saveData(this.currentFrameId, oldVal.id);
 
         this.isJustEnteringEditor = false;
         this.isAllowUpdateFrameDelay = false;
@@ -2282,7 +2282,7 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      await this.saveData(this.currentFrameId, true);
+      await this.saveData(this.currentFrameId, null, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
@@ -2290,17 +2290,20 @@ export default {
     /**
      * Save sheet and sheet's frame data to storage
      * @param {String | Number} frameId id of frame
+     * @param {String | Number} sheetId id of sheet - difine when user switch screen
      * @param {Boolean} isAutosave indicating autosaving call or not
      */
-    async saveData(frameId, isAutosave) {
+    async saveData(frameId, sheetId, isAutosave) {
+      const curSheetId = sheetId || this.pageSelected.id;
       this.setAutosaveTimer();
 
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
 
+      data.sheetId = curSheetId;
       // update elementMappings if any objects deleted
       if (!isEmpty(this.elementMappings)) {
-        const frames = await this.getSheetFrames(this.pageSelected.id);
+        const frames = await this.getSheetFrames(curSheetId);
 
         const currFrame = data.frame;
 

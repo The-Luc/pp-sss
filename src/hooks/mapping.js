@@ -664,6 +664,8 @@ export const useQuadrantMapping = () => {
     //  quadrantIndex: 0, 1, 2 or 3 these are possible value
     const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
 
+    if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
+
     // modify object's positions and dimensions based on theirs quadrant
     modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
 

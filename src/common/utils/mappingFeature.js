@@ -13,6 +13,7 @@ import {
   isBackground,
   isCoverSheetChecker,
   isHalfRight,
+  isHalfLeft,
   isPpTextObject
 } from '@/common/utils';
 
@@ -326,6 +327,10 @@ export const calcQuadrantIndexOfFrame = (sheet, frames, frameId) => {
 
   if (isHalfRight(sheet)) {
     return [2, 3][index];
+  }
+
+  if (isHalfLeft(sheet)) {
+    return [0, 1][index];
   }
 
   return index;
