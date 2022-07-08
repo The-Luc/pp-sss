@@ -16,14 +16,16 @@ import {
   useSheet,
   useMappingSheet,
   useSavePageData,
-  useFrameAction
+  useFrameAction,
+  useFrameOrdering
 } from '@/hooks';
 
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
-
 import { updateSheetApi } from '@/api/sheet/api_mutation';
-import { resetObjects } from '@/common/utils';
+import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
+import { deleteElementMappingApi } from '@/api/mapping';
+import { resetObjects, isHalfSheet } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -45,8 +47,10 @@ export default {
     const { currentSheet } = useSheet();
     const {
       getSheetMappingConfig,
-      updateSheetMappingConfig
+      updateSheetMappingConfig,
+      getElementMappings
     } = useMappingSheet();
+    const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
     const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
     return {
@@ -59,7 +63,9 @@ export default {
       updateSheetMappingConfig,
       savePageData,
       getSheetFrames,
-      updateFramesAndThumbnails
+      updateFramesAndThumbnails,
+      getElementMappings,
+      updateFrameOrder
     };
   },
   data() {
@@ -115,7 +121,8 @@ export default {
       clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.UPDATE_OBJECTS_AND_THUMBNAIL,
-      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND
+      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
     async onChangeMappingStatus(item) {
       const mappingStatus = item.value;
@@ -143,21 +150,36 @@ export default {
       });
     },
     async onReset() {
-      const emptyArray = [];
       const params = { typeMapping: MAPPING_TYPES.CUSTOM.value };
-      await updateSheetApi(this.currentSheet.id, params);
+      // await updateSheetApi(this.currentSheet.id, params);
 
       if (this.isDigital) {
+        const halfSheet = isHalfSheet(this.currentSheet);
+        const numberOfOriginalFrame = halfSheet ? 2 : 4;
+
         const frames = await this.getSheetFrames(this.currentSheet.id);
+        const supFrameIds = [];
+        const oriFrameIds = [];
+        const originalFrames = [];
+
+        frames.forEach(f => {
+          if (!f.fromLayout) {
+            supFrameIds.push(parseInt(f.id));
+            return;
+          }
+          oriFrameIds.push(parseInt(f.id));
+          originalFrames.push(f);
+        });
+
         const willUpdateFrames = frames
           .filter(frame => frame.fromLayout)
           .map(frame => {
             this.clearDigitalObjectsAndThumbnail({
               frameId: frame.id,
               thumbnailUrl: '',
-              objects: emptyArray,
-              playInIds: emptyArray,
-              playOutIds: emptyArray
+              objects: [],
+              playInIds: [],
+              playOutIds: []
             });
             return {
               ...frame,
@@ -169,18 +191,46 @@ export default {
           });
         await this.updateFramesAndThumbnails(willUpdateFrames);
 
-        this.clearDigitalObjects({ objectList: emptyArray });
+        this.clearDigitalObjects({ objectList: [] });
         this.deleteBackground();
-
         resetObjects(this.digitalCanvas);
+
+        const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+
+        const framePromise = Array(numOfFramesNeeded)
+          .fill(0)
+          .map(() => {
+            return createFrameApi(this.currentSheet.id, {
+              previewImageUrl: '',
+              objects: []
+            });
+          });
+
+        const newFrames = await Promise.all(framePromise);
+
+        newFrames.forEach(f => {
+          oriFrameIds.push(parseInt(f.id));
+          originalFrames.push(f);
+        });
+        oriFrameIds.sort();
+
+        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
+        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
+
+        this.setFrames({ framesList: originalFrames });
       } else {
         // delelte objects on DB
-        await this.savePageData(this.currentSheet.id, emptyArray);
+        await this.savePageData(this.currentSheet.id, []);
         // delete objects in Vuex
-        this.clearPrintObjects({ objectList: emptyArray });
+        this.clearPrintObjects({ objectList: [] });
         // delete objects on canvas
         resetObjects(this.printCanvas);
       }
+
+      const elementMappings = await this.getElementMappings(
+        this.currentSheet.id
+      );
+      await deleteElementMappingApi(elementMappings.map(e => e.id));
 
       await this.initData();
       this.onCloseConfirmReset();
