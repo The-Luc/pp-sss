@@ -151,7 +151,7 @@ export default {
     },
     async onReset() {
       const params = { typeMapping: MAPPING_TYPES.CUSTOM.value };
-      // await updateSheetApi(this.currentSheet.id, params);
+      await updateSheetApi(this.currentSheet.id, params);
 
       if (this.isDigital) {
         const halfSheet = isHalfSheet(this.currentSheet);
@@ -170,30 +170,6 @@ export default {
           oriFrameIds.push(parseInt(f.id));
           originalFrames.push(f);
         });
-
-        const willUpdateFrames = frames
-          .filter(frame => frame.fromLayout)
-          .map(frame => {
-            this.clearDigitalObjectsAndThumbnail({
-              frameId: frame.id,
-              thumbnailUrl: '',
-              objects: [],
-              playInIds: [],
-              playOutIds: []
-            });
-            return {
-              ...frame,
-              objects: [],
-              playInIds: [],
-              playOutIds: [],
-              previewImageUrl: ''
-            };
-          });
-        await this.updateFramesAndThumbnails(willUpdateFrames);
-
-        this.clearDigitalObjects({ objectList: [] });
-        this.deleteBackground();
-        resetObjects(this.digitalCanvas);
 
         const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
 
@@ -218,6 +194,30 @@ export default {
         await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
 
         this.setFrames({ framesList: originalFrames });
+
+        const willUpdateFrames = frames
+          .filter(frame => frame.fromLayout)
+          .map(frame => {
+            this.clearDigitalObjectsAndThumbnail({
+              frameId: frame.id,
+              thumbnailUrl: '',
+              objects: [],
+              playInIds: [],
+              playOutIds: []
+            });
+            return {
+              ...frame,
+              objects: [],
+              playInIds: [],
+              playOutIds: [],
+              previewImageUrl: ''
+            };
+          });
+        await this.updateFramesAndThumbnails(willUpdateFrames);
+
+        this.clearDigitalObjects({ objectList: [] });
+        this.deleteBackground();
+        resetObjects(this.digitalCanvas);
       } else {
         // delelte objects on DB
         await this.savePageData(this.currentSheet.id, []);
@@ -230,6 +230,7 @@ export default {
       const elementMappings = await this.getElementMappings(
         this.currentSheet.id
       );
+
       await deleteElementMappingApi(elementMappings.map(e => e.id));
 
       await this.initData();
