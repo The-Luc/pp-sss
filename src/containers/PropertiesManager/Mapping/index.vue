@@ -49,7 +49,6 @@
       <ConfirmAction
         v-if="isConfirmResetDisplay"
         header="Reset Content Mapping"
-        cancel-content="Cancel"
         action-content="Yes, Reset Content Mapping"
         width="600"
         @onAccept="onReset"

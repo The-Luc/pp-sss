@@ -121,15 +121,13 @@ export const mutations = {
 
     state.frames[frameId].previewImageUrl = thumbnailUrl;
   },
-  [DIGITAL._MUTATES.UPDATE_OBJECTS_AND_THUMBNAIL](
-    state,
-    { frameId, thumbnailUrl, objects, playInIds, playOutIds }
-  ) {
-    if (!frameId || !state.frames[frameId]) return;
-    state.frames[frameId].previewImageUrl = thumbnailUrl;
-    state.frames[frameId].objects = objects;
-    state.frames[frameId].playInIds = playInIds;
-    state.frames[frameId].playOutIds = playOutIds;
+  [DIGITAL._MUTATES.DELETE_OBJECTS_AND_THUMBNAIL](state, { frameIds }) {
+    frameIds.map(frameId => {
+      state.frames[frameId].previewImageUrl = '';
+      state.frames[frameId].objects = [];
+      state.frames[frameId].playInIds = [];
+      state.frames[frameId].playOutIds = [];
+    });
   },
   [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
     if (isEmpty(thumbnailUrl) || isEmpty(sheetId)) return;

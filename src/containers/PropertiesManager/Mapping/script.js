@@ -104,12 +104,8 @@ export default {
       return `${pageLeftName} - ${pageRightName}`;
     },
     isDisableReset() {
-      const customMapping = 'Custom Mapping';
-      const statusOff = false;
-      return this.mappingType === customMapping ||
-        this.selectedStatus.value === statusOff
-        ? true
-        : false;
+      const isCustomMapping = this.mappingType === MAPPING_TYPES.CUSTOM.name;
+      return isCustomMapping || !this.selectedStatus.value;
     }
   },
   async mounted() {
@@ -120,7 +116,7 @@ export default {
       clearPrintObjects: PRINT_MUTATES.SET_OBJECTS,
       clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
       clearDigitalObjectsAndThumbnail:
-        DIGITAL_MUTATES.UPDATE_OBJECTS_AND_THUMBNAIL,
+        DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
       deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
       setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
@@ -150,7 +146,7 @@ export default {
       });
     },
     async onReset() {
-      const params = { typeMapping: MAPPING_TYPES.CUSTOM.value };
+      const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
 
       if (this.isDigital) {
@@ -195,16 +191,11 @@ export default {
 
         this.setFrames({ framesList: originalFrames });
 
+        this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
+
         const willUpdateFrames = frames
           .filter(frame => frame.fromLayout)
           .map(frame => {
-            this.clearDigitalObjectsAndThumbnail({
-              frameId: frame.id,
-              thumbnailUrl: '',
-              objects: [],
-              playInIds: [],
-              playOutIds: []
-            });
             return {
               ...frame,
               objects: [],

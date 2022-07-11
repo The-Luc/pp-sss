@@ -83,7 +83,7 @@ export const sheetMappingToApi = sheet => {
         name: 'linked',
         parse: value => value === LINK_STATUS.LINK
       },
-      typeMapping: {
+      mappingType: {
         name: 'mapping_type'
       }
     },

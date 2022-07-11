@@ -98,7 +98,7 @@ class MutationClass extends BaseObject {
   UPDATE_SHEET_VISITED = 'updateSheetVisited';
   UPDATE_SHEET_THUMBNAIL = 'updateSheetThumbnail';
   UPDATE_FRAME_THUMBNAIL = 'updateFrameThumbnail';
-  UPDATE_OBJECTS_AND_THUMBNAIL = 'updateObjectsAndThumbnail';
+  DELETE_OBJECTS_AND_THUMBNAIL = 'deleteObjectsAndThumbnail';
   REORDER_OBJECT_IDS = 'reorderObjectIds';
   SET_SHEET_DATA = 'setSheetData';
   SET_SUPPLEMENTAL_LAYOUT_ID = 'setSupplementalLayoutIdOnFrame';
