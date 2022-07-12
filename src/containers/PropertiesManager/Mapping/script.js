@@ -48,7 +48,7 @@ export default {
     const {
       getSheetMappingConfig,
       updateSheetMappingConfig,
-      getElementMappings
+      deleteSheetMappings
     } = useMappingSheet();
     const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
@@ -64,7 +64,7 @@ export default {
       savePageData,
       getSheetFrames,
       updateFramesAndThumbnails,
-      getElementMappings,
+      deleteSheetMappings,
       updateFrameOrder
     };
   },
@@ -218,11 +218,7 @@ export default {
         resetObjects(this.printCanvas);
       }
 
-      const elementMappings = await this.getElementMappings(
-        this.currentSheet.id
-      );
-
-      await deleteElementMappingApi(elementMappings.map(e => e.id));
+      await this.deleteSheetMappings(this.currentSheet.id);
 
       await this.initData();
       this.onCloseConfirmReset();

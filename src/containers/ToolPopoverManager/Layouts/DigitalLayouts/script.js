@@ -418,6 +418,7 @@ export default {
 
     /**
      *  To check whether to show confirmation modal before applying layout or not
+     *  Return true if the original frames contains any objects
      */
     async shouldShowConfirmationDialog() {
       const dbFrames = await this.getSheetFrames(this.pageSelected.id);

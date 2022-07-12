@@ -8,7 +8,7 @@
     font-size: 15px;
     font-family: $font-500;
     color: $color-gray5;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     line-height: 1.5;
   }
 
@@ -25,20 +25,36 @@
     height: 165px;
     width: 250px;
 
-    &.frame-image {
-      grid-template-columns: 1fr;
+    &.frame {
+      height: 140px;
     }
 
-    .img-title {
-      font-size: 9px;
-      font-family: $font-500;
-      color: $color-gray9;
+    &.one-image {
+      display: block;
     }
 
     .preview-thumb {
       height: 100%;
       width: 100%;
-      object-fit: cover;
+      object-fit: contain;
+    }
+  }
+
+  .img-title {
+    font-size: 9px;
+    font-family: $font-500;
+    color: $color-gray9;
+    width: 250px;
+    margin-bottom: 0;
+
+    p {
+      margin-bottom: 0;
+    }
+
+    &--print {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      justify-items: left;
     }
   }
 

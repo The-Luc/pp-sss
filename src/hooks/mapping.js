@@ -367,7 +367,7 @@ export const useMappingSheet = () => {
    *
    *  - Get sheet objects and element mappings of sheet
    *  if printElementIds are not in sheet objects ids => the objects has been removed
-   *       => remove it from the element mappings
+   *       => remove it from the element mappings by setting PRINT/DIGITAL-elementId = ''
    *
    */
   const removeElementMappingOfPage = async sheetId => {
@@ -389,7 +389,7 @@ export const useMappingSheet = () => {
 
   /**
    * Delete element mapping on frames
-   * Used when applying portrait on frames
+   * Used when applying portrait on frames & override mapped layout
    *
    * @param {Array} frameIds ids of frames which portraits are applied on
    *

@@ -20,6 +20,12 @@ export default {
       default: () => []
     }
   },
+  data() {
+    return {
+      currEditor: this.isDigital ? 'digital' : 'print',
+      otherEditor: this.isDigital ? 'print' : 'digital'
+    };
+  },
   computed: {
     firstActionButton() {
       return 'Apply layout to print AND digital editions';
@@ -28,6 +34,9 @@ export default {
       return this.isDigital
         ? 'Apply layout to digital edition only'
         : 'Apply layout to print edition only';
+    },
+    isSingleImg() {
+      return this.imgUrls.length === 1 || !this.isDigital;
     }
   },
   methods: {

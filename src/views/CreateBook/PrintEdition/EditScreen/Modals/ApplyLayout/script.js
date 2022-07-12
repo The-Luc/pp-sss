@@ -25,7 +25,6 @@ import {
   isCoverLayoutChecker
 } from '@/common/utils/layout';
 import { EVENT_TYPE } from '@/common/constants';
-import { fetchSheetThumbnailsApi } from '@/api/sheet';
 
 export default {
   setup() {
@@ -34,7 +33,7 @@ export default {
     const { sheetLayout, currentSheet } = useSheet();
     const {
       getSheetMappingConfig,
-      deleteSheetMappings,
+      removeElementMappingOfPage,
       updateSheetMappingConfig
     } = useMappingSheet();
     const { getSheetFrames } = useFrameAction();
@@ -46,7 +45,7 @@ export default {
       currentSheet,
       getSheetMappingConfig,
       getSheetFrames,
-      deleteSheetMappings,
+      removeElementMappingOfPage,
       updateSheetMappingConfig,
       isConfirmApplyShown: false,
       isSelectPageShown: false,
@@ -191,23 +190,22 @@ export default {
     async onApplyLayout(args) {
       const layout = cloneDeep(this.layout);
 
-      if (this.isApplyPrimaryOnly || this.isApplyNonMapLayout) {
-        layout.mappings = undefined;
+      if (this.isApplyPrimaryOnly) layout.mappings = undefined;
 
+      await this.applyPrintLayout({
+        layout,
+        pagePosition: this.pagePosition,
+        ...args
+      });
+
+      if (this.isApplyPrimaryOnly || this.isApplyNonMapLayout) {
         await Promise.all([
-          this.deleteSheetMappings(this.currentSheet.id),
+          this.removeElementMappingOfPage(this.currentSheet.id),
           this.updateSheetMappingConfig(this.currentSheet.id, {
             mappingStatus: false
           })
         ]);
       }
-
-      await this.applyPrintLayout({
-        layout: this.layout,
-        pagePosition: this.pagePosition,
-        ...args
-      });
-
       resetObjects();
 
       this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
@@ -272,11 +270,6 @@ export default {
      * To preview image for spred or frame
      */
     async getImageSrc() {
-      if (this.isDigital) {
-        // get print thumbnail
-        return fetchSheetThumbnailsApi(this.currentSheet.id);
-      }
-
       // get frame thumbnails
       const frames = await this.getSheetFrames(this.currentSheet.id);
 

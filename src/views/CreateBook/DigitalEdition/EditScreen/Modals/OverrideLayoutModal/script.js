@@ -1,5 +1,8 @@
+import { cloneDeep } from 'lodash';
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
+import OptionApplyMapLayout from '@/containers/Modals/ApplyMapLayout';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import {
   useAnimation,
@@ -7,10 +10,13 @@ import {
   useLayoutAddingSupport,
   useFrame,
   useFrameReplace,
-  useModal
+  useModal,
+  useMappingSheet
 } from '@/hooks';
 import { useObject } from '../../composables';
 import { EVENT_TYPE } from '@/common/constants';
+import { isLayoutMappingChecker } from '@/common/utils';
+import { fetchSheetThumbnailsApi } from '@/api/sheet';
 
 export default {
   setup() {
@@ -21,6 +27,11 @@ export default {
     const { updatePlayInIds, updatePlayOutIds } = useAnimation();
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { getLayoutFrames } = useLayoutAddingSupport();
+    const {
+      getSheetMappingConfig,
+      removeElementMapingOfFrames,
+      updateSheetMappingConfig
+    } = useMappingSheet();
 
     return {
       handleReplaceFrame,
@@ -32,19 +43,82 @@ export default {
       updatePlayInIds,
       updatePlayOutIds,
       applyDigitalLayout,
-      getLayoutFrames
+      getLayoutFrames,
+      getSheetMappingConfig,
+      removeElementMapingOfFrames,
+      updateSheetMappingConfig,
+      sheetMappingConfig: {},
+      isShowCustomConfirm: false,
+      isShowNonMapLayoutConfirm: false,
+      isShowMapLayoutConfirm: false,
+      isShowMapLayoutOption: false,
+      imgUrls: [],
+      isApplyBothEditor: false,
+      isApplyPrimaryOnly: false,
+      isApplyNonMapLayout: false
     };
   },
   components: {
     Modal,
-    PpButton
+    PpButton,
+    OptionApplyMapLayout,
+    ConfirmAction
+  },
+  computed: {
+    layout() {
+      const { sheetData } = this.modalData?.props;
+      return sheetData?.layout || {};
+    },
+    sheetId() {
+      const { sheetData } = this.modalData?.props;
+      return sheetData?.sheetId;
+    }
+  },
+  async mounted() {
+    this.sheetMappingConfig = await this.getSheetMappingConfig(this.sheetId);
+    this.imgUrls = await this.getImageSrc();
+
+    const isLayoutMapping = isLayoutMappingChecker(this.sheetMappingConfig);
+
+    if (isLayoutMapping) {
+      if (this.layout.mappings) {
+        // if user applies mapped layout
+        this.isShowMapLayoutConfirm = true;
+      } else {
+        // if user applies non-mapped layout
+        this.isShowNonMapLayoutConfirm = true;
+      }
+      return;
+    }
+
+    this.isShowCustomConfirm = true;
   },
   methods: {
-    async onAction() {
+    async applyLayout() {
+      const layout = cloneDeep(this.layout);
+      if (this.isApplyPrimaryOnly) layout.mappings = undefined;
+
+      const frames = await this.applyDigitalLayout(layout);
+
+      if (this.isApplyPrimaryOnly || this.isApplyNonMapLayout) {
+        const frameIds = frames.map(f => f.id);
+
+        await Promise.all([
+          this.removeElementMapingOfFrames(this.sheetId, frameIds),
+          this.updateSheetMappingConfig(this.sheetId, {
+            mappingStatus: false
+          })
+        ]);
+      }
+
+      this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
+      this.onCloseModal();
+    },
+    async onAcceptCustomConfirm() {
       const { sheetData } = this.modalData?.props;
 
       if (sheetData.isReplaceFrame) {
-        const layout = await this.getLayoutFrames(sheetData.layout.id);
+        const layout = await this.getLayoutFrames(this.layout.id);
         const frame = layout?.frames[0] || [];
 
         this.updateObjectsToStore({ objects: frame.objects });
@@ -52,26 +126,87 @@ export default {
         this.updatePlayOutIds({ playOutIds: frame.playOutIds });
         this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
 
-        this.setSupplementalLayoutId({ id: sheetData.layout.id });
+        this.setSupplementalLayoutId({ id: this.layout.id });
         this.onCancel();
         return;
       }
 
       if (sheetData) {
-        this.applyDigitalLayout(sheetData.layout);
-        this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
+        await this.applyLayout();
       }
 
-      this.onCancel();
+      this.onCloseModal();
+    },
+
+    onAcceptNonMapLayout() {
+      this.isShowNonMapLayoutConfirm = false;
+      this.isApplyNonMapLayout = true;
+      this.applyLayout();
+    },
+
+    onAcceptMapLayoutConfirm() {
+      this.isShowMapLayoutConfirm = false;
+      this.isShowMapLayoutOption = true;
+    },
+    /**
+     * Trigger when user hit only apply on primary edition on option apply lyout modal
+     */
+    onApplyPrimaryOnly() {
+      this.isShowMapLayoutOption = false;
+      this.isApplyPrimaryOnly = true;
+      this.applyLayout();
+    },
+    /**
+     * Trigger when user hit apply both edition on option apply lyout modal
+     */
+    onApplyBoth() {
+      this.isShowMapLayoutOption = false;
+      this.isApplyBothEditor = true;
+      this.applyLayout();
     },
 
     /**
      * Close modal when click Cancel
      */
-    onCancel() {
+    onCloseModal() {
       this.toggleModal({
         isOpenModal: false
       });
+    },
+    /**
+     * Trigger when user hit close on custom confirm modal
+     */
+    onCloseCustomConfirm() {
+      this.isShowCustomConfirm = false;
+      this.onCloseModal();
+    },
+    /**
+     * Trigger when user hit close on non-mapped layout on LAYOUT MAPPING SHEET
+     */
+    onCloseNonMapLayout() {
+      this.isShowNonMapLayoutConfirm = false;
+      this.onCloseModal();
+    },
+    /**
+     * Trigger when user hit close on map layout confirm modal
+     */
+    onCloseMapLayoutConfirm() {
+      this.isShowMapLayoutConfirm = false;
+      this.onCloseModal();
+    },
+    /**
+     * Trigger when user hit close on option apply layout modal
+     */
+    onCloseMapLayout() {
+      this.isShowMapLayoutOption = false;
+      this.onCloseModal();
+    },
+    /**
+     * To preview image for spread
+     */
+    async getImageSrc() {
+      const urls = await fetchSheetThumbnailsApi(this.sheetId);
+      return Object.values(urls).filter(Boolean);
     }
   }
 };
