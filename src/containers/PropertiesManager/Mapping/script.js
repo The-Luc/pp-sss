@@ -149,74 +149,8 @@ export default {
       const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
 
-      if (this.isDigital) {
-        const halfSheet = isHalfSheet(this.currentSheet);
-        const numberOfOriginalFrame = halfSheet ? 2 : 4;
-
-        const frames = await this.getSheetFrames(this.currentSheet.id);
-        const supFrameIds = [];
-        const oriFrameIds = [];
-        const originalFrames = [];
-
-        frames.forEach(f => {
-          if (!f.fromLayout) {
-            supFrameIds.push(parseInt(f.id));
-            return;
-          }
-          oriFrameIds.push(parseInt(f.id));
-          originalFrames.push(f);
-        });
-
-        const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
-
-        const framePromise = Array(numOfFramesNeeded)
-          .fill(0)
-          .map(() => {
-            return createFrameApi(this.currentSheet.id, {
-              previewImageUrl: '',
-              objects: []
-            });
-          });
-
-        const newFrames = await Promise.all(framePromise);
-
-        newFrames.forEach(f => {
-          oriFrameIds.push(parseInt(f.id));
-          originalFrames.push(f);
-        });
-        oriFrameIds.sort();
-
-        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
-        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
-
-        this.setFrames({ framesList: originalFrames });
-
-        this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
-
-        const willUpdateFrames = frames
-          .filter(frame => frame.fromLayout)
-          .map(frame => {
-            return {
-              ...frame,
-              objects: [],
-              playInIds: [],
-              playOutIds: [],
-              previewImageUrl: ''
-            };
-          });
-        await this.updateFramesAndThumbnails(willUpdateFrames);
-
-        this.clearDigitalObjects({ objectList: [] });
-        this.deleteBackground();
-        resetObjects(this.digitalCanvas);
-      } else {
-        // delelte objects on DB
-        await this.savePageData(this.currentSheet.id, []);
-        // delete objects in Vuex
-        this.clearPrintObjects({ objectList: [] });
-        // delete objects on canvas
-        resetObjects(this.printCanvas);
-      }
+      this.resetDigitalEditor();
+      this.resetPrintEditor();
 
       const elementMappings = await this.getElementMappings(
         this.currentSheet.id
@@ -227,6 +161,78 @@ export default {
       await this.initData();
       this.onCloseConfirmReset();
     },
+
+    async resetDigitalEditor() {
+      const halfSheet = isHalfSheet(this.currentSheet);
+      const numberOfOriginalFrame = halfSheet ? 2 : 4;
+
+      const frames = await this.getSheetFrames(this.currentSheet.id);
+      const supFrameIds = [];
+      const oriFrameIds = [];
+      const originalFrames = [];
+
+      frames.forEach(f => {
+        if (!f.fromLayout) {
+          supFrameIds.push(parseInt(f.id));
+          return;
+        }
+        oriFrameIds.push(parseInt(f.id));
+        originalFrames.push(f);
+      });
+
+      const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+
+      const framePromise = Array(numOfFramesNeeded)
+        .fill(0)
+        .map(() => {
+          return createFrameApi(this.currentSheet.id, {
+            previewImageUrl: '',
+            objects: []
+          });
+        });
+
+      const newFrames = await Promise.all(framePromise);
+
+      newFrames.forEach(f => {
+        oriFrameIds.push(parseInt(f.id));
+        originalFrames.push(f);
+      });
+      oriFrameIds.sort();
+
+      const frameOrderIds = [...oriFrameIds, ...supFrameIds];
+      await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
+
+      this.setFrames({ framesList: originalFrames });
+
+      this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
+
+      const willUpdateFrames = frames
+        .filter(frame => frame.fromLayout)
+        .map(frame => {
+          return {
+            ...frame,
+            objects: [],
+            playInIds: [],
+            playOutIds: [],
+            previewImageUrl: ''
+          };
+        });
+      await this.updateFramesAndThumbnails(willUpdateFrames);
+
+      this.clearDigitalObjects({ objectList: [] });
+      this.deleteBackground();
+      resetObjects(this.digitalCanvas);
+    },
+
+    async resetPrintEditor() {
+      // delelte objects on DB
+      await this.savePageData(this.currentSheet.id, []);
+      // delete objects in Vuex
+      this.clearPrintObjects({ objectList: [] });
+      // delete objects on canvas
+      resetObjects(this.printCanvas);
+    },
+
     /**
      * To show the content mapping overview modal
      */
