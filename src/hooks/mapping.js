@@ -306,17 +306,21 @@ export const useMappingSheet = () => {
     return deleteElementMappingApi(ids);
   };
 
+  const deleteSheetMappings = async sheetId => {
+    // get current element mappings
+    const elementMappings = await getElementMappings(sheetId);
+
+    // delete current element mappings
+    await deleteElementMappings(elementMappings.map(e => e.id));
+  };
+
   const updateElementMappings = async (
     sheetId,
     mappings,
     printObjects,
     frames
   ) => {
-    // get current element mappings
-    const elementMappings = await getElementMappings(sheetId);
-
-    // delete current element mappings
-    await deleteElementMappings(elementMappings.map(e => e.id));
+    deleteSheetMappings(sheetId);
 
     // create new element mappings
     await createElementMappings(sheetId, mappings, printObjects, frames);
@@ -407,6 +411,7 @@ export const useMappingSheet = () => {
     updateElementMappings,
     createSingleElementMapping,
     getElementMappings,
+    deleteSheetMappings,
     storeElementMappings,
     updateElementMappingByIds,
     removeElementMappingOfPage,
