@@ -177,28 +177,27 @@ export default {
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
 
-      const framePromise = Array(numOfFramesNeeded)
-        .fill(0)
-        .map(() => {
-          return createFrameApi(this.currentSheet.id, {
-            previewImageUrl: '',
-            objects: []
+      if (numOfFramesNeeded > 0) {
+        const framePromise = Array(numOfFramesNeeded)
+          .fill(0)
+          .map(() => {
+            return createFrameApi(this.currentSheet.id, {
+              previewImageUrl: '',
+              objects: []
+            });
           });
+
+        const newFrames = await Promise.all(framePromise);
+        newFrames.forEach(f => {
+          oriFrameIds.push(parseInt(f.id));
+          originalFrames.push(f);
         });
+        oriFrameIds.sort();
 
-      const newFrames = await Promise.all(framePromise);
-
-      newFrames.forEach(f => {
-        oriFrameIds.push(parseInt(f.id));
-        originalFrames.push(f);
-      });
-      oriFrameIds.sort();
-
-      const frameOrderIds = [...oriFrameIds, ...supFrameIds];
-      await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
-
-      this.setFrames({ framesList: originalFrames });
-
+        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
+        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
+        this.setFrames({ framesList: originalFrames });
+      }
       this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
 
       const willUpdateFrames = frames
