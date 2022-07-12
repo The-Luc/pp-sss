@@ -30,12 +30,14 @@ export const useAppCommon = () => {
     setEdition,
     setGeneralInfo,
     toggleModal,
-    setLoadingState
+    setLoadingState,
+    setForceLoading
   } = useMutations({
     setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
     setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
     toggleModal: APP_MUTATES.TOGGLE_MODAL,
-    setLoadingState: APP_MUTATES.SET_LOADING_STATE
+    setLoadingState: APP_MUTATES.SET_LOADING_STATE,
+    setForceLoading: APP_MUTATES.SET_FORCE_LOADING
   });
 
   const setActiveEdition = edition => setEdition({ edition });
@@ -50,6 +52,7 @@ export const useAppCommon = () => {
     generalInfo,
     isLoading,
     toggleModal,
-    setLoadingState
+    setLoadingState,
+    setForceLoading
   };
 };
