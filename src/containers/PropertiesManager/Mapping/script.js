@@ -1,5 +1,6 @@
 import Select from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import {
   ICON_LOCAL,
@@ -13,13 +14,25 @@ import {
   useMappingProject,
   useGetterEditionSection,
   useSheet,
-  useMappingSheet
+  useMappingSheet,
+  useSavePageData,
+  useFrameAction,
+  useFrameOrdering
 } from '@/hooks';
+
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+import { updateSheetApi } from '@/api/sheet/api_mutation';
+import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
+import { deleteElementMappingApi } from '@/api/mapping';
+import { resetObjects, isHalfSheet } from '@/common/utils';
+import { mapMutations } from 'vuex';
 
 export default {
   components: {
     Select,
-    Properties
+    Properties,
+    ConfirmAction
   },
   props: {
     isDigital: {
@@ -34,9 +47,12 @@ export default {
     const { currentSheet } = useSheet();
     const {
       getSheetMappingConfig,
-      updateSheetMappingConfig
+      updateSheetMappingConfig,
+      getElementMappings
     } = useMappingSheet();
-
+    const { updateFrameOrder } = useFrameOrdering();
+    const { savePageData } = useSavePageData();
+    const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
     return {
       toggleModal,
       getMappingConfig,
@@ -44,7 +60,12 @@ export default {
       currentSection,
       currentSheet,
       getSheetMappingConfig,
-      updateSheetMappingConfig
+      updateSheetMappingConfig,
+      savePageData,
+      getSheetFrames,
+      updateFramesAndThumbnails,
+      getElementMappings,
+      updateFrameOrder
     };
   },
   data() {
@@ -55,7 +76,8 @@ export default {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       statusOpts,
-      mappingConfig: null
+      mappingConfig: null,
+      isConfirmResetDisplay: false
     };
   },
   computed: {
@@ -80,17 +102,24 @@ export default {
       const { pageLeftName, pageRightName } = this.currentSheet;
 
       return `${pageLeftName} - ${pageRightName}`;
+    },
+    isDisableReset() {
+      const isCustomMapping = this.mappingType === MAPPING_TYPES.CUSTOM.name;
+      return isCustomMapping || !this.selectedStatus.value;
     }
   },
   async mounted() {
-    const [projectConfig, sheetConfig] = await Promise.all([
-      this.getMappingConfig(),
-      this.getSheetMappingConfig(this.currentSheet.id)
-    ]);
-
-    this.mappingConfig = { ...projectConfig, ...sheetConfig };
+    await this.initData();
   },
   methods: {
+    ...mapMutations({
+      clearPrintObjects: PRINT_MUTATES.SET_OBJECTS,
+      clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
+      clearDigitalObjectsAndThumbnail:
+        DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
+      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      setFrames: DIGITAL_MUTATES.SET_FRAMES
+    }),
     async onChangeMappingStatus(item) {
       const mappingStatus = item.value;
       await this.updateSheetMappingConfig(this.currentSheet.id, {
@@ -98,8 +127,106 @@ export default {
       });
 
       this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
+      await this.initData();
     },
+    /**
+     * To show the modal confirm reset content mapping
+     */
+    showConfirmReset() {
+      if (this.isDisableReset) return;
+      this.toggleModal({
+        isOpenModal: true
+      });
+      this.isConfirmResetDisplay = true;
+    },
+    onCloseConfirmReset() {
+      this.isConfirmResetDisplay = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+    },
+    async onReset() {
+      const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
+      await updateSheetApi(this.currentSheet.id, params);
 
+      if (this.isDigital) {
+        const halfSheet = isHalfSheet(this.currentSheet);
+        const numberOfOriginalFrame = halfSheet ? 2 : 4;
+
+        const frames = await this.getSheetFrames(this.currentSheet.id);
+        const supFrameIds = [];
+        const oriFrameIds = [];
+        const originalFrames = [];
+
+        frames.forEach(f => {
+          if (!f.fromLayout) {
+            supFrameIds.push(parseInt(f.id));
+            return;
+          }
+          oriFrameIds.push(parseInt(f.id));
+          originalFrames.push(f);
+        });
+
+        const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+
+        const framePromise = Array(numOfFramesNeeded)
+          .fill(0)
+          .map(() => {
+            return createFrameApi(this.currentSheet.id, {
+              previewImageUrl: '',
+              objects: []
+            });
+          });
+
+        const newFrames = await Promise.all(framePromise);
+
+        newFrames.forEach(f => {
+          oriFrameIds.push(parseInt(f.id));
+          originalFrames.push(f);
+        });
+        oriFrameIds.sort();
+
+        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
+        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
+
+        this.setFrames({ framesList: originalFrames });
+
+        this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
+
+        const willUpdateFrames = frames
+          .filter(frame => frame.fromLayout)
+          .map(frame => {
+            return {
+              ...frame,
+              objects: [],
+              playInIds: [],
+              playOutIds: [],
+              previewImageUrl: ''
+            };
+          });
+        await this.updateFramesAndThumbnails(willUpdateFrames);
+
+        this.clearDigitalObjects({ objectList: [] });
+        this.deleteBackground();
+        resetObjects(this.digitalCanvas);
+      } else {
+        // delelte objects on DB
+        await this.savePageData(this.currentSheet.id, []);
+        // delete objects in Vuex
+        this.clearPrintObjects({ objectList: [] });
+        // delete objects on canvas
+        resetObjects(this.printCanvas);
+      }
+
+      const elementMappings = await this.getElementMappings(
+        this.currentSheet.id
+      );
+
+      await deleteElementMappingApi(elementMappings.map(e => e.id));
+
+      await this.initData();
+      this.onCloseConfirmReset();
+    },
     /**
      * To show the content mapping overview modal
      */
@@ -110,6 +237,17 @@ export default {
           type: MODAL_TYPES.CONTENT_MAPPING_OVERVIEW
         }
       });
+    },
+    /**
+     * Trigger render component by changing component key
+     */
+    async initData() {
+      const [projectConfig, sheetConfig] = await Promise.all([
+        this.getMappingConfig(),
+        this.getSheetMappingConfig(this.currentSheet.id)
+      ]);
+
+      this.mappingConfig = { ...projectConfig, ...sheetConfig };
     }
   }
 };
