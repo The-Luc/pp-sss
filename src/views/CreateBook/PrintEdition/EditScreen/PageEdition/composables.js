@@ -52,11 +52,10 @@ export const useSaveData = () => {
    *  default theme id
    *
    * @param {Object} editScreenData sheet data
-   * @param {Boolean} isAutosave indicating autosaving or not
    * @param {Object} elementMappings sheet element mapping data
    * @returns api response
    */
-  const savePrintConfig = async (editScreenData, isAutosave) => {
+  const savePrintConfig = async editScreenData => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
     const screenData = cloneDeep(editScreenData);
@@ -105,23 +104,20 @@ export const useSaveData = () => {
       isUpdatePageInfo
     };
 
-    return savePrintConfigApi(variables, isAutosave);
+    return savePrintConfigApi(variables);
   };
 
   const savePrintEditScreen = async (
     editScreenData,
-    isAutosave,
     elementMappings,
     isContentChange
   ) => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
-    const promise = [savePrintConfig(editScreenData, isAutosave)];
+    const promise = [savePrintConfig(editScreenData)];
 
     isContentChange &&
-      promise.push(
-        savePrintObjects(editScreenData, isAutosave, elementMappings)
-      );
+      promise.push(savePrintObjects(editScreenData, elementMappings));
     return Promise.all(promise);
   };
 
@@ -133,15 +129,10 @@ export const useSaveData = () => {
    *  preview_image_url
    *
    * @param {Object} editScreenData sheet data
-   * @param {Boolean} isAutosave indicating autosaving or not
    * @param {Object} elementMappings sheet element mapping data
    * @returns api response
    */
-  const savePrintObjects = async (
-    editScreenData,
-    isAutosave,
-    elementMappings
-  ) => {
+  const savePrintObjects = async (editScreenData, elementMappings) => {
     const screenData = cloneDeep(editScreenData);
 
     const { bookId } = screenData;
@@ -151,8 +142,8 @@ export const useSaveData = () => {
 
     const { leftThumb, rightThumb } = await splitBase64Image(thumbnailUrl);
     const imgUrls = await Promise.all([
-      leftPageId ? uploadBase64Image(leftThumb, isAutosave) : '',
-      rightPageId ? uploadBase64Image(rightThumb, isAutosave) : ''
+      leftPageId ? uploadBase64Image(leftThumb) : '',
+      rightPageId ? uploadBase64Image(rightThumb) : ''
     ]);
 
     const { leftPage, rightPage } = mapSheetToPages(screenData);
@@ -179,8 +170,7 @@ export const useSaveData = () => {
 
     const { leftPageAssetIds, rightPageAssetIds } = await getInProjectAssets(
       bookId,
-      pageIds,
-      isAutosave
+      pageIds
     );
 
     const addAssetIdsLeft = difference(leftAssetIds, leftPageAssetIds);
@@ -204,12 +194,12 @@ export const useSaveData = () => {
 
     // update in project mark of assets
     const resOfInProject = await Promise.all([
-      updateInProjectApi(inProjectVariablesLeft, isAutosave),
-      updateInProjectApi(inProjectVariablesRight, isAutosave)
+      updateInProjectApi(inProjectVariablesLeft),
+      updateInProjectApi(inProjectVariablesRight)
     ]);
 
     // update objects and other data
-    const isSuccess = await savePrintObjectApi(variables, isAutosave);
+    const isSuccess = await savePrintObjectApi(variables);
 
     await syncToDigital(sheetId, editScreenData.objects, elementMappings);
 

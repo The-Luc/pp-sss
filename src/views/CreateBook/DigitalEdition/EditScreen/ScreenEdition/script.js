@@ -187,7 +187,7 @@ export default {
     }
   },
   setup() {
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, setForceLoading } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
@@ -245,6 +245,7 @@ export default {
 
     return {
       setLoadingState,
+      setForceLoading,
       currentFrame,
       currentFrameId,
       setInfoBar,
@@ -2281,9 +2282,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
+      this.setForceLoading({ value: true });
 
-      await this.saveData(this.currentFrameId, null, true);
+      await this.saveData(this.currentFrameId);
 
+      this.setForceLoading({ value: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
@@ -2291,9 +2294,8 @@ export default {
      * Save sheet and sheet's frame data to storage
      * @param {String | Number} frameId id of frame
      * @param {String | Number} sheetId id of sheet - difine when user switch screen
-     * @param {Boolean} isAutosave indicating autosaving call or not
      */
-    async saveData(frameId, sheetId, isAutosave) {
+    async saveData(frameId, sheetId) {
       const curSheetId = sheetId || this.pageSelected.id;
       this.setAutosaveTimer();
 
@@ -2336,7 +2338,6 @@ export default {
       }
       await this.saveEditScreen(
         data,
-        isAutosave,
         this.elementMappings,
         this.isCanvasChanged
       );

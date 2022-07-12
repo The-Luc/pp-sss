@@ -960,7 +960,7 @@ export default {
             projectId: frame.id,
             removeAssetIds: inProjectAssetsOfFrames[idx].apiPageAssetIds
           };
-          return updateInProjectApi(inProjectVariables, false, true);
+          return updateInProjectApi(inProjectVariables);
         })
       );
 
