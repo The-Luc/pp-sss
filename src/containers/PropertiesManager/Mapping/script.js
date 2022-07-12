@@ -24,7 +24,6 @@ import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { updateSheetApi } from '@/api/sheet/api_mutation';
 import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
-import { deleteElementMappingApi } from '@/api/mapping';
 import { resetObjects, isHalfSheet } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
@@ -48,7 +47,7 @@ export default {
     const {
       getSheetMappingConfig,
       updateSheetMappingConfig,
-      getElementMappings
+      deleteSheetMappings
     } = useMappingSheet();
     const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
@@ -64,7 +63,7 @@ export default {
       savePageData,
       getSheetFrames,
       updateFramesAndThumbnails,
-      getElementMappings,
+      deleteSheetMappings,
       updateFrameOrder
     };
   },
@@ -152,11 +151,7 @@ export default {
       this.resetDigitalEditor();
       this.resetPrintEditor();
 
-      const elementMappings = await this.getElementMappings(
-        this.currentSheet.id
-      );
-
-      await deleteElementMappingApi(elementMappings.map(e => e.id));
+      await this.deleteSheetMappings(this.currentSheet.id);
 
       await this.initData();
       this.onCloseConfirmReset();
