@@ -48,9 +48,28 @@ export const isCustomMappingChecker = sheetConfig => {
 
 /**
  *  Allowing sync data condition:
+ * - IS PRIMARY FORMAT
  * - MAPPING FUNCTIONALITY is on
  * - MAPPING STATUS is on
- * - MAPPING TYPE is LAYOUT
+ *
+ */
+export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
+  const { enableContentMapping } = projectConfig;
+
+  const { mappingStatus } = sheetConfig;
+
+  return (
+    enableContentMapping &&
+    mappingStatus &&
+    isPrimaryFormat(projectConfig, isDigital)
+  );
+};
+
+/**
+ *  Allowing sync layout data condition:
+ * - IS LAYOUT MAPPING
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
  *
  */
 export const isAllowSyncLayoutData = (projectConfig, sheetConfig) => {

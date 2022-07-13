@@ -29,7 +29,8 @@ import {
   deleteNonMappedObjects,
   calcQuadrantIndexOfFrame,
   modifyDigitalQuadrantObjects,
-  copyObjectsFrameObjectsToPrint
+  copyObjectsFrameObjectsToPrint,
+  isAllowSyncData
 } from '@/common/utils';
 import {
   projectMapping,
@@ -704,10 +705,9 @@ export const useSyncData = () => {
     const config = await getMappingConfig(bookId);
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
-    const isPrintPrimary = isPrimaryFormat(config);
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
-    if (!isPrintPrimary || !config.enableContentMapping) return;
+    if (!isAllowSyncData(config, sheetConfig)) return;
 
     if (isLayoutMapping) {
       // layout mapping
@@ -727,10 +727,9 @@ export const useSyncData = () => {
     const config = await getMappingConfig(bookId);
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
-    const isDigitalPrimary = isPrimaryFormat(config, true);
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
-    if (!isDigitalPrimary || !config.enableContentMapping) return;
+    if (!isAllowSyncData(config, sheetConfig, true)) return;
 
     if (isLayoutMapping) {
       // layout mapping

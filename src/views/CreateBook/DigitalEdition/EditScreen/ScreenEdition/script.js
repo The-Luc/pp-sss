@@ -2211,16 +2211,18 @@ export default {
       if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
         return;
 
-      const mapIds = this.elementMappings.map(el => el.digitalElementId);
-
       const printIds = Object.keys(this.printObjects);
-      const isScondary = isSecondaryFormat(this.projectMappingConfig, true);
+      const isSecondary = isSecondaryFormat(this.projectMappingConfig, true);
 
-      // the broken icons will show when:
-      // -  if an objects are not in print spread
-      // -  object in `elementMappings`
       fbObjects.forEach(o => {
-        if (mapIds.includes(o.id) || (isScondary && !printIds.includes(o.id)))
+        const isNotInPrintObject = !printIds.includes(o.id) && isSecondary;
+        const mapping = this.elementMappings.find(
+          el => el.digitalElementId === o.id
+        );
+        const isMapped = mapping?.mapped;
+
+        // the broken icons shown
+        if (!isMapped || isNotInPrintObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
