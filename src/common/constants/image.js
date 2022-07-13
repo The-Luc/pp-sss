@@ -16,6 +16,7 @@ import CONTROL_ICON from '@/assets/image/control.png';
 import ADD_TEXT_ICON from '@/assets/image/add-text.jpg';
 import ADD_IMAGE_ICON from '@/assets/image/add-image.jpg';
 import EMPTY_PREVIEW_FRAME from '@/assets/image/no-preview-frame.jpg';
+import BLANK_THUMB from '@/assets/image/blank-thumb.jpg';
 
 export const IMAGE_LOCAL = {
   DASHED,
@@ -35,5 +36,6 @@ export const IMAGE_LOCAL = {
   LOCATION_PURPLE,
   LOCATION_DISABLED_WHITE,
   LOCATION_DISABLED_PURPLE,
-  LOCATION_DISABLED_GRAY
+  LOCATION_DISABLED_GRAY,
+  BLANK_THUMB
 };

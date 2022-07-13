@@ -148,26 +148,36 @@ export default {
       const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
 
-      if (this.isDigital) {
-        const halfSheet = isHalfSheet(this.currentSheet);
-        const numberOfOriginalFrame = halfSheet ? 2 : 4;
+      this.resetDigitalEditor();
+      this.resetPrintEditor();
 
-        const frames = await this.getSheetFrames(this.currentSheet.id);
-        const supFrameIds = [];
-        const oriFrameIds = [];
-        const originalFrames = [];
+      await this.deleteSheetMappings(this.currentSheet.id);
 
-        frames.forEach(f => {
-          if (!f.fromLayout) {
-            supFrameIds.push(parseInt(f.id));
-            return;
-          }
-          oriFrameIds.push(parseInt(f.id));
-          originalFrames.push(f);
-        });
+      await this.initData();
+      this.onCloseConfirmReset();
+    },
 
-        const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+    async resetDigitalEditor() {
+      const halfSheet = isHalfSheet(this.currentSheet);
+      const numberOfOriginalFrame = halfSheet ? 2 : 4;
 
+      const frames = await this.getSheetFrames(this.currentSheet.id);
+      const supFrameIds = [];
+      const oriFrameIds = [];
+      const originalFrames = [];
+
+      frames.forEach(f => {
+        if (!f.fromLayout) {
+          supFrameIds.push(parseInt(f.id));
+          return;
+        }
+        oriFrameIds.push(parseInt(f.id));
+        originalFrames.push(f);
+      });
+
+      const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+
+      if (numOfFramesNeeded > 0) {
         const framePromise = Array(numOfFramesNeeded)
           .fill(0)
           .map(() => {
@@ -178,7 +188,6 @@ export default {
           });
 
         const newFrames = await Promise.all(framePromise);
-
         newFrames.forEach(f => {
           oriFrameIds.push(parseInt(f.id));
           originalFrames.push(f);
@@ -187,41 +196,37 @@ export default {
 
         const frameOrderIds = [...oriFrameIds, ...supFrameIds];
         await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
-
         this.setFrames({ framesList: originalFrames });
-
-        this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
-
-        const willUpdateFrames = frames
-          .filter(frame => frame.fromLayout)
-          .map(frame => {
-            return {
-              ...frame,
-              objects: [],
-              playInIds: [],
-              playOutIds: [],
-              previewImageUrl: ''
-            };
-          });
-        await this.updateFramesAndThumbnails(willUpdateFrames);
-
-        this.clearDigitalObjects({ objectList: [] });
-        this.deleteBackground();
-        resetObjects(this.digitalCanvas);
-      } else {
-        // delelte objects on DB
-        await this.savePageData(this.currentSheet.id, []);
-        // delete objects in Vuex
-        this.clearPrintObjects({ objectList: [] });
-        // delete objects on canvas
-        resetObjects(this.printCanvas);
       }
+      this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
 
-      await this.deleteSheetMappings(this.currentSheet.id);
+      const willUpdateFrames = frames
+        .filter(frame => frame.fromLayout)
+        .map(frame => {
+          return {
+            ...frame,
+            objects: [],
+            playInIds: [],
+            playOutIds: [],
+            previewImageUrl: ''
+          };
+        });
+      await this.updateFramesAndThumbnails(willUpdateFrames);
 
-      await this.initData();
-      this.onCloseConfirmReset();
+      this.clearDigitalObjects({ objectList: [] });
+      this.deleteBackground();
+      resetObjects(this.digitalCanvas);
     },
+
+    async resetPrintEditor() {
+      // delelte objects on DB
+      await this.savePageData(this.currentSheet.id, []);
+      // delete objects in Vuex
+      this.clearPrintObjects({ objectList: [] });
+      // delete objects on canvas
+      resetObjects(this.printCanvas);
+    },
+
     /**
      * To show the content mapping overview modal
      */
