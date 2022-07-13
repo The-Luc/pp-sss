@@ -33,7 +33,9 @@ export const useSavePageData = () => {
 
     let leftUrl, rightUrl;
 
-    if (!isEmpty(objects)) {
+    if (isEmpty(objects)) {
+      leftUrl = rightUrl = IMAGE_LOCAL.BLANK_THUMB;
+    } else {
       const [leftBase64, rightBase64] = await getSheetThumbnail(
         leftLayout.elements,
         rightLayout.elements
@@ -44,8 +46,6 @@ export const useSavePageData = () => {
         uploadBase64Image(rightBase64)
       ]);
     }
-
-    leftUrl = rightUrl = IMAGE_LOCAL.BLANK_THUMB;
 
     const handleUpdatePage = async (pageId, layout, imgUrl) => {
       const params = {
