@@ -2219,10 +2219,10 @@ export default {
         const mapping = this.elementMappings.find(
           el => el.digitalElementId === o.id
         );
-        const isMapped = mapping?.mapped;
+        const isBroken = mapping?.mapped === false;
 
         // the broken icons shown
-        if (!isMapped || isNotInPrintObject)
+        if (!isBroken || isNotInPrintObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },

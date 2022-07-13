@@ -2077,9 +2077,9 @@ export default {
         const mapping = this.elementMappings.find(
           el => el.printElementId === o.id
         );
-        const isMapped = mapping?.mapped;
+        const isBroken = mapping?.mapped === false;
 
-        if (!isMapped || isNotInDigitalObject)
+        if (isBroken || isNotInDigitalObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },

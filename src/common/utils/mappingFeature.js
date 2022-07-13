@@ -261,7 +261,7 @@ export const modifyDigitalQuadrantObjects = (
 
 /**
  * mapping frames id and quadrants
- * @return: [{objects: q1, frameId: 123}]
+ * @return {Array[Object]}: [{objects: q1, frameId: 123}]
  */
 export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
   let order = [0, 1, 2, 3];
@@ -306,7 +306,9 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
  */
 export const deleteNonMappedObjects = (objects, elementMappings) => {
   elementMappings.forEach(el => {
-    const index = objects.findIndex(o => o.id === el.printElementId);
+    const index = objects.findIndex(
+      o => o.id === el.printElementId && !el.mapped
+    );
 
     if (index < 0) return;
     objects.splice(index, 1);
@@ -315,6 +317,8 @@ export const deleteNonMappedObjects = (objects, elementMappings) => {
 
 /**
  * get mapping info for custom mapping
+ * @param {Object} el
+ * @return {{color: string, id: string, mapped: boolean, isCustom: boolean}} broken mapping data for object
  */
 export const getBrokenCustomMapping = el => {
   return {
@@ -327,7 +331,7 @@ export const getBrokenCustomMapping = el => {
 
 /**
  * Caclculate quadrant index of a frame
- * @return possible value 0, 1, 2, 3
+ * @return {number} possible value 0, 1, 2, 3
  */
 export const calcQuadrantIndexOfFrame = (sheet, frames, frameId) => {
   const frameIds = frames

@@ -14,7 +14,7 @@ import {
   getBookConnectionsApi,
   createSingleElementMappingApi
 } from '@/api/mapping';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, difference } from 'lodash';
 import {
   divideObjectsIntoQuadrants,
   isEmpty,
@@ -413,6 +413,7 @@ export const useMappingSheet = () => {
     createSingleElementMapping,
     getElementMappings,
     deleteSheetMappings,
+    deleteElementMappings,
     storeElementMappings,
     updateElementMappingByIds,
     removeElementMappingOfPage,
@@ -596,7 +597,71 @@ export const useQuadrantMapping = () => {
   const { getBookInfo } = useGetters({
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
+  const { deleteElementMappings } = useMappingSheet();
 
+  /**
+   * To create element mapping params of custom mapping
+   * Element mapping of sheet will content object in `quadrandFrames` which will be synced to digital
+
+   * @param {string} sheetId id of sheet
+   * @param {Array<{objects: Array, frameId: string}>} quadrantFrames
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   * @return {Promise}
+   */
+  const madeConnectionOfCustomMapping = (
+    sheetId,
+    quadrantFrames,
+    elementMappings
+  ) => {
+    const mapIds = elementMappings.map(el => el.printElementId);
+    const allFrameObjects = [];
+
+    const apiParams = [];
+    quadrantFrames.forEach(qd => {
+      const { frameId, objects } = qd;
+      const objectIds = objects.map(o => o.id);
+
+      allFrameObjects.push(...objects);
+
+      // if objects are in `elementMappings` => do not need to create new connection
+      const newIds = difference(objectIds, mapIds);
+      const params = newIds.map(id => ({
+        print_element_uid: id,
+        digital_element_uid: id
+      }));
+
+      if (params.length < 1) return;
+
+      apiParams.push({
+        sheetId,
+        frameId,
+        params
+      });
+    });
+
+    // delete element mapping of objects have been deleted
+    // objects have been deleted are object in `mapIds` but not in `objectIds`
+    const removeIds = [];
+    const allObjectIds = allFrameObjects.map(o => o.id);
+    elementMappings.forEach(el => {
+      if (!allObjectIds.includes(el.printElementId)) removeIds.push(el.id);
+    });
+
+    console.log(apiParams, removeIds);
+    // call api to update to DB
+    const createPromise = apiParams.map(pr =>
+      createElementMappingApi(pr.sheetId, pr.frameId, pr.params)
+    );
+
+    return Promise.all([createPromise, deleteElementMappings(removeIds)]);
+  };
+
+  /**
+   * To sync data to print in quadrant mapping mode
+   * @param {string} sheetId
+   * @param {array} pObjects
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
     const objects = cloneDeep(pObjects);
 
@@ -631,6 +696,13 @@ export const useQuadrantMapping = () => {
     // `quadrantFrames`: [{objects: q1, frameId: 123}]
     const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
 
+    // create mapping connection: element mappings
+    const mappingPromise = madeConnectionOfCustomMapping(
+      sheetId,
+      quadrantFrames,
+      elementMappings
+    );
+
     // keep broken DIGITAL objects of digital frames
     keepBrokenObjectsOfFrames(quadrantFrames, frames);
 
@@ -641,7 +713,9 @@ export const useQuadrantMapping = () => {
       isVisited: true
     }));
 
-    await updateFramesAndThumbnails(willUpdateFrames);
+    const updateFramePromise = updateFramesAndThumbnails(willUpdateFrames);
+
+    await Promise.all([mappingPromise, updateFramePromise]);
   };
 
   const quadrantSyncToPrint = async (sheetId, frame, elementMappings) => {
