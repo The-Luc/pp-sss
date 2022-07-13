@@ -165,7 +165,7 @@ export default {
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, setForceLoading } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -207,6 +207,7 @@ export default {
       updateMediaSidebarOpen,
       setPropertiesType,
       setLoadingState,
+      setForceLoading,
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
@@ -378,9 +379,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
+      this.setForceLoading({ value: true });
 
-      await this.saveData(this.pageSelected.id, true);
+      await this.saveData(this.pageSelected.id);
 
+      this.setForceLoading({ value: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
@@ -390,11 +393,10 @@ export default {
      * ONLY generate thumbnails and save objects when isCanvasChanged is true
      *
      * @param {String | Number} sheetId id of sheet need to save data
-     * @param {Boolean} isAutosave indicating autosaving or not
      * @returns {Promise} saved data
      *
      */
-    async saveData(sheetId, isAutosave) {
+    async saveData(sheetId) {
       this.setAutosaveTimer();
 
       const data = this.getDataEditScreen(sheetId);
@@ -423,7 +425,6 @@ export default {
 
       await this.savePrintEditScreen(
         data,
-        isAutosave,
         this.elementMappings,
         this.isCanvasChanged
       );

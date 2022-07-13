@@ -1,14 +1,24 @@
+import { cloneDeep } from 'lodash';
 import SelectPage from './SelectPage';
 import ConfirmApplyLayout from './ConfirmApplyLayout';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
+import OptionApplyMapLayout from '@/containers/Modals/ApplyMapLayout';
 import ScaleFitOption from './ScaleFitOption';
 
-import { useApplyPrintLayout, useModal, useSheet } from '@/hooks';
+import {
+  useApplyPrintLayout,
+  useModal,
+  useSheet,
+  useMappingSheet,
+  useFrameAction
+} from '@/hooks';
 import {
   resetObjects,
   isEmpty,
   isHalfSheet,
   isSingleLayout,
-  isCoverSheetChecker
+  isCoverSheetChecker,
+  isLayoutMappingChecker
 } from '@/common/utils';
 import {
   changeObjectsCoords,
@@ -21,18 +31,42 @@ export default {
     const { applyPrintLayout } = useApplyPrintLayout();
     const { toggleModal } = useModal();
     const { sheetLayout, currentSheet } = useSheet();
+    const {
+      getSheetMappingConfig,
+      removeElementMappingOfPage,
+      updateSheetMappingConfig
+    } = useMappingSheet();
+    const { getSheetFrames } = useFrameAction();
     return {
       toggleModal,
       applyPrintLayout,
-      sheetLayout,
+      sheetLayout, // all objects + backgrounds of the current sheet
+      sheetMappingConfig: {},
       currentSheet,
+      getSheetMappingConfig,
+      getSheetFrames,
+      removeElementMappingOfPage,
+      updateSheetMappingConfig,
       isConfirmApplyShown: false,
       isSelectPageShown: false,
       isScaleFitShown: false,
-      pagePosition: null
+      pagePosition: null,
+      isShowNonMapLayoutConfirm: false,
+      isShowMapLayoutConfirm: false,
+      isShowConfirmForLayoutMapping: false,
+      isApplyBothEditor: false,
+      isApplyPrimaryOnly: false,
+      isApplyNonMapLayout: false,
+      imgUrls: ''
     };
   },
-  components: { SelectPage, ConfirmApplyLayout, ScaleFitOption },
+  components: {
+    SelectPage,
+    ConfirmApplyLayout,
+    ScaleFitOption,
+    ConfirmAction,
+    OptionApplyMapLayout
+  },
   computed: {
     layout() {
       return this.$attrs.props.layout;
@@ -50,7 +84,13 @@ export default {
       return isCoverSheetChecker(this.currentSheet);
     }
   },
-  mounted() {
+  async mounted() {
+    this.sheetMappingConfig = await this.getSheetMappingConfig(
+      this.currentSheet.id
+    );
+
+    this.imgUrls = await this.getImageSrc();
+
     const isConfirm = this.showConfirmModal();
     if (isConfirm) return;
 
@@ -64,13 +104,27 @@ export default {
   },
   methods: {
     showConfirmModal() {
+      const isLayoutMapping = isLayoutMappingChecker(this.sheetMappingConfig);
+
+      if (isLayoutMapping) {
+        if (this.layout.mappings) {
+          // if user applies mapped layout
+          this.isShowConfirmForLayoutMapping = true;
+        } else {
+          // if user applies non-mapped layout
+          this.isShowNonMapLayoutConfirm = true;
+        }
+        return true;
+      }
+
+      // if there are objects on the current sheet
       if (!isEmpty(this.sheetLayout)) {
         this.isConfirmApplyShown = true;
         return true;
       }
     },
     /**
-     * Trigger when use agree apply layout on comfirmation modal
+     * Trigger when user agree apply layout on comfirmation modal
      */
     onConfirmApply() {
       this.isConfirmApplyShown = false;
@@ -122,6 +176,9 @@ export default {
       this.isScaleFitShown = false;
       this.onApplyLayout({ isFit: true });
     },
+    /**
+     * Close modal
+     */
     onCancel() {
       this.toggleModal({
         isOpenModal: false
@@ -131,19 +188,92 @@ export default {
      * Save objects to store and draw on canvas
      */
     async onApplyLayout(args) {
+      const layout = cloneDeep(this.layout);
+
+      if (this.isApplyPrimaryOnly) layout.mappings = undefined;
+
       await this.applyPrintLayout({
-        sheetId: this.pageSelected?.id,
-        themeId: this.themeSelected?.id,
-        layout: this.layout,
+        layout,
         pagePosition: this.pagePosition,
         ...args
       });
 
+      if (this.isApplyPrimaryOnly || this.isApplyNonMapLayout) {
+        await Promise.all([
+          this.removeElementMappingOfPage(this.currentSheet.id),
+          this.updateSheetMappingConfig(this.currentSheet.id, {
+            mappingStatus: false
+          })
+        ]);
+      }
       resetObjects();
 
       this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
       this.$root.$emit('pageNumber');
       this.onCancel();
+    },
+    /**
+     * Trigger when user hit Cancel on Non-maped Layout Confirm modal
+     */
+    onCloseNonMapLayout() {
+      this.isShowNonMapLayoutConfirm = false;
+      this.onCancel();
+    },
+    /**
+     * Trigger when user hit Cancel on Maped Layout Confirm modal
+     */
+    onCloseMapLayout() {
+      this.isShowMapLayoutConfirm = false;
+      this.onCancel();
+    },
+    /**
+     * Trigger when user hit Cancel on the Confirm modal for apply on layout mapping sheet
+     */
+    onCloseConfirmForLayoutMapping() {
+      this.isShowConfirmForLayoutMapping = false;
+      this.onCancel();
+    },
+    /**
+     * Trigger when user hit apply layout on non mapped layout confirm
+     * - Apply layout on print
+     * - Remove all connections
+     */
+    onAcceptNonMapLayout() {
+      this.isApplyNonMapLayout = true;
+      this.isShowNonMapLayoutConfirm = false;
+      this.onConfirmApply();
+    },
+    /**
+     * Trigger when user apply mapped layout only on primary editor
+     */
+    onApplyPrimaryOnly() {
+      this.isApplyPrimaryOnly = true;
+      this.isShowMapLayoutConfirm = false;
+      this.onConfirmApply();
+    },
+    /**
+     * Trigger when user apply mapped layout both print and digital
+     */
+    onApplyBoth() {
+      this.isApplyBothEditor = true;
+      this.isShowMapLayoutConfirm = false;
+      this.onConfirmApply();
+    },
+    /**
+     * Trigger when user apply a layout on layout mapping type sheet
+     */
+    onAcceptForLayoutMapping() {
+      this.isShowConfirmForLayoutMapping = false;
+      this.isShowMapLayoutConfirm = true;
+    },
+    /**
+     * To preview image for spred or frame
+     */
+    async getImageSrc() {
+      // get frame thumbnails
+      const frames = await this.getSheetFrames(this.currentSheet.id);
+
+      return [frames[0].previewImageUrl];
     }
   }
 };

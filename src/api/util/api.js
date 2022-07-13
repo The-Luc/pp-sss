@@ -17,20 +17,15 @@ import {
  *  To upload base64 images to server and get back url
  *
  * @param {String} base64 data of image in base64
- * @param {Boolean} isAutosave is auto save not not
  * @returns url of image after uploading on server
  */
-export const uploadBase64ImageApi = async (base64, isAutosave) => {
+export const uploadBase64ImageApi = async base64 => {
   if (!base64 || !base64.startsWith('data:image/')) return base64;
 
   try {
-    const res = await graphqlRequest(
-      uploadBase64ImageMutation,
-      {
-        base64
-      },
-      isAutosave
-    );
+    const res = await graphqlRequest(uploadBase64ImageMutation, {
+      base64
+    });
     if (!isOk(res))
       throw new Error('Cannot generate image url from base64 image');
 

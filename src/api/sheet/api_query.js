@@ -12,7 +12,8 @@ import {
   getSheetPreviewInfoQuery,
   pageInfoQuery,
   printWorkspaceQuery,
-  sheetInfoQuery
+  sheetInfoQuery,
+  sheetThumbnailQuery
 } from './queries';
 
 export const getPageDataApi = async id => {
@@ -109,4 +110,15 @@ export const getWorkspaceApi = async (sheetId, isDigital) => {
 // is use to update cache when apply mapped layout on print editor
 export const getSheetPreviewInfoApi = async sheetId => {
   return graphqlRequest(getSheetPreviewInfoQuery, { id: sheetId });
+};
+
+export const fetchSheetThumbnailsApi = async sheetId => {
+  const res = await graphqlRequest(sheetThumbnailQuery, { id: sheetId });
+
+  const pages = get(res, 'data.sheet.pages');
+
+  return {
+    left: pages[0]?.preview_image_url,
+    right: pages[1]?.preview_image_url
+  };
 };
