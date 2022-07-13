@@ -1,10 +1,12 @@
 import { updatePageApi } from '@/api/page';
 import { updateInProjectApi } from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
+import { IMAGE_LOCAL } from '@/common/constants';
 import {
   getPageIdsOfSheet,
   pageLayoutsFromSheet,
-  getSheetThumbnail
+  getSheetThumbnail,
+  isEmpty
 } from '@/common/utils';
 import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
 import { useMappingSheet } from './mapping';
@@ -29,15 +31,21 @@ export const useSavePageData = () => {
 
     const { leftLayout, rightLayout } = pageLayoutsFromSheet(objects, option);
 
-    const [leftBase64, rightBase64] = await getSheetThumbnail(
-      leftLayout.elements,
-      rightLayout.elements
-    );
+    let leftUrl, rightUrl;
 
-    const [leftUrl, rightUrl] = await Promise.all([
-      uploadBase64Image(leftBase64),
-      uploadBase64Image(rightBase64)
-    ]);
+    if (isEmpty(objects)) {
+      leftUrl = rightUrl = IMAGE_LOCAL.BLANK_THUMB;
+    } else {
+      const [leftBase64, rightBase64] = await getSheetThumbnail(
+        leftLayout.elements,
+        rightLayout.elements
+      );
+
+      [leftUrl, rightUrl] = await Promise.all([
+        uploadBase64Image(leftBase64),
+        uploadBase64Image(rightBase64)
+      ]);
+    }
 
     const handleUpdatePage = async (pageId, layout, imgUrl) => {
       const params = {
