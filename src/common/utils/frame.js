@@ -49,3 +49,16 @@ export const getPlaybackDataFromFrames = (
 export const sortFrameByOrder = frames => {
   return frames.sort((ff, sf) => ff.frame_order - sf.frame_order);
 };
+
+/**
+ * To get current frames object by combine database frams and current frame on frontend
+ *
+ * @param {array} dbFrames frames come from database
+ * @param {object} frame a current frame on frontend
+ * @return {array} array of frames
+ */
+export const allCurrentFrameObjects = (dbFrames, frame) => {
+  const excludeCurrentFrame = dbFrames.filter(f => f.id !== frame.id);
+
+  return [...excludeCurrentFrame, frame].map(f => f.objects).flat();
+};
