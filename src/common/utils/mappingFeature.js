@@ -66,6 +66,29 @@ export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
 };
 
 /**
+ *  Allowing sync data condition on secondary editor:
+ * - IS SECONDARY FORMAT
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
+ *
+ */
+export const isAllowSyncDataSecondary = (
+  projectConfig,
+  sheetConfig,
+  isDigital
+) => {
+  const { enableContentMapping } = projectConfig;
+
+  const { mappingStatus } = sheetConfig;
+
+  return (
+    enableContentMapping &&
+    mappingStatus &&
+    isSecondaryFormat(projectConfig, isDigital)
+  );
+};
+
+/**
  *  Allowing sync layout data condition:
  * - IS LAYOUT MAPPING
  * - MAPPING FUNCTIONALITY is on
