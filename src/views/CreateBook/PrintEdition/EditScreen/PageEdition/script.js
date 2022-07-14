@@ -1962,7 +1962,8 @@ export default {
         [EVENT_TYPE.GENERATE_PDF]: this.handleGeneratePDF,
 
         pageNumber: this.addPageNumber,
-        [EVENT_TYPE.APPLY_LAYOUT]: this.handleApplyLayout
+        [EVENT_TYPE.APPLY_LAYOUT]: this.handleApplyLayout,
+        [EVENT_TYPE.RESET_MAPPING_TYPE]: this.resetMappingType
       };
 
       const events = {
@@ -2529,15 +2530,30 @@ export default {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
     },
+    async fetchSheetMappingConfig() {
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+    },
     /**
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      this.sheetMappingConfig = await this.getSheetMappingConfig(
+      await this.fetchSheetMappingConfig();
+      await this.drawLayout();
+    },
+    /**
+     * Trigger when user reset sheet mapping type
+     */
+    async resetMappingType() {
+      await Promise.all([
+        this.getProjectMappingConfig(),
+        this.fetchSheetMappingConfig()
+      ]);
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
-
-      await this.drawLayout();
     }
   }
 };
