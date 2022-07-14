@@ -31,7 +31,8 @@ import {
   modifyDigitalQuadrantObjects,
   copyObjectsFrameObjectsToPrint,
   isAllowSyncData,
-  allCurrentFrameObjects
+  allCurrentFrameObjects,
+  isAllowSyncDataSecondary
 } from '@/common/utils';
 import {
   projectMapping,
@@ -237,6 +238,11 @@ export const useMappingSheet = () => {
     return updateSheetMappingConfigApi(sheetId, params);
   };
 
+  /**
+   *  To get element mappings of sheet
+   *
+   * @return {Promise<{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]>} elementMappings
+   */
   const getElementMappings = async sheetId => {
     return getSheetMappingElementsApi(sheetId);
   };
@@ -373,6 +379,8 @@ export const useMappingSheet = () => {
    *
    */
   const removeElementMappingOfPage = async sheetId => {
+    if (!sheetId) return;
+
     const elementMappings = await getElementMappings(sheetId);
 
     const sheet = await getSheetInfoApi(sheetId);
@@ -390,7 +398,7 @@ export const useMappingSheet = () => {
   };
 
   /**
-   * Delete element mapping on frames
+   * Delete ALL element mapping on frames
    * Used when applying portrait on frames & override mapped layout
    *
    * @param {Array} frameIds ids of frames which portraits are applied on
@@ -407,6 +415,31 @@ export const useMappingSheet = () => {
     await updateElementMappingByIds(mappingIds, true);
   };
 
+  /**
+   *
+   * if digital is secondary format and any object deleted,
+   * the corresponding mapping need to be deleted too
+   *
+   * usage:
+   *   - when digital is secondary format and any object deleted,
+   *
+   * @param {object} frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
+  const removeDigitalConnections = async (frame, elementMappings) => {
+    const objectIds = frame.objects.map(o => o.id);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      const { digitalContainerId: frameId, digitalElementId: objectId } = el;
+
+      if (frameId !== frame.id || objectIds.includes(objectId)) return;
+
+      return Object.assign(acc, el.id);
+    }, []);
+
+    await updateElementMappingByIds(mappingIds, true);
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
@@ -418,7 +451,8 @@ export const useMappingSheet = () => {
     storeElementMappings,
     updateElementMappingByIds,
     removeElementMappingOfPage,
-    removeElementMapingOfFrames
+    removeElementMapingOfFrames,
+    removeDigitalConnections
   };
 };
 
@@ -823,7 +857,11 @@ export const useQuadrantMapping = () => {
 export const useSyncData = () => {
   const { generalInfo } = useAppCommon();
   const { getMappingConfig } = useMappingProject();
-  const { getSheetMappingConfig } = useMappingSheet();
+  const {
+    getSheetMappingConfig,
+    removeDigitalConnections,
+    removeElementMappingOfPage
+  } = useMappingSheet();
   const { syncLayoutToDigital, syncLayoutToPrint } = useSyncLayoutMapping();
   const { quadrantSyncToDigital, quadrantSyncToPrint } = useQuadrantMapping();
 
@@ -836,6 +874,13 @@ export const useSyncData = () => {
 
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
+    if (isAllowSyncDataSecondary(config, sheetConfig)) {
+      // if print is secondary format and any object deleted,
+      // the corresponding mapping need to be deleted too
+      // handle remove element mapping if digital is secondary editor
+      await removeElementMappingOfPage(sheetId);
+    }
+
     if (!isAllowSyncData(config, sheetConfig)) return;
 
     if (isLayoutMapping) {
@@ -847,6 +892,11 @@ export const useSyncData = () => {
     return quadrantSyncToDigital(sheetId, objects, elementMappings);
   };
 
+  /**
+   * @param {string} sheetId
+   * @param {object} frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
   const syncToPrint = async (sheetId, frame, elementMappings) => {
     if (!frame.fromLayout) return;
 
@@ -857,6 +907,13 @@ export const useSyncData = () => {
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (isAllowSyncDataSecondary(config, sheetConfig, true)) {
+      // if digital is secondary format and any object deleted,
+      // the corresponding mapping need to be deleted too
+      // handle remove element mapping if digital is secondary editor
+      await removeDigitalConnections(frame, elementMappings);
+    }
 
     if (!isAllowSyncData(config, sheetConfig, true)) return;
 

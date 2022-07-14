@@ -70,9 +70,6 @@ export const useSavePageData = () => {
         removeAssetIds: apiPageAssetIds
       };
       savePromises.push(updateInProjectApi(inProjectVariables));
-
-      // remove mapping elements on left page
-      savePromises.push(removeElementMappingOfPage(sheetId));
     }
 
     if (isOnRight) {
@@ -86,12 +83,12 @@ export const useSavePageData = () => {
         removeAssetIds: apiPageAssetIds
       };
       savePromises.push(updateInProjectApi(inProjectVariables));
-
-      // remove mapping elements on left page
-      savePromises.push(removeElementMappingOfPage(sheetId));
     }
 
     await Promise.all(savePromises);
+
+    // remove mapping elements on sheet
+    if (isOnRight || isOnLeft) await removeElementMappingOfPage(sheetId);
 
     return { leftUrl, rightUrl };
   };

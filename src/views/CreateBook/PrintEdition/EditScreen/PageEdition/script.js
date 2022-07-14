@@ -2521,14 +2521,6 @@ export default {
       element.mappingInfo = getBrokenCustomMapping(element);
 
       this.printCanvas.requestRenderAll();
-
-      this.createSingleElementMapping(
-        this.pageSelected.id,
-        this.currentFrameId,
-        element.id, // print element id
-        element.id, // digital element id
-        false // mapped
-      );
     },
     /**
      * Get project mappping config
