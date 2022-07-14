@@ -406,6 +406,7 @@ export default {
         const objectIds = data.objects.map(o => o.id);
         const elementMappingIds = [];
 
+        // to check which objects have been deleted
         this.elementMappings.forEach(el => {
           if (!objectIds.includes(el.printElementId)) {
             elementMappingIds.push(el.id);
@@ -413,9 +414,10 @@ export default {
         });
 
         if (!isEmpty(elementMappingIds)) {
-          // update elementMapping
+          // update elementMapping on DB
           await this.updateElementMappingByIds(elementMappingIds);
 
+          // update elementMapping on frontend
           this.elementMappings.forEach(el => {
             if (elementMappingIds.includes(el.printElementId))
               el.printElementId = '';
@@ -2065,19 +2067,19 @@ export default {
     iconCustomMapping(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
 
-      const mapIds = this.elementMappings.map(el => el.digitalElementId);
-
       const isSecondary = isSecondaryFormat(this.projectMappingConfig);
       const digitalIds = Object.keys(this.digitalObjects);
 
-      // the broken icons will show when:
-      // -  if an objects are not in digital frames, print is secondary
-      // -  object in `elementMappings`
+      // the broken icons shown
       fbObjects.forEach(o => {
-        if (
-          mapIds.includes(o.id) ||
-          (isSecondary && !digitalIds.includes(o.id))
-        )
+        const isNotInDigitalObject = !digitalIds.includes(o.id) && isSecondary;
+
+        const mapping = this.elementMappings.find(
+          el => el.printElementId === o.id
+        );
+        const isBroken = mapping?.mapped === false;
+
+        if (isBroken || isNotInDigitalObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
@@ -2519,14 +2521,6 @@ export default {
       element.mappingInfo = getBrokenCustomMapping(element);
 
       this.printCanvas.requestRenderAll();
-
-      this.createSingleElementMapping(
-        this.pageSelected.id,
-        this.currentFrameId,
-        element.id, // print element id
-        element.id, // digital element id
-        false // mapped
-      );
     },
     /**
      * Get project mappping config
