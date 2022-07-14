@@ -277,7 +277,7 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
 /**
  * To adding broken objects back to synced data from print
  *
- * @param {Array} quadrants quadrant array [{objects: {}, frameId: 123}]
+ * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
  */
 export const keepBrokenObjectsOfFrames = (quadrants, frames) => {

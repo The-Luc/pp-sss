@@ -2222,7 +2222,7 @@ export default {
         const isBroken = mapping?.mapped === false;
 
         // the broken icons shown
-        if (!isBroken || isNotInPrintObject)
+        if (isBroken || isNotInPrintObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },

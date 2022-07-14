@@ -1,7 +1,7 @@
 import { elementMappings, elementMappingToApi } from '@/common/mapping';
 import { graphqlRequest } from '../urql';
 
-import { isOk } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 import {
   createBulkElementMappingMutation,
   createTemplateMappingMutation,
@@ -25,7 +25,16 @@ export const updateMappingProjectApi = (bookId, params) => {
   return graphqlRequest(updateMappingConfigMutation, { bookId, params });
 };
 
+/**
+ * Create bulk element mapping of sheet
+ * @param {string} sheetId
+ * @param {string} frameId
+ * @param {{print_element_uid: string, digital_element_uid: string}[]} params
+ * @returns {Promise}
+ */
 export const createElementMappingApi = (sheetId, frameId, params) => {
+  if (isEmpty(params)) return;
+
   return graphqlRequest(createBulkElementMappingMutation, {
     sheetId,
     frameId,

@@ -30,7 +30,8 @@ import {
   calcQuadrantIndexOfFrame,
   modifyDigitalQuadrantObjects,
   copyObjectsFrameObjectsToPrint,
-  isAllowSyncData
+  isAllowSyncData,
+  allCurrentFrameObjects
 } from '@/common/utils';
 import {
   projectMapping,
@@ -647,7 +648,6 @@ export const useQuadrantMapping = () => {
       if (!allObjectIds.includes(el.printElementId)) removeIds.push(el.id);
     });
 
-    console.log(apiParams, removeIds);
     // call api to update to DB
     const createPromise = apiParams.map(pr =>
       createElementMappingApi(pr.sheetId, pr.frameId, pr.params)
@@ -657,9 +657,54 @@ export const useQuadrantMapping = () => {
   };
 
   /**
+   * To creat or delete element mapping of sheet when custom sync digital to print
+   *
+   * if object is in `fObject` but not in `elementMapping` => create a new element mapping
+   *
+   * if object is not in `allFrameObjects` => object has been remove
+   * so remove it from `elementMappings`
+   *
+   * @param {string} sheetId
+   * @param {array} allFrameObjects objects of all frames
+   * @param {{id: string, objects: object[]}} frame current frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   * @return {Promise}
+   */
+  const madeConnectionOfCustomMappingDigital = (
+    sheetId,
+    allFrameObjects,
+    frame,
+    elementMappings
+  ) => {
+    const mapIds = elementMappings.map(el => el.digitalElementId);
+
+    const frameObjectIds = frame.objects.map(o => o.id);
+    const newIds = difference(frameObjectIds, mapIds);
+
+    // create element mapping params
+    const createParams = newIds.map(id => ({
+      print_element_uid: id,
+      digital_element_uid: id
+    }));
+
+    // delete element mapping of objects have been deleted
+    // objects have been deleted are object in `mapIds` but not in `allFrameObjects`
+    const removeIds = [];
+    const allObjectIds = allFrameObjects.map(o => o.id);
+    elementMappings.forEach(el => {
+      if (!allObjectIds.includes(el.digitalElementId)) removeIds.push(el.id);
+    });
+
+    return Promise.all([
+      createElementMappingApi(sheetId, frame.id, createParams),
+      deleteElementMappings(removeIds)
+    ]);
+  };
+
+  /**
    * To sync data to print in quadrant mapping mode
    * @param {string} sheetId
-   * @param {array} pObjects
+   * @param {array} pObjects print objects of current spread
    * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
    */
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
@@ -745,6 +790,16 @@ export const useQuadrantMapping = () => {
     const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
 
     if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
+
+    const currFrame = { id: frame.id, objects: fObjects };
+    const allFrameObjects = allCurrentFrameObjects(frames, currFrame);
+    // create mapping connection: element mappings
+    await madeConnectionOfCustomMappingDigital(
+      sheetId,
+      allFrameObjects,
+      currFrame,
+      elementMappings
+    );
 
     // modify object's positions and dimensions based on theirs quadrant
     modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
