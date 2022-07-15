@@ -89,6 +89,16 @@ const urqlNetworkClient = createClient({
 });
 
 /**
+ * adding additional query to url to show request name on chrome dev tools
+ */
+const addOptionQuery = (url, name) => {
+  const key = '?op=';
+  const pureUrl = url.split(key)[0];
+
+  return pureUrl + key + name;
+};
+
+/**
  *  To make a request to server
  *
  * @param {String} query query or mutation of graphql
@@ -104,10 +114,14 @@ export const graphqlRequest = async (
   isIgnoreCache
 ) => {
   try {
-    const { operation } = query.definitions[0];
+    const { operation, name } = query.definitions[0];
     const queryVars = variables || {};
 
     const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
+
+    // adding query option so that we can see reqeust name on chrome dev tool
+    client.url = addOptionQuery(client.url, name.value);
+
     if (isHideSpiner) {
       const results = await client[operation](query, queryVars).toPromise();
       return responseHandler(results);

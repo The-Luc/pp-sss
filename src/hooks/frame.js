@@ -262,14 +262,41 @@ export const useFrameAction = () => {
     if (!sheetId) return;
 
     const { frames } = await getFramesAndTransitionsApi(sheetId);
+
+    console.log('get frame api ', frames);
     return frames;
   };
 
   const createFrame = async (sheetId, params) => {
+    console.log(params);
     return createFrameApi(sheetId, params);
   };
 
-  const createFrames = async (sheetId, layout) => {
+  /**
+   * Create frames on DB in order and adding frame ids back to frames array
+   * @param {string} sheetId
+   * @param {array<{}>} frames
+   * @returns {Promise<array>} created frames
+   */
+  const createFrames = async (sheetId, frames) => {
+    const responseFrames = [];
+
+    // frames should be created in order so that frame ids will be incrementing numbers
+    await frames.reduce(async (acc, f) => {
+      // await for the previous item to finish processing
+      await acc;
+
+      const frame = await createFrameApi(sheetId, f);
+      responseFrames.push(frame);
+    }, Promise.resolve());
+
+    // adding frame id
+    frames.forEach((frame, index) => (frame.id = responseFrames[index].id));
+
+    return frames;
+  };
+
+  const createFramesFromLayout = async (sheetId, layout) => {
     const { isSupplemental } = layout;
     const layoutFrames = cloneDeep(layout.frames);
 
@@ -286,21 +313,7 @@ export const useFrameAction = () => {
       });
     });
 
-    const responseFrames = [];
-
-    // frames should be created in order so that frame ids will be incrementing numbers
-    await newFrames.reduce(async (acc, f) => {
-      // await for the previous item to finish processing
-      await acc;
-
-      const frame = await createFrameApi(sheetId, f);
-      responseFrames.push(frame);
-    }, Promise.resolve());
-
-    // adding frame id
-    newFrames.forEach((frame, index) => (frame.id = responseFrames[index].id));
-
-    return newFrames;
+    return createFrames(sheetId, newFrames);
   };
 
   const updateFramesAndThumbnails = async frames => {
@@ -319,10 +332,11 @@ export const useFrameAction = () => {
   return {
     getPreviewUrlByIndex,
     createFrame,
+    createFrames,
+    createFramesFromLayout,
     updateFrameApi,
     getSheetFrames,
     getFramesAndTransitionsApi,
-    createFrames,
     updateFramesAndThumbnails
   };
 };

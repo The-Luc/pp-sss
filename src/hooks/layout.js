@@ -434,7 +434,7 @@ export const useGetLayouts = () => {
 
 export const useLayoutAddingSupport = () => {
   const { updateFrameOrder } = useFrameOrdering();
-  const { createFrames, getSheetFrames } = useFrameAction();
+  const { createFramesFromLayout, getSheetFrames } = useFrameAction();
   const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
   const { currentSheet, getObjects, getBookInfo } = useGetters({
@@ -496,7 +496,7 @@ export const useLayoutAddingSupport = () => {
     await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
 
     // add new frames
-    const newFrames = await createFrames(sheetId, layout);
+    const newFrames = await createFramesFromLayout(sheetId, layout);
 
     // reorder frames
     finalFrames.unshift(...newFrames);
@@ -506,17 +506,16 @@ export const useLayoutAddingSupport = () => {
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
     if (layout.frames.length > 1) {
-      setTimeout(async () => {
-        const transitionId = await getSheetTransitionApi(sheetId, true);
+      const transitionId = await getSheetTransitionApi(sheetId, true);
+      console.log('transitionId', transitionId);
 
-        if (isEmpty(transitionId)) return;
+      if (isEmpty(transitionId)) return;
 
-        await Promise.all(
-          transitions.map((trans, idx) =>
-            updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
-          )
-        );
-      }, 1000);
+      await Promise.all(
+        transitions.map((trans, idx) =>
+          updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
+        )
+      );
     }
     return finalFrames;
   };

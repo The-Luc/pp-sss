@@ -138,7 +138,7 @@ export default {
       disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const { createFrame, updateFrameApi, getSheetFrames } = useFrameAction();
+    const { createFrames, updateFrameApi, getSheetFrames } = useFrameAction();
     const { addObjecs, deleteObjects } = useObjects();
 
     const { backgroundsProps } = useBackgroundProperties();
@@ -188,7 +188,7 @@ export default {
       setPropertiesType,
       setLoadingState,
       generalInfo,
-      createFrame,
+      createFrames,
       updateFrameOrder,
       updateFrameApi,
       getSheetFrames,
@@ -964,14 +964,8 @@ export default {
         })
       );
 
-      const responeFrames = await Promise.all(
-        createdFrames.map(frame => this.createFrame(screenId, frame))
-      );
-
-      // adding frame id
-      createdFrames.forEach(
-        (frame, index) => (frame.id = responeFrames[index].id)
-      );
+      // create frame on DB and adding frame ids back to `createdFrames`
+      await this.createFrames(screenId, createdFrames);
 
       // update frame orders
       const frameIds = currentFrames.map(f => parseInt(f.id));
