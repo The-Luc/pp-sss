@@ -268,7 +268,6 @@ export const useFrameAction = () => {
   };
 
   const createFrame = async (sheetId, params) => {
-    console.log(params);
     return createFrameApi(sheetId, params);
   };
 

@@ -164,7 +164,6 @@ export default {
       const numberOfOriginalFrame = halfSheet ? 2 : 4;
 
       const frames = await this.getSheetFrames(this.currentSheet.id);
-      console.log('frames ', frames);
       const supFrameIds = [];
       const oriFrameIds = [];
       const originalFrames = [];
@@ -179,7 +178,6 @@ export default {
       });
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
-      console.log('numOfFramesNeeded ', numOfFramesNeeded);
 
       if (numOfFramesNeeded > 0) {
         const framePromise = Array(numOfFramesNeeded)
@@ -192,7 +190,6 @@ export default {
           });
 
         const newFrames = await Promise.all(framePromise);
-        console.log('new frames ', newFrames);
         newFrames.forEach(f => {
           oriFrameIds.push(parseInt(f.id));
           originalFrames.push(f);
@@ -216,7 +213,6 @@ export default {
             previewImageUrl: ''
           };
         });
-      console.log('willUpdateFrames', willUpdateFrames);
       await this.updateFramesAndThumbnails(willUpdateFrames);
 
       this.clearDigitalObjects({ objectList: [] });

@@ -76,7 +76,11 @@ import {
   updateContentToObject
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
+import {
+  getFrameObjectsApi,
+  deleteFrameApi,
+  getFramesAndTransitionsApi
+} from '@/api/frame';
 import {
   useFrame,
   useFrameOrdering,
@@ -89,7 +93,6 @@ import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
-import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { useMappingProject } from './mapping';
 import {
   getSheetInfoApi,
@@ -506,8 +509,8 @@ export const useLayoutAddingSupport = () => {
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
     if (layout.frames.length > 1) {
-      const transitionId = await getSheetTransitionApi(sheetId, true);
-      console.log('transitionId', transitionId);
+      const transitions = await getFramesAndTransitionsApi(sheetId);
+      const transitionId = transitions.map(t => t.id);
 
       if (isEmpty(transitionId)) return;
 
