@@ -36,7 +36,8 @@ export const EVENT_TYPE = {
   PLAYBACK: 'playback',
   GENERATE_PDF: 'generatePdf',
   DRAW_LAYOUT: 'drawLayout',
-  APPLY_LAYOUT: 'applyLayout'
+  APPLY_LAYOUT: 'applyLayout',
+  RESET_MAPPING_TYPE: 'resetMappingType'
 };
 
 export const CANVAS_EVENT_TYPE = {

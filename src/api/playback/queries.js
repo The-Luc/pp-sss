@@ -28,3 +28,18 @@ export const getSheetTransitionsQuery = gql`
     }
   }
 `;
+
+export const sheetTransitionQuery = gql`
+  query getSheetFrames($sheetId: ID!) {
+    sheet(id: $sheetId) {
+      id
+      digital_transitions {
+        id
+        duration
+        direction
+        transition_order
+        transition_type
+      }
+    }
+  }
+`;
