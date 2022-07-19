@@ -195,7 +195,7 @@ export const useFrameAdd = () => {
     const sheetId = currentSheet.value.id;
     const layout = { isSupplemental: true, frames };
 
-    const newFrames = await createFrames(sheetId, layout);
+    const newFrames = await createFrames(sheetId, layout.frames);
 
     addSupplementalFrame({ frames: newFrames });
 
@@ -263,7 +263,6 @@ export const useFrameAction = () => {
 
     const { frames } = await getFramesAndTransitionsApi(sheetId);
 
-    console.log('get frame api ', frames);
     return frames;
   };
 
@@ -311,6 +310,7 @@ export const useFrameAction = () => {
         previewImageUrl
       });
     });
+    console.log(newFrames);
 
     return createFrames(sheetId, newFrames);
   };

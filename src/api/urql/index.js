@@ -120,7 +120,7 @@ export const graphqlRequest = async (
     const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
 
     // adding query option so that we can see reqeust name on chrome dev tool
-    client.url = addOptionQuery(client.url, name.value);
+    client.url = addOptionQuery(client.url, name?.value);
 
     if (isHideSpiner) {
       const results = await client[operation](query, queryVars).toPromise();

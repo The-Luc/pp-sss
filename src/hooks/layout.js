@@ -509,8 +509,11 @@ export const useLayoutAddingSupport = () => {
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
     if (layout.frames.length > 1) {
-      const transitions = await getFramesAndTransitionsApi(sheetId);
-      const transitionId = transitions.map(t => t.id);
+      const { transitions: dbTransitions } = await getFramesAndTransitionsApi(
+        sheetId
+      );
+
+      const transitionId = dbTransitions.map(t => t.id);
 
       if (isEmpty(transitionId)) return;
 
