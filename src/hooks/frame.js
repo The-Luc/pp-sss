@@ -310,7 +310,6 @@ export const useFrameAction = () => {
         previewImageUrl
       });
     });
-    console.log(newFrames);
 
     return createFrames(sheetId, newFrames);
   };

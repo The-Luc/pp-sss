@@ -10,7 +10,6 @@ import {
 import { isOk } from '@/common/utils';
 
 export const logInUserApi = async (email, password) => {
-  console.log(email, password);
   const res = await graphqlRequest(loginUserMutation, {
     email,
     password
