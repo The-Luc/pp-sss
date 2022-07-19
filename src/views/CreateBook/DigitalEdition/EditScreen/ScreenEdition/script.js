@@ -726,7 +726,8 @@ export default {
           handler: this.handleSelectAnimationObject
         },
         { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
-        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout }
+        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout },
+        { name: EVENT_TYPE.RESET_MAPPING_TYPE, handler: this.resetMappingType }
       ];
 
       const events = [
@@ -3242,14 +3243,30 @@ export default {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
     },
+    async fetchSheetMappingConfig() {
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+    },
     /**
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      this.sheetMappingConfig = await this.getSheetMappingConfig(
+      await this.fetchSheetMappingConfig();
+      await this.drawLayout();
+    },
+    /**
+     * Trigger when user reset sheet mapping type
+     */
+    async resetMappingType() {
+      await Promise.all([
+        this.getProjectMappingConfig(),
+        this.fetchSheetMappingConfig()
+      ]);
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
-      await this.drawLayout();
     }
   }
 };

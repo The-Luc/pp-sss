@@ -432,9 +432,9 @@ export const useMappingSheet = () => {
     const mappingIds = elementMappings.reduce((acc, el) => {
       const { digitalContainerId: frameId, digitalElementId: objectId } = el;
 
-      if (frameId !== frame.id || objectIds.includes(objectId)) return;
+      if (frameId !== frame.id || objectIds.includes(objectId)) return acc;
 
-      return Object.assign(acc, el.id);
+      return acc.concat(el.id);
     }, []);
 
     await updateElementMappingByIds(mappingIds, true);

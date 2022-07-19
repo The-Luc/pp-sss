@@ -135,7 +135,6 @@ export const updateCreateFrame = (results, args, cache) => {
   const { sheet_id: sheetId } = args;
 
   if (!sheetId) return;
-  cache.invalidate({ __typename: 'Query' }, 'sheet', { id: sheetId });
 
   cache.updateQuery(
     {
