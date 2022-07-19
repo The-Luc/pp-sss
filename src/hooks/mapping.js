@@ -29,7 +29,8 @@ import {
   deleteNonMappedObjects,
   calcQuadrantIndexOfFrame,
   modifyDigitalQuadrantObjects,
-  copyObjectsFrameObjectsToPrint
+  copyObjectsFrameObjectsToPrint,
+  isCustomMappingChecker
 } from '@/common/utils';
 import {
   projectMapping,
@@ -42,7 +43,9 @@ import {
   useModal,
   useSyncLayoutMapping,
   useFrameAction,
-  useSavePageData
+  useSavePageData,
+  useSheet,
+  useFrame
 } from '@/hooks';
 import {
   CONTENT_CHANGE_MODAL,
@@ -295,7 +298,7 @@ export const useMappingSheet = () => {
     }, Promise.resolve());
   };
 
-  // params: {sheetId, frameId, printId, digitalId}
+  // params: [sheetId, frameId, printId, digitalId, mapped]
   const createSingleElementMapping = async (...params) => {
     return createSingleElementMappingApi(...params);
   };
@@ -442,6 +445,12 @@ export const useContentChanges = () => {
   const { breakSingleConnection } = useBreakConnections();
   const { toggleModal } = useModal();
   const { getMappingConfig } = useMappingProject();
+  const {
+    getSheetMappingConfig,
+    createSingleElementMapping
+  } = useMappingSheet();
+  const { currentSheet } = useSheet();
+  const { currentFrameId } = useFrame();
 
   const handleTextContentChange = async (
     elementMappings,
@@ -490,18 +499,27 @@ export const useContentChanges = () => {
     videoIds
   ) => {
     const bookId = generalInfo.value.bookId;
+    const sheetId = currentSheet.value.id;
+
     const projectConfig = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
     const attName = isDigital ? 'digitalElementId' : 'printElementId';
+    const isCustomMapping = isCustomMappingChecker(sheetConfig);
 
     /* 
       if DIGITAL is PRIMARY FORMAT:
         check if there are videos, break connnection these videos and
     */
     if (isDigital && isPrimaryFormat(projectConfig, isDigital)) {
-      return handleVideoContentChange(elementMappings, videoIds);
+      return handleVideoContentChange(
+        elementMappings,
+        videoIds,
+        isCustomMapping
+      );
     }
 
-    if (!isSecondaryFormat(projectConfig, isDigital)) return;
+    if (isPrimaryFormat(projectConfig, isDigital)) return;
 
     // show warning modal
     const eleMappings = cloneDeep(elementMappings);
@@ -544,26 +562,49 @@ export const useContentChanges = () => {
   };
 
   // for primary format
-  const handleVideoContentChange = async (elementMappings, videoIds) => {
+  const handleVideoContentChange = async (
+    elementMappings,
+    videoIds,
+    isCustomMapping
+  ) => {
     if (isEmpty(videoIds)) return;
 
     const eleMappings = cloneDeep(elementMappings);
     const breakingPromises = [];
     const changeMappingIds = [];
+    const sheetId = currentSheet.value.id;
+    const frameId = currentFrameId.value;
 
-    videoIds.forEach(videoId => {
-      const mapping = eleMappings.find(el => el.digitalElementId === videoId);
+    for (const videoId of videoIds) {
+      let mapping = eleMappings.find(el => el.digitalElementId === videoId);
 
-      // only show modal when user in the element is mapped
-      if (!mapping || !mapping.mapped) return;
+      const isCustomCheck = mapping?.mapped === false;
+      const isLayoutCheck = !mapping || !mapping.mapped;
+      const checker = isCustomMapping ? isCustomCheck : isLayoutCheck;
+
+      if (checker) return;
+
+      // if no mapping => create new one
+      if (!mapping) {
+        const newMapping = await createSingleElementMapping(
+          sheetId,
+          frameId,
+          videoId,
+          videoId,
+          false
+        );
+        eleMappings.push(newMapping);
+      }
 
       // call API to break connection
-      mapping.mapped = false;
-      breakingPromises.push(breakSingleConnection(mapping.id));
+      if (mapping) {
+        mapping.mapped = false;
+        breakingPromises.push(breakSingleConnection(mapping.id));
+      }
       changeMappingIds.push(videoId);
-    });
+    }
 
-    if (isEmpty(breakingPromises)) return;
+    if (isEmpty(changeMappingIds)) return;
 
     await Promise.all(breakingPromises);
 
