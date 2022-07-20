@@ -30,6 +30,7 @@ import {
   calcQuadrantIndexOfFrame,
   modifyDigitalQuadrantObjects,
   copyObjectsFrameObjectsToPrint,
+  isCustomMappingChecker,
   isAllowSyncData,
   allCurrentFrameObjects,
   isAllowSyncDataSecondary
@@ -45,7 +46,9 @@ import {
   useModal,
   useSyncLayoutMapping,
   useFrameAction,
-  useSavePageData
+  useSavePageData,
+  useSheet,
+  useFrame
 } from '@/hooks';
 import {
   CONTENT_CHANGE_MODAL,
@@ -303,7 +306,7 @@ export const useMappingSheet = () => {
     }, Promise.resolve());
   };
 
-  // params: {sheetId, frameId, printId, digitalId}
+  // params: [sheetId, frameId, printId, digitalId, mapped]
   const createSingleElementMapping = async (...params) => {
     return createSingleElementMappingApi(...params);
   };
@@ -468,6 +471,7 @@ export const useBreakConnections = () => {
   };
 
   const breakSingleConnection = async id => {
+    if (!id) return;
     return updateElementMappingsApi(id, { mapped: false });
   };
 
@@ -479,6 +483,12 @@ export const useContentChanges = () => {
   const { breakSingleConnection } = useBreakConnections();
   const { toggleModal } = useModal();
   const { getMappingConfig } = useMappingProject();
+  const {
+    getSheetMappingConfig,
+    createSingleElementMapping
+  } = useMappingSheet();
+  const { currentSheet } = useSheet();
+  const { currentFrameId } = useFrame();
 
   const handleTextContentChange = async (
     elementMappings,
@@ -528,83 +538,84 @@ export const useContentChanges = () => {
   ) => {
     const bookId = generalInfo.value.bookId;
     const projectConfig = await getMappingConfig(bookId);
-    const attName = isDigital ? 'digitalElementId' : 'printElementId';
 
     /* 
       if DIGITAL is PRIMARY FORMAT:
         check if there are videos, break connnection these videos and
     */
-    if (isDigital && isPrimaryFormat(projectConfig, isDigital)) {
-      return handleVideoContentChange(elementMappings, videoIds);
+    if (isDigital && !isEmpty(videoIds)) {
+      return handleMediaContentChange(
+        elementMappings,
+        videoIds,
+        true,
+        isDigital
+      );
     }
 
-    if (!isSecondaryFormat(projectConfig, isDigital)) return;
+    if (isPrimaryFormat(projectConfig, isDigital)) return;
 
-    // show warning modal
-    const eleMappings = cloneDeep(elementMappings);
-    const breakingPromises = [];
-    const changeMappingIds = [];
-
-    elementIds.forEach(imgElementId => {
-      const mapping = eleMappings.find(el => el[attName] === imgElementId);
-
-      // only show modal when user in seconday format and the element is mapped
-      if (!mapping || !mapping.mapped) return;
-
-      // call API to break connection
-      mapping.mapped = false;
-      breakingPromises.push(breakSingleConnection(mapping.id));
-      changeMappingIds.push(imgElementId);
-    });
-
-    if (isEmpty(breakingPromises)) return;
-
-    await Promise.all(breakingPromises);
-
-    const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
-    if (isHideMess)
-      return {
-        isDrawObjects: true,
-        elementMappings: eleMappings,
-        changeMappingIds
-      };
-
-    toggleModal({
-      isOpenModal: true
-    });
-    return {
-      isDrawObjects: true,
-      elementMappings: eleMappings,
-      isShowModal: true,
-      changeMappingIds
-    };
+    return handleMediaContentChange(
+      elementMappings,
+      elementIds,
+      false,
+      isDigital
+    );
   };
 
-  // for primary format
-  const handleVideoContentChange = async (elementMappings, videoIds) => {
-    if (isEmpty(videoIds)) return;
+  const handleMediaContentChange = async (
+    elementMappings,
+    mediaIds,
+    isVideo,
+    isDigital
+  ) => {
+    if (isEmpty(mediaIds)) return;
+
+    const sheetId = currentSheet.value.id;
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+    const isCustomMapping = isCustomMappingChecker(sheetConfig);
 
     const eleMappings = cloneDeep(elementMappings);
     const breakingPromises = [];
     const changeMappingIds = [];
+    const frameId = currentFrameId.value;
+    const attName = isDigital ? 'digitalElementId' : 'printElementId';
 
-    videoIds.forEach(videoId => {
-      const mapping = eleMappings.find(el => el.digitalElementId === videoId);
+    for (const mediaId of mediaIds) {
+      let mapping = eleMappings.find(el => el[attName] === mediaId);
 
-      // only show modal when user in the element is mapped
-      if (!mapping || !mapping.mapped) return;
+      const isCustomCheck = mapping?.mapped === false;
+      const isLayoutCheck = !mapping || !mapping.mapped;
+      const checker = isCustomMapping ? isCustomCheck : isLayoutCheck;
 
-      // call API to break connection
-      mapping.mapped = false;
-      breakingPromises.push(breakSingleConnection(mapping.id));
-      changeMappingIds.push(videoId);
-    });
+      if (checker) return;
 
-    if (isEmpty(breakingPromises)) return;
+      // if no mapping => create new one
+      if (!mapping) {
+        const newMapping = await createSingleElementMapping(
+          sheetId,
+          frameId,
+          mediaId,
+          mediaId,
+          false
+        );
+        eleMappings.push(newMapping);
+      } else {
+        // call API to break connection
+        mapping.mapped = false;
+        breakingPromises.push(breakSingleConnection(mapping.id));
+      }
+      changeMappingIds.push(mediaId);
+    }
+
+    if (isEmpty(changeMappingIds)) return;
 
     await Promise.all(breakingPromises);
 
-    const isHideMess = getItem(CONTENT_VIDEO_CHANGE_MODAL) || false;
+    const [itemName, showWhichModal] = isVideo
+      ? [CONTENT_VIDEO_CHANGE_MODAL, 'isShowVideoModal']
+      : [CONTENT_CHANGE_MODAL, 'isShowModal'];
+
+    const isHideMess = getItem(itemName) || false;
     if (isHideMess)
       return {
         isDrawObjects: true,
@@ -615,10 +626,11 @@ export const useContentChanges = () => {
     toggleModal({
       isOpenModal: true
     });
+
     return {
       isDrawObjects: true,
       elementMappings: eleMappings,
-      isShowVideoModal: true,
+      [showWhichModal]: true,
       changeMappingIds
     };
   };

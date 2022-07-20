@@ -24,6 +24,15 @@ export const isFullBackground = ({ pageType }) => {
 export const isBackground = bg => bg && bg.type === OBJECT_TYPE.BACKGROUND;
 
 /**
+ *  To check if an fabric object a background or not
+ *
+ * @param {Object} bg background object
+ * @returns whether an object a backround or not
+ */
+export const isFbBackground = bg =>
+  bg && bg.objectType === OBJECT_TYPE.BACKGROUND;
+
+/**
  * Get default background type
  *
  * @param   {Array}         themes  list of theme
