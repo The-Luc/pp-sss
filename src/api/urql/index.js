@@ -25,7 +25,8 @@ import {
   createUserCustomDigitalTemplateCache,
   updateTextStyle,
   updateImageStyle,
-  createContainerCache
+  createContainerCache,
+  updateProjectMappingConfig
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -71,7 +72,8 @@ const urqlClient = createClient({
           create_user_custom_digital_template: createUserCustomDigitalTemplateCache,
           create_text_style: updateTextStyle,
           create_image_style: updateImageStyle,
-          create_container: createContainerCache
+          create_container: createContainerCache,
+          update_project_mapping_configuration: updateProjectMappingConfig
         }
       }
     }),
