@@ -122,7 +122,7 @@ export default {
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
       deleteBackgroundDigital: DIGITAL_MUTATES.DELETE_BACKGROUND,
-      deleteBackgroundPrint: PRINT_MUTATES.DELETE_BACKGROUND,
+      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS,
       setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
     async onChangeMappingStatus(item) {
@@ -231,15 +231,9 @@ export default {
       await this.savePageData(this.currentSheet.id, []);
       // delete objects in Vuex
       this.clearPrintObjects({ objectList: [] });
+
+      this.deleteBackgroundPrint();
       // delete objects on canvas
-      if (isHalfRight(this.currentSheet)) {
-        this.deleteBackgroundPrint({ isLeft: false });
-      } else if (isHalfLeft(this.currentSheet)) {
-        this.deleteBackgroundPrint({ isLeft: true });
-      } else {
-        this.deleteBackgroundPrint({ isLeft: true });
-        this.deleteBackgroundPrint({ isLeft: false });
-      }
       resetObjects(this.printCanvas);
     },
 
@@ -253,6 +247,7 @@ export default {
           type: MODAL_TYPES.CONTENT_MAPPING_OVERVIEW
         }
       });
+      console.log(this.currentSheet);
     },
     /**
      * Trigger render component by changing component key
