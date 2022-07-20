@@ -247,7 +247,6 @@ export default {
           type: MODAL_TYPES.CONTENT_MAPPING_OVERVIEW
         }
       });
-      console.log(this.currentSheet);
     },
     /**
      * Trigger render component by changing component key
