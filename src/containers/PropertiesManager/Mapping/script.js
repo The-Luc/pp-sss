@@ -24,7 +24,12 @@ import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { updateSheetApi } from '@/api/sheet/api_mutation';
 import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
-import { resetObjects, isHalfSheet } from '@/common/utils';
+import {
+  resetObjects,
+  isHalfSheet,
+  isHalfLeft,
+  isHalfRight
+} from '@/common/utils';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -116,7 +121,8 @@ export default {
       clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
-      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      deleteBackgroundDigital: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      deleteBackgroundPrint: PRINT_MUTATES.DELETE_BACKGROUND,
       setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
     async onChangeMappingStatus(item) {
@@ -216,7 +222,7 @@ export default {
       await this.updateFramesAndThumbnails(willUpdateFrames);
 
       this.clearDigitalObjects({ objectList: [] });
-      this.deleteBackground();
+      this.deleteBackgroundDigital();
       resetObjects(this.digitalCanvas);
     },
 
@@ -226,6 +232,14 @@ export default {
       // delete objects in Vuex
       this.clearPrintObjects({ objectList: [] });
       // delete objects on canvas
+      if (isHalfRight(this.currentSheet)) {
+        this.deleteBackgroundPrint({ isLeft: false });
+      } else if (isHalfLeft(this.currentSheet)) {
+        this.deleteBackgroundPrint({ isLeft: true });
+      } else {
+        this.deleteBackgroundPrint({ isLeft: true });
+        this.deleteBackgroundPrint({ isLeft: false });
+      }
       resetObjects(this.printCanvas);
     },
 
