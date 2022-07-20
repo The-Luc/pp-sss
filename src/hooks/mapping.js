@@ -471,6 +471,7 @@ export const useBreakConnections = () => {
   };
 
   const breakSingleConnection = async id => {
+    if (!id) return;
     return updateElementMappingsApi(id, { mapped: false });
   };
 

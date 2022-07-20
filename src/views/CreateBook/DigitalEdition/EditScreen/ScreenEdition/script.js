@@ -3135,7 +3135,11 @@ export default {
       const { isDrawObjects, elementMappings, isShowModal } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects) {
@@ -3236,13 +3240,11 @@ export default {
 
       this.digitalCanvas.requestRenderAll();
 
-      this.createSingleElementMapping(
-        this.pageSelected.id,
-        this.currentFrameId,
-        element.id, // print element id
-        element.id, // digital element id
-        false // mapped
+      const mapping = this.elementMappings.find(
+        el => el.digitalElementId === element.id
       );
+
+      this.breakSingleConnection(mapping?.id);
     },
     /**
      * Get project mappping config

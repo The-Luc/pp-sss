@@ -20,7 +20,8 @@ import {
   useMappingSheet,
   useModal,
   useMappingProject,
-  useContentChanges
+  useContentChanges,
+  useBreakConnections
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -192,6 +193,7 @@ export default {
       handleTextContentChange,
       handleImageContentChange
     } = useContentChanges();
+    const { breakSingleConnection } = useBreakConnections();
 
     return {
       generalInfo,
@@ -219,7 +221,8 @@ export default {
       createSingleElementMapping,
       getMappingConfig,
       handleTextContentChange,
-      handleImageContentChange
+      handleImageContentChange,
+      breakSingleConnection
     };
   },
   data() {
@@ -2442,7 +2445,11 @@ export default {
       const { isDrawObjects, elementMappings, isShowModal } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects) {
@@ -2477,7 +2484,11 @@ export default {
       } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects) {
@@ -2527,6 +2538,12 @@ export default {
       element.mappingInfo = getBrokenCustomMapping(element);
 
       this.printCanvas.requestRenderAll();
+
+      const mapping = this.elementMappings.find(
+        el => el.digitalElementId === element.id
+      );
+
+      this.breakSingleConnection(mapping?.id);
     },
     /**
      * Get project mappping config
