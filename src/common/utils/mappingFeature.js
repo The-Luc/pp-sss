@@ -49,9 +49,51 @@ export const isCustomMappingChecker = sheetConfig => {
 
 /**
  *  Allowing sync data condition:
+ * - IS PRIMARY FORMAT
  * - MAPPING FUNCTIONALITY is on
  * - MAPPING STATUS is on
- * - MAPPING TYPE is LAYOUT
+ *
+ */
+export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
+  const { enableContentMapping } = projectConfig;
+
+  const { mappingStatus } = sheetConfig;
+
+  return (
+    enableContentMapping &&
+    mappingStatus &&
+    isPrimaryFormat(projectConfig, isDigital)
+  );
+};
+
+/**
+ *  Allowing sync data condition on secondary editor:
+ * - IS SECONDARY FORMAT
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
+ *
+ */
+export const isAllowSyncDataSecondary = (
+  projectConfig,
+  sheetConfig,
+  isDigital
+) => {
+  const { enableContentMapping } = projectConfig;
+
+  const { mappingStatus } = sheetConfig;
+
+  return (
+    enableContentMapping &&
+    mappingStatus &&
+    isSecondaryFormat(projectConfig, isDigital)
+  );
+};
+
+/**
+ *  Allowing sync layout data condition:
+ * - IS LAYOUT MAPPING
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
  *
  */
 export const isAllowSyncLayoutData = (projectConfig, sheetConfig) => {
@@ -258,7 +300,7 @@ export const modifyDigitalQuadrantObjects = (
 
 /**
  * mapping frames id and quadrants
- * @return: [{objects: q1, frameId: 123}]
+ * @return {Array[Object]}: [{objects: q1, frameId: 123}]
  */
 export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
   let order = [0, 1, 2, 3];
@@ -274,7 +316,7 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
 /**
  * To adding broken objects back to synced data from print
  *
- * @param {Array} quadrants quadrant array [{objects: {}, frameId: 123}]
+ * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
  */
 export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
@@ -314,6 +356,8 @@ export const deleteNonMappedObjects = (objects, elementMappings) => {
 
 /**
  * get mapping info for custom mapping
+ * @param {Object} el
+ * @return {{color: string, id: string, mapped: boolean, isCustom: boolean}} broken mapping data for object
  */
 export const getBrokenCustomMapping = el => {
   return {
@@ -326,7 +370,7 @@ export const getBrokenCustomMapping = el => {
 
 /**
  * Caclculate quadrant index of a frame
- * @return possible value 0, 1, 2, 3
+ * @return {number} possible value 0, 1, 2, 3
  */
 export const calcQuadrantIndexOfFrame = (sheet, frames, frameId) => {
   const frameIds = frames

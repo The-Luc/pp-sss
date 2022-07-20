@@ -12,6 +12,16 @@ export const frameFragment = gql`
     is_visited
     play_in_ids
     play_out_ids
+    sheets {
+      id
+      digital_transitions {
+        id
+        duration
+        direction
+        transition_order
+        transition_type
+      }
+    }
   }
 `;
 

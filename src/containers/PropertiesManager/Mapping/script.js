@@ -154,6 +154,8 @@ export default {
       await this.deleteSheetMappings(this.currentSheet.id);
 
       await this.initData();
+
+      this.$root.$emit(EVENT_TYPE.RESET_MAPPING_TYPE);
       this.onCloseConfirmReset();
     },
 

@@ -14,7 +14,7 @@ import {
   getBookConnectionsApi,
   createSingleElementMappingApi
 } from '@/api/mapping';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, difference } from 'lodash';
 import {
   divideObjectsIntoQuadrants,
   isEmpty,
@@ -30,7 +30,10 @@ import {
   calcQuadrantIndexOfFrame,
   modifyDigitalQuadrantObjects,
   copyObjectsFrameObjectsToPrint,
-  isCustomMappingChecker
+  isCustomMappingChecker,
+  isAllowSyncData,
+  allCurrentFrameObjects,
+  isAllowSyncDataSecondary
 } from '@/common/utils';
 import {
   projectMapping,
@@ -238,6 +241,11 @@ export const useMappingSheet = () => {
     return updateSheetMappingConfigApi(sheetId, params);
   };
 
+  /**
+   *  To get element mappings of sheet
+   *
+   * @return {Promise<{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]>} elementMappings
+   */
   const getElementMappings = async sheetId => {
     return getSheetMappingElementsApi(sheetId);
   };
@@ -374,6 +382,8 @@ export const useMappingSheet = () => {
    *
    */
   const removeElementMappingOfPage = async sheetId => {
+    if (!sheetId) return;
+
     const elementMappings = await getElementMappings(sheetId);
 
     const sheet = await getSheetInfoApi(sheetId);
@@ -391,7 +401,7 @@ export const useMappingSheet = () => {
   };
 
   /**
-   * Delete element mapping on frames
+   * Delete ALL element mapping on frames
    * Used when applying portrait on frames & override mapped layout
    *
    * @param {Array} frameIds ids of frames which portraits are applied on
@@ -408,6 +418,31 @@ export const useMappingSheet = () => {
     await updateElementMappingByIds(mappingIds, true);
   };
 
+  /**
+   *
+   * if digital is secondary format and any object deleted,
+   * the corresponding mapping need to be deleted too
+   *
+   * usage:
+   *   - when digital is secondary format and any object deleted,
+   *
+   * @param {object} frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
+  const removeDigitalConnections = async (frame, elementMappings) => {
+    const objectIds = frame.objects.map(o => o.id);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      const { digitalContainerId: frameId, digitalElementId: objectId } = el;
+
+      if (frameId !== frame.id || objectIds.includes(objectId)) return acc;
+
+      return acc.concat(el.id);
+    }, []);
+
+    await updateElementMappingByIds(mappingIds, true);
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
@@ -415,10 +450,12 @@ export const useMappingSheet = () => {
     createSingleElementMapping,
     getElementMappings,
     deleteSheetMappings,
+    deleteElementMappings,
     storeElementMappings,
     updateElementMappingByIds,
     removeElementMappingOfPage,
-    removeElementMapingOfFrames
+    removeElementMapingOfFrames,
+    removeDigitalConnections
   };
 };
 
@@ -606,7 +643,115 @@ export const useQuadrantMapping = () => {
   const { getBookInfo } = useGetters({
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
+  const { deleteElementMappings } = useMappingSheet();
 
+  /**
+   * To create element mapping params of custom mapping
+   * Element mapping of sheet will content object in `quadrandFrames` which will be synced to digital
+
+   * @param {string} sheetId id of sheet
+   * @param {Array<{objects: Array, frameId: string}>} quadrantFrames
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   * @return {Promise}
+   */
+  const madeConnectionOfCustomMapping = (
+    sheetId,
+    quadrantFrames,
+    elementMappings
+  ) => {
+    const mapIds = elementMappings.map(el => el.printElementId);
+    const allFrameObjects = [];
+
+    const apiParams = [];
+    quadrantFrames.forEach(qd => {
+      const { frameId, objects } = qd;
+      const objectIds = objects.map(o => o.id);
+
+      allFrameObjects.push(...objects);
+
+      // if objects are in `elementMappings` => do not need to create new connection
+      const newIds = difference(objectIds, mapIds);
+      const params = newIds.map(id => ({
+        print_element_uid: id,
+        digital_element_uid: id
+      }));
+
+      if (params.length < 1) return;
+
+      apiParams.push({
+        sheetId,
+        frameId,
+        params
+      });
+    });
+
+    // delete element mapping of objects have been deleted
+    // objects have been deleted are object in `mapIds` but not in `objectIds`
+    const removeIds = [];
+    const allObjectIds = allFrameObjects.map(o => o.id);
+    elementMappings.forEach(el => {
+      if (!allObjectIds.includes(el.printElementId)) removeIds.push(el.id);
+    });
+
+    // call api to update to DB
+    const createPromise = apiParams.map(pr =>
+      createElementMappingApi(pr.sheetId, pr.frameId, pr.params)
+    );
+
+    return Promise.all([createPromise, deleteElementMappings(removeIds)]);
+  };
+
+  /**
+   * To creat or delete element mapping of sheet when custom sync digital to print
+   *
+   * if object is in `fObject` but not in `elementMapping` => create a new element mapping
+   *
+   * if object is not in `allFrameObjects` => object has been remove
+   * so remove it from `elementMappings`
+   *
+   * @param {string} sheetId
+   * @param {array} allFrameObjects objects of all frames
+   * @param {{id: string, objects: object[]}} frame current frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   * @return {Promise}
+   */
+  const madeConnectionOfCustomMappingDigital = (
+    sheetId,
+    allFrameObjects,
+    frame,
+    elementMappings
+  ) => {
+    const mapIds = elementMappings.map(el => el.digitalElementId);
+
+    const frameObjectIds = frame.objects.map(o => o.id);
+    const newIds = difference(frameObjectIds, mapIds);
+
+    // create element mapping params
+    const createParams = newIds.map(id => ({
+      print_element_uid: id,
+      digital_element_uid: id
+    }));
+
+    // delete element mapping of objects have been deleted
+    // objects have been deleted are object in `mapIds` but not in `allFrameObjects`
+    const removeIds = [];
+    const allObjectIds = allFrameObjects.map(o => o.id);
+    elementMappings.forEach(el => {
+      if (!allObjectIds.includes(el.digitalElementId)) removeIds.push(el.id);
+    });
+
+    return Promise.all([
+      createElementMappingApi(sheetId, frame.id, createParams),
+      deleteElementMappings(removeIds)
+    ]);
+  };
+
+  /**
+   * To sync data to print in quadrant mapping mode
+   * @param {string} sheetId
+   * @param {array} pObjects print objects of current spread
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
     const objects = cloneDeep(pObjects);
 
@@ -641,6 +786,13 @@ export const useQuadrantMapping = () => {
     // `quadrantFrames`: [{objects: q1, frameId: 123}]
     const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
 
+    // create mapping connection: element mappings
+    const mappingPromise = madeConnectionOfCustomMapping(
+      sheetId,
+      quadrantFrames,
+      elementMappings
+    );
+
     // keep broken DIGITAL objects of digital frames
     keepBrokenObjectsOfFrames(quadrantFrames, frames);
 
@@ -651,7 +803,9 @@ export const useQuadrantMapping = () => {
       isVisited: true
     }));
 
-    await updateFramesAndThumbnails(willUpdateFrames);
+    const updateFramePromise = updateFramesAndThumbnails(willUpdateFrames);
+
+    await Promise.all([mappingPromise, updateFramePromise]);
   };
 
   const quadrantSyncToPrint = async (sheetId, frame, elementMappings) => {
@@ -682,6 +836,16 @@ export const useQuadrantMapping = () => {
 
     if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
 
+    const currFrame = { id: frame.id, objects: fObjects };
+    const allFrameObjects = allCurrentFrameObjects(frames, currFrame);
+    // create mapping connection: element mappings
+    await madeConnectionOfCustomMappingDigital(
+      sheetId,
+      allFrameObjects,
+      currFrame,
+      elementMappings
+    );
+
     // modify object's positions and dimensions based on theirs quadrant
     modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
 
@@ -704,7 +868,11 @@ export const useQuadrantMapping = () => {
 export const useSyncData = () => {
   const { generalInfo } = useAppCommon();
   const { getMappingConfig } = useMappingProject();
-  const { getSheetMappingConfig } = useMappingSheet();
+  const {
+    getSheetMappingConfig,
+    removeDigitalConnections,
+    removeElementMappingOfPage
+  } = useMappingSheet();
   const { syncLayoutToDigital, syncLayoutToPrint } = useSyncLayoutMapping();
   const { quadrantSyncToDigital, quadrantSyncToPrint } = useQuadrantMapping();
 
@@ -715,10 +883,16 @@ export const useSyncData = () => {
     const config = await getMappingConfig(bookId);
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
-    const isPrintPrimary = isPrimaryFormat(config);
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
-    if (!isPrintPrimary || !config.enableContentMapping) return;
+    if (isAllowSyncDataSecondary(config, sheetConfig)) {
+      // if print is secondary format and any object deleted,
+      // the corresponding mapping need to be deleted too
+      // handle remove element mapping if digital is secondary editor
+      await removeElementMappingOfPage(sheetId);
+    }
+
+    if (!isAllowSyncData(config, sheetConfig)) return;
 
     if (isLayoutMapping) {
       // layout mapping
@@ -729,6 +903,11 @@ export const useSyncData = () => {
     return quadrantSyncToDigital(sheetId, objects, elementMappings);
   };
 
+  /**
+   * @param {string} sheetId
+   * @param {object} frame
+   * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   */
   const syncToPrint = async (sheetId, frame, elementMappings) => {
     if (!frame.fromLayout) return;
 
@@ -738,10 +917,16 @@ export const useSyncData = () => {
     const config = await getMappingConfig(bookId);
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
-    const isDigitalPrimary = isPrimaryFormat(config, true);
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
-    if (!isDigitalPrimary || !config.enableContentMapping) return;
+    if (isAllowSyncDataSecondary(config, sheetConfig, true)) {
+      // if digital is secondary format and any object deleted,
+      // the corresponding mapping need to be deleted too
+      // handle remove element mapping if digital is secondary editor
+      await removeDigitalConnections(frame, elementMappings);
+    }
+
+    if (!isAllowSyncData(config, sheetConfig, true)) return;
 
     if (isLayoutMapping) {
       // layout mapping

@@ -76,7 +76,11 @@ import {
   updateContentToObject
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
+import {
+  getFrameObjectsApi,
+  deleteFrameApi,
+  getFramesAndTransitionsApi
+} from '@/api/frame';
 import {
   useFrame,
   useFrameOrdering,
@@ -89,7 +93,6 @@ import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
-import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { useMappingProject } from './mapping';
 import {
   getSheetInfoApi,
@@ -434,7 +437,7 @@ export const useGetLayouts = () => {
 
 export const useLayoutAddingSupport = () => {
   const { updateFrameOrder } = useFrameOrdering();
-  const { createFrames, getSheetFrames } = useFrameAction();
+  const { createFramesFromLayout, getSheetFrames } = useFrameAction();
   const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
   const { currentSheet, getObjects, getBookInfo } = useGetters({
@@ -496,7 +499,7 @@ export const useLayoutAddingSupport = () => {
     await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
 
     // add new frames
-    const newFrames = await createFrames(sheetId, layout);
+    const newFrames = await createFramesFromLayout(sheetId, layout);
 
     // reorder frames
     finalFrames.unshift(...newFrames);
@@ -506,17 +509,19 @@ export const useLayoutAddingSupport = () => {
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
     if (layout.frames.length > 1) {
-      setTimeout(async () => {
-        const transitionId = await getSheetTransitionApi(sheetId, true);
+      const { transitions: dbTransitions } = await getFramesAndTransitionsApi(
+        sheetId
+      );
 
-        if (isEmpty(transitionId)) return;
+      const transitionId = dbTransitions.map(t => t.id);
 
-        await Promise.all(
-          transitions.map((trans, idx) =>
-            updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
-          )
-        );
-      }, 1000);
+      if (isEmpty(transitionId)) return;
+
+      await Promise.all(
+        transitions.map((trans, idx) =>
+          updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
+        )
+      );
     }
     return finalFrames;
   };

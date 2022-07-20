@@ -727,7 +727,8 @@ export default {
           handler: this.handleSelectAnimationObject
         },
         { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
-        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout }
+        { name: EVENT_TYPE.APPLY_LAYOUT, handler: this.handleApplyLayout },
+        { name: EVENT_TYPE.RESET_MAPPING_TYPE, handler: this.resetMappingType }
       ];
 
       const events = [
@@ -2216,16 +2217,18 @@ export default {
       if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
         return;
 
-      const mapIds = this.elementMappings.map(el => el.digitalElementId);
-
       const printIds = Object.keys(this.printObjects);
-      const isScondary = isSecondaryFormat(this.projectMappingConfig, true);
+      const isSecondary = isSecondaryFormat(this.projectMappingConfig, true);
 
-      // the broken icons will show when:
-      // -  if an objects are not in print spread
-      // -  object in `elementMappings`
       fbObjects.forEach(o => {
-        if (mapIds.includes(o.id) || (isScondary && !printIds.includes(o.id)))
+        const isNotInPrintObject = !printIds.includes(o.id) && isSecondary;
+        const mapping = this.elementMappings.find(
+          el => el.digitalElementId === o.id
+        );
+        const isBroken = mapping?.mapped === false;
+
+        // the broken icons shown
+        if (isBroken || isNotInPrintObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
@@ -3248,11 +3251,28 @@ export default {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
     },
+    async fetchSheetMappingConfig() {
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+    },
     /**
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      this.sheetMappingConfig = await this.getSheetMappingConfig(
+      await this.fetchSheetMappingConfig();
+      await this.drawLayout();
+    },
+    /**
+     * Trigger when user reset sheet mapping type
+     */
+    async resetMappingType() {
+      await Promise.all([
+        this.getProjectMappingConfig(),
+        this.fetchSheetMappingConfig()
+      ]);
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
       await this.drawLayout();

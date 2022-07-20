@@ -570,14 +570,10 @@ export default {
         const { objects, playInIds, playOutIds } = pb;
 
         const objectIds = objects.filter(o => !isBackground(o)).map(o => o.id);
-        /*eslint no-debugger: 'off'*/
-        debugger;
 
-        if (playInIds.length === 1 && playInIds[0].length === 0)
-          playInIds[0] = [...objectIds];
+        if (playInIds.length === 1) playInIds[0] = [...objectIds];
 
-        if (playOutIds.length === 1 && playOutIds[0].length === 0)
-          playOutIds[0] = [...objectIds];
+        if (playOutIds.length === 1) playOutIds[0] = [...objectIds];
       });
     }
   }
