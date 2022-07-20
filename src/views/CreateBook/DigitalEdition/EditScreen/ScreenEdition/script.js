@@ -136,7 +136,8 @@ import {
   isLayoutMappingChecker,
   isAllowSyncCustomData,
   isCustomMappingChecker,
-  getBrokenCustomMapping
+  getBrokenCustomMapping,
+  isFbBackground
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -2144,7 +2145,11 @@ export default {
      * Delete objects on canvas
      */
     deleteObject() {
-      const ids = this.digitalCanvas.getActiveObjects().map(o => o.id);
+      const fbObjects = this.digitalCanvas.getActiveObjects();
+      const ids = fbObjects.map(o => o.id);
+
+      // call this function before deleting objects on canvas
+      this.customMappingDeleteObjects(fbObjects);
 
       this.deleteObjects({ ids });
 
@@ -2995,9 +3000,7 @@ export default {
         return;
 
       this.isShowCustomChangesConfirm = true;
-      this.toggleModal({
-        isOpenModal: true
-      });
+      this.toggleModal({ isOpenModal: true });
     },
 
     /**
@@ -3172,8 +3175,13 @@ export default {
       } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
       this.isShowMappingVideoContentChange = Boolean(isShowVideoModal);
+
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects)
@@ -3248,6 +3256,21 @@ export default {
         this.pageSelected.id
       );
       await this.drawLayout();
+    },
+    customMappingDeleteObjects(fbObjects) {
+      // handle show modal when is in custom mapping
+      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+
+      // a mapped object could have mappingInfo = undefined (for custom mapping)
+      // or mapping.mapped  = true
+      // therefore to check whether object is mapped we use mappingInfo.mapped !== false
+      this.isShowCustomMappingModal = fbObjects.some(
+        o => o?.mappingInfo?.mapped !== false && !isFbBackground(o)
+      );
+
+      if (this.isShowCustomMappingModal) {
+        this.toggleModal({ isOpenModal: true });
+      }
     }
   }
 };

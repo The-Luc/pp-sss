@@ -55,7 +55,8 @@ import {
   isLayoutMappingChecker,
   getBrokenCustomMapping,
   isCustomMappingChecker,
-  isAllowSyncCustomData
+  isAllowSyncCustomData,
+  isFbBackground
 } from '@/common/utils';
 
 import {
@@ -1255,7 +1256,11 @@ export default {
       this.setPropertiesObjectType({ type: '' });
     },
     removeObject() {
-      const ids = window.printCanvas.getActiveObjects().map(o => o.id);
+      const fbObjects = window.printCanvas.getActiveObjects();
+      const ids = fbObjects.map(o => o.id);
+
+      // call this function before deleting objects on canvas
+      this.customMappingDeleteObjects(fbObjects);
 
       this.deleteObjects({ ids });
 
@@ -2544,6 +2549,21 @@ export default {
       );
 
       await this.drawLayout();
+    },
+    customMappingDeleteObjects(fbObjects) {
+      // handle show modal when is in custom mapping
+      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+
+      // a mapped object could have mappingInfo = undefined (for custom mapping)
+      // or mapping.mapped  = true
+      // therefore to check whether object is mapped we use mappingInfo.mapped !== false
+      this.isShowCustomMappingModal = fbObjects.some(
+        o => o?.mappingInfo?.mapped !== false && !isFbBackground(o)
+      );
+
+      if (this.isShowCustomMappingModal) {
+        this.toggleModal({ isOpenModal: true });
+      }
     }
   }
 };

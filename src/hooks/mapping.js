@@ -499,84 +499,51 @@ export const useContentChanges = () => {
     videoIds
   ) => {
     const bookId = generalInfo.value.bookId;
-    const sheetId = currentSheet.value.id;
-
     const projectConfig = await getMappingConfig(bookId);
-    const sheetConfig = await getSheetMappingConfig(sheetId);
-
-    const attName = isDigital ? 'digitalElementId' : 'printElementId';
-    const isCustomMapping = isCustomMappingChecker(sheetConfig);
 
     /* 
       if DIGITAL is PRIMARY FORMAT:
         check if there are videos, break connnection these videos and
     */
-    if (isDigital && isPrimaryFormat(projectConfig, isDigital)) {
-      return handleVideoContentChange(
+    if (isDigital && !isEmpty(videoIds)) {
+      return handleMediaContentChange(
         elementMappings,
         videoIds,
-        isCustomMapping
+        true,
+        isDigital
       );
     }
 
     if (isPrimaryFormat(projectConfig, isDigital)) return;
 
-    // show warning modal
-    const eleMappings = cloneDeep(elementMappings);
-    const breakingPromises = [];
-    const changeMappingIds = [];
-
-    elementIds.forEach(imgElementId => {
-      const mapping = eleMappings.find(el => el[attName] === imgElementId);
-
-      // only show modal when user in seconday format and the element is mapped
-      if (!mapping || !mapping.mapped) return;
-
-      // call API to break connection
-      mapping.mapped = false;
-      breakingPromises.push(breakSingleConnection(mapping.id));
-      changeMappingIds.push(imgElementId);
-    });
-
-    if (isEmpty(breakingPromises)) return;
-
-    await Promise.all(breakingPromises);
-
-    const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
-    if (isHideMess)
-      return {
-        isDrawObjects: true,
-        elementMappings: eleMappings,
-        changeMappingIds
-      };
-
-    toggleModal({
-      isOpenModal: true
-    });
-    return {
-      isDrawObjects: true,
-      elementMappings: eleMappings,
-      isShowModal: true,
-      changeMappingIds
-    };
+    return handleMediaContentChange(
+      elementMappings,
+      elementIds,
+      false,
+      isDigital
+    );
   };
 
-  // for primary format
-  const handleVideoContentChange = async (
+  const handleMediaContentChange = async (
     elementMappings,
-    videoIds,
-    isCustomMapping
+    mediaIds,
+    isVideo,
+    isDigital
   ) => {
-    if (isEmpty(videoIds)) return;
+    if (isEmpty(mediaIds)) return;
+
+    const sheetId = currentSheet.value.id;
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+    const isCustomMapping = isCustomMappingChecker(sheetConfig);
 
     const eleMappings = cloneDeep(elementMappings);
     const breakingPromises = [];
     const changeMappingIds = [];
-    const sheetId = currentSheet.value.id;
     const frameId = currentFrameId.value;
+    const attName = isDigital ? 'digitalElementId' : 'printElementId';
 
-    for (const videoId of videoIds) {
-      let mapping = eleMappings.find(el => el.digitalElementId === videoId);
+    for (const mediaId of mediaIds) {
+      let mapping = eleMappings.find(el => el[attName] === mediaId);
 
       const isCustomCheck = mapping?.mapped === false;
       const isLayoutCheck = !mapping || !mapping.mapped;
@@ -589,26 +556,28 @@ export const useContentChanges = () => {
         const newMapping = await createSingleElementMapping(
           sheetId,
           frameId,
-          videoId,
-          videoId,
+          mediaId,
+          mediaId,
           false
         );
         eleMappings.push(newMapping);
-      }
-
-      // call API to break connection
-      if (mapping) {
+      } else {
+        // call API to break connection
         mapping.mapped = false;
         breakingPromises.push(breakSingleConnection(mapping.id));
       }
-      changeMappingIds.push(videoId);
+      changeMappingIds.push(mediaId);
     }
 
     if (isEmpty(changeMappingIds)) return;
 
     await Promise.all(breakingPromises);
 
-    const isHideMess = getItem(CONTENT_VIDEO_CHANGE_MODAL) || false;
+    const [itemName, showWhichModal] = isVideo
+      ? [CONTENT_VIDEO_CHANGE_MODAL, 'isShowVideoModal']
+      : [CONTENT_CHANGE_MODAL, 'isShowModal'];
+
+    const isHideMess = getItem(itemName) || false;
     if (isHideMess)
       return {
         isDrawObjects: true,
@@ -619,10 +588,11 @@ export const useContentChanges = () => {
     toggleModal({
       isOpenModal: true
     });
+
     return {
       isDrawObjects: true,
       elementMappings: eleMappings,
-      isShowVideoModal: true,
+      [showWhichModal]: true,
       changeMappingIds
     };
   };
