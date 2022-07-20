@@ -14,7 +14,8 @@ import {
   isCoverSheetChecker,
   isHalfRight,
   isHalfLeft,
-  isPpTextObject
+  isPpTextObject,
+  isPpVideoObject
 } from '@/common/utils';
 
 /**
@@ -142,12 +143,27 @@ export const isPrimaryFormat = (projectConfig, isDigital) => {
  * update canvas objects `mapping info` to display mapping icon correctly
  */
 export const updateCanvasMapping = (elementIds, canvas) => {
+  if (isEmpty(elementIds)) return;
+
   const ids = Array.isArray(elementIds) ? elementIds : [elementIds];
 
   const fbObjects = canvas.getObjects();
 
   fbObjects.forEach(fb => {
-    if (ids.includes(fb.id)) fb.mappingInfo.mapped = false;
+    if (!ids.includes(fb.id)) return;
+
+    if (fb.mappingInfo) {
+      fb.mappingInfo.mapped = false;
+    } else {
+      const mappingInfo = {
+        color: CUSTOM_MAPPING_ICON_COLOR,
+        id: '',
+        mapped: false,
+        isCustom: true
+      };
+
+      fb.mappingInfo = mappingInfo;
+    }
   });
 
   canvas.renderAll();
@@ -322,7 +338,7 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
 };
 
 /**
- * To remove element in array of objects if object id is in elementMappings
+ * To remove element in array of objects if object id is in elementMappings or object is a Video
  *
  * @param {Array} objects array of objects
  * @param {Array} elementMappings array of element mapping
@@ -330,7 +346,7 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
 export const deleteNonMappedObjects = (objects, elementMappings) => {
   elementMappings.forEach(el => {
     const index = objects.findIndex(
-      o => o.id === el.printElementId && !el.mapped
+      o => o.id === el.printElementId || isPpVideoObject(o)
     );
 
     if (index < 0) return;

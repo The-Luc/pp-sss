@@ -43,7 +43,7 @@ export const createElementMappingApi = (sheetId, frameId, params) => {
   });
 };
 
-export const createSingleElementMappingApi = (
+export const createSingleElementMappingApi = async (
   sheetId,
   frameId,
   printId,
@@ -58,8 +58,11 @@ export const createSingleElementMappingApi = (
     digital_element_uid: digitalId,
     mapped
   };
+  const res = await graphqlRequest(createElementMappingMutation, { params });
 
-  return graphqlRequest(createElementMappingMutation, { params });
+  if (!isOk(res)) return;
+
+  return elementMappings(res.data.create_element_mapping);
 };
 
 export const updateSheetMappingConfigApi = (sheetId, params) => {
