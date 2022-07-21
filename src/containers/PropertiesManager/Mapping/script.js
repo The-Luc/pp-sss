@@ -103,8 +103,7 @@ export default {
       return `${pageLeftName} - ${pageRightName}`;
     },
     isDisableReset() {
-      const isCustomMapping = this.mappingType === MAPPING_TYPES.CUSTOM.name;
-      return isCustomMapping || !this.selectedStatus.value;
+      return !this.selectedStatus.value;
     }
   },
   async mounted() {
@@ -116,7 +115,8 @@ export default {
       clearDigitalObjects: DIGITAL_MUTATES.SET_OBJECTS,
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
-      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      deleteBackgroundDigital: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS,
       setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
     async onChangeMappingStatus(item) {
@@ -216,7 +216,7 @@ export default {
       await this.updateFramesAndThumbnails(willUpdateFrames);
 
       this.clearDigitalObjects({ objectList: [] });
-      this.deleteBackground();
+      this.deleteBackgroundDigital();
       resetObjects(this.digitalCanvas);
     },
 
@@ -225,6 +225,8 @@ export default {
       await this.savePageData(this.currentSheet.id, []);
       // delete objects in Vuex
       this.clearPrintObjects({ objectList: [] });
+
+      this.deleteBackgroundPrint();
       // delete objects on canvas
       resetObjects(this.printCanvas);
     },

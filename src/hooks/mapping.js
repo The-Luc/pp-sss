@@ -510,8 +510,8 @@ export const useContentChanges = () => {
     // only show modal when user in seconday format and the element is mapped
     if (!mapping || !mapping.mapped) return;
 
-    // call API to break connection
     mapping.mapped = false;
+    // call API to break connection
     await breakSingleConnection(mapping.id);
 
     const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
@@ -644,31 +644,31 @@ export const useQuadrantMapping = () => {
   const { getBookInfo } = useGetters({
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
-  const { deleteElementMappings } = useMappingSheet();
+  const { updateElementMappingByIds } = useMappingSheet();
 
   /**
    * To create element mapping params of custom mapping
    * Element mapping of sheet will content object in `quadrandFrames` which will be synced to digital
+   * on PRINT SIDE
 
    * @param {string} sheetId id of sheet
    * @param {Array<{objects: Array, frameId: string}>} quadrantFrames
    * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
+   * @param {Array<string>} allObjectIds objects on print spread
    * @return {Promise}
    */
   const madeConnectionOfCustomMapping = (
     sheetId,
     quadrantFrames,
-    elementMappings
+    elementMappings,
+    allObjectIds
   ) => {
     const mapIds = elementMappings.map(el => el.printElementId);
-    const allFrameObjects = [];
 
     const apiParams = [];
     quadrantFrames.forEach(qd => {
       const { frameId, objects } = qd;
       const objectIds = objects.map(o => o.id);
-
-      allFrameObjects.push(...objects);
 
       // if objects are in `elementMappings` => do not need to create new connection
       const newIds = difference(objectIds, mapIds);
@@ -689,7 +689,6 @@ export const useQuadrantMapping = () => {
     // delete element mapping of objects have been deleted
     // objects have been deleted are object in `mapIds` but not in `objectIds`
     const removeIds = [];
-    const allObjectIds = allFrameObjects.map(o => o.id);
     elementMappings.forEach(el => {
       if (!allObjectIds.includes(el.printElementId)) removeIds.push(el.id);
     });
@@ -699,7 +698,7 @@ export const useQuadrantMapping = () => {
       createElementMappingApi(pr.sheetId, pr.frameId, pr.params)
     );
 
-    return Promise.all([createPromise, deleteElementMappings(removeIds)]);
+    return Promise.all([createPromise, updateElementMappingByIds(removeIds)]);
   };
 
   /**
@@ -743,7 +742,7 @@ export const useQuadrantMapping = () => {
 
     return Promise.all([
       createElementMappingApi(sheetId, frame.id, createParams),
-      deleteElementMappings(removeIds)
+      updateElementMappingByIds(removeIds, true)
     ]);
   };
 
@@ -754,6 +753,8 @@ export const useQuadrantMapping = () => {
    * @param {{ id: string, printElementId: string|null, digitalElementId: string|null, printContainerId: string, digitalContainerId: string, mapped: boolean }[]} elementMappings
    */
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
+    const allObjectIds = pObjects.map(o => o.id);
+
     const objects = cloneDeep(pObjects);
 
     const [frames, sheet] = await Promise.all([
@@ -791,7 +792,8 @@ export const useQuadrantMapping = () => {
     const mappingPromise = madeConnectionOfCustomMapping(
       sheetId,
       quadrantFrames,
-      elementMappings
+      elementMappings,
+      allObjectIds
     );
 
     // keep broken DIGITAL objects of digital frames
@@ -837,8 +839,9 @@ export const useQuadrantMapping = () => {
 
     if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
 
-    const currFrame = { id: frame.id, objects: fObjects };
+    const currFrame = { id: frame.id, objects: frame.objects };
     const allFrameObjects = allCurrentFrameObjects(frames, currFrame);
+
     // create mapping connection: element mappings
     await madeConnectionOfCustomMappingDigital(
       sheetId,
