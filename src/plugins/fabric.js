@@ -1071,10 +1071,10 @@ const drawControls = function(ctx, styleOverride) {
   styleOverride = styleOverride || {};
   ctx.save();
   ctx.setTransform(
-    this.canvas.getRetinaScaling(),
+    this.canvas?.getRetinaScaling(),
     0,
     0,
-    this.canvas.getRetinaScaling(),
+    this.canvas?.getRetinaScaling(),
     0,
     0
   );
