@@ -1072,7 +1072,7 @@ export const handleObjectSelected = async (target, data) => {
   const playInOrder = data?.playInOrder || target?.playInOrder || 1;
   const playOutOrder = data?.playOutOrder || target?.playOutOrder || 1;
   target.set({ playIn: playInOrder, playOut: playOutOrder, dirty: true });
-  target.canvas.renderAll();
+  target.canvas?.renderAll();
 };
 
 /**

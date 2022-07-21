@@ -27,12 +27,6 @@ export const addPrintBackground = async ({
   sheetType,
   canvas
 }) => {
-  const background = await createBackgroundFabricObject(
-    backgroundProp,
-    canvas,
-    id,
-    isAddToLeft
-  );
   const currentBackgrounds = canvas
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
@@ -49,6 +43,13 @@ export const addPrintBackground = async ({
     !isHalfSheet && (isAddingFullBackground || isLeftBackground);
 
   const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
+
+  const background = await createBackgroundFabricObject(
+    backgroundProp,
+    canvas,
+    id,
+    isAddToLeft
+  );
 
   if (isHalfSheet || isAddingFullBackground || isCurrentFullBackground) {
     currentBackgrounds.forEach(bg => canvas.remove(bg));
