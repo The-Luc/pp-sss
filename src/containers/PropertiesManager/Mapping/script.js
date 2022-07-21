@@ -24,12 +24,7 @@ import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { updateSheetApi } from '@/api/sheet/api_mutation';
 import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
-import {
-  resetObjects,
-  isHalfSheet,
-  isHalfLeft,
-  isHalfRight
-} from '@/common/utils';
+import { resetObjects, isHalfSheet } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
 export default {
