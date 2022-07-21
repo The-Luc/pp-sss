@@ -2539,9 +2539,11 @@ export default {
 
       this.printCanvas.requestRenderAll();
 
-      const mapping = this.elementMappings.find(
-        el => el.digitalElementId === element.id
-      );
+      const mapping =
+        this.elementMappings.find(el => el.digitalElementId === element.id) ||
+        {};
+
+      mapping.mapped = false;
 
       this.breakSingleConnection(mapping?.id);
     },
