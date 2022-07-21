@@ -103,8 +103,7 @@ export default {
       return `${pageLeftName} - ${pageRightName}`;
     },
     isDisableReset() {
-      const isCustomMapping = this.mappingType === MAPPING_TYPES.CUSTOM.name;
-      return isCustomMapping || !this.selectedStatus.value;
+      return !this.selectedStatus.value;
     }
   },
   async mounted() {
