@@ -346,7 +346,7 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
 export const deleteNonMappedObjects = (objects, elementMappings) => {
   elementMappings.forEach(el => {
     const index = objects.findIndex(
-      o => o.id === el.printElementId || isPpVideoObject(o)
+      o => (o.id === el.printElementId && !el.mapped) || isPpVideoObject(o)
     );
 
     if (index < 0) return;
