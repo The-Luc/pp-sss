@@ -87,8 +87,8 @@ export const updateElementMappingsApi = async (id, data) => {
 
   const mappings = elementMappings(res.data.update_element_mapping);
 
-  if (!mappings?.printElementId && !mappings?.digitalElementId)
-    deleteElementMappingApi(mappings.id);
+  if (mappings && !mappings?.printElementId && !mappings?.digitalElementId)
+    deleteElementMappingApi([mappings.id]);
 
   return mappings;
 };
