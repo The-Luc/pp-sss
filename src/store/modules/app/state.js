@@ -55,7 +55,7 @@ export const state = {
   disabledToolbarItems: getDefaultDisabledItems(),
   loadingScreen: {
     isLoading: false,
-    forceLoading: false
+    keepLoading: false
   },
   uploadToken: {
     token: null,

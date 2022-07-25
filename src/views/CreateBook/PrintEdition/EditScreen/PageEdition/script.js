@@ -167,7 +167,7 @@ export default {
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
-    const { setLoadingState, setForceLoading } = useAppCommon();
+    const { setLoadingState, setKeepLoading } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -210,7 +210,7 @@ export default {
       updateMediaSidebarOpen,
       setPropertiesType,
       setLoadingState,
-      setForceLoading,
+      setKeepLoading,
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
@@ -383,11 +383,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      this.setForceLoading({ value: true });
+      this.setKeepLoading({ value: true });
 
       await this.saveData(this.pageSelected.id);
 
-      this.setForceLoading({ value: false });
+      this.setKeepLoading({ value: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
