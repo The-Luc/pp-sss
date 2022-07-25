@@ -458,11 +458,11 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   applyTextGroupProperties(textObject, prop);
 
+  applyTextProperties(text, prop);
+
   if (!prop.border && !prop.size) {
     applyTextRectProperties(rect, prop);
   }
-
-  applyTextProperties(text, prop);
 
   if (isModifyPosition || isModifySize) {
     textObject?.canvas?.renderAll();
