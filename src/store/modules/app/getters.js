@@ -42,7 +42,7 @@ export const getters = {
     isMediaSidebarOpen,
   [APP._GETTERS.DISABLED_TOOLBAR_ITEMS]: ({ disabledToolbarItems }) =>
     disabledToolbarItems,
-  [APP._GETTERS.IS_LOADING]: ({ isLoading }) => isLoading,
+  [APP._GETTERS.IS_LOADING]: ({ loadingScreen }) => loadingScreen.isLoading,
   [APP._GETTERS.GET_FONTS]: ({ fonts }) => fonts,
   [APP._GETTERS.GET_UPLOAD_TOKEN]: ({ uploadToken }) => uploadToken
 };

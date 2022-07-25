@@ -29,6 +29,18 @@ export const sheetInfoQuery = gql`
   }
 `;
 
+export const sheetThumbnailQuery = gql`
+  query sheetInfo($id: ID!) {
+    sheet(id: $id) {
+      id
+      pages {
+        id
+        preview_image_url
+      }
+    }
+  }
+`;
+
 export const printWorkspaceQuery = gql`
   query digitalWorkspace($id: ID!) {
     sheet(id: $id) {

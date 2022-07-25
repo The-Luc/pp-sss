@@ -22,6 +22,8 @@ import {
   getUserAlbumsQuery
 } from '../media/queries';
 
+import { getMappingSettingsQuery } from '../mapping/queries';
+
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
   const isDigital = layoutType === EDITION.PRINT.toUpperCase();
@@ -135,7 +137,6 @@ export const updateCreateFrame = (results, args, cache) => {
   const { sheet_id: sheetId } = args;
 
   if (!sheetId) return;
-  cache.invalidate({ __typename: 'Query' }, 'sheet', { id: sheetId });
 
   cache.updateQuery(
     {
@@ -482,6 +483,21 @@ export const createContainerCache = (res, args, cache) => {
     data => {
       if (data) data.community_containers?.unshift(album);
 
+      return data;
+    }
+  );
+};
+
+export const updateProjectMappingConfig = (res, args, cache) => {
+  const config = res.update_project_mapping_configuration;
+  const bookId = args.book_id;
+
+  cache.updateQuery(
+    { query: getMappingSettingsQuery, variables: { bookId } },
+    data => {
+      if (data && !data.book.project_mapping_configuration) {
+        data.book.project_mapping_configuration = config;
+      }
       return data;
     }
   );

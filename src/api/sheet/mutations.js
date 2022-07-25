@@ -30,6 +30,7 @@ export const updateSheetMutation = gql`
     update_sheet(sheet_id: $sheetId, sheet_params: $params) {
       id
       is_visited
+      mapping_type
       sheet_order
       workspace
       digital_workspace

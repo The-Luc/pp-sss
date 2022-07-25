@@ -53,7 +53,10 @@ export const state = {
   savingStatus: '',
   isMediaSidebarOpen: false,
   disabledToolbarItems: getDefaultDisabledItems(),
-  isLoading: false,
+  loadingScreen: {
+    isLoading: false,
+    keepLoading: false
+  },
   uploadToken: {
     token: null,
     expiredAt: null,

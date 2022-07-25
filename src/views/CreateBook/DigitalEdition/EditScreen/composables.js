@@ -28,18 +28,12 @@ export const useSaveData = () => {
   const { getInProjectAssets } = usePhotos();
   const { syncToPrint } = useSyncData();
 
-  const saveEditScreen = async (
-    data,
-    isAutosave,
-    elementMappings,
-    isContentChange
-  ) => {
+  const saveEditScreen = async (data, elementMappings, isContentChange) => {
     if (isEmpty(data.frame)) return;
 
-    const promise = [saveDigitalConfig(data, isAutosave)];
+    const promise = [saveDigitalConfig(data)];
 
-    isContentChange &&
-      promise.push(saveDigitalObjects(data, isAutosave, elementMappings));
+    isContentChange && promise.push(saveDigitalObjects(data, elementMappings));
 
     return Promise.all(promise);
   };
@@ -57,10 +51,9 @@ export const useSaveData = () => {
    *  default theme id
    *
    * @param {Object} editScreenData sheet data
-   * @param {Boolean} isAutosave indicating autosaving call or not
    * @returns api response
    */
-  const saveDigitalConfig = async (editScreenData, isAutosave) => {
+  const saveDigitalConfig = async editScreenData => {
     const { frame, defaultThemeId, bookId } = editScreenData;
 
     if (isEmpty(frame)) return;
@@ -73,7 +66,7 @@ export const useSaveData = () => {
     };
 
     // update objects and other data
-    return saveDigitalConfigApi(variables, isAutosave);
+    return saveDigitalConfigApi(variables);
   };
 
   /**
@@ -87,22 +80,14 @@ export const useSaveData = () => {
    *
    *
    * @param {Object} editScreenData sheet data
-   * @param {Boolean} isAutosave indicating autosaving call or not
    * @returns api response
    */
-  const saveDigitalObjects = async (
-    editScreenData,
-    isAutosave,
-    elementMappings
-  ) => {
+  const saveDigitalObjects = async (editScreenData, elementMappings) => {
     const { frame, bookId, sheetId } = editScreenData;
 
     if (isEmpty(frame)) return;
 
-    const imgUrl = await uploadBase64ImageApi(
-      frame.previewImageUrl,
-      isAutosave
-    );
+    const imgUrl = await uploadBase64ImageApi(frame.previewImageUrl);
     frame.previewImageUrl = isOk(imgUrl) ? imgUrl.data : '';
 
     const variables = {
@@ -112,11 +97,7 @@ export const useSaveData = () => {
 
     const projectId = +frame.id;
     const currentAssetIds = mediaObjectIds.value;
-    const { apiPageAssetIds } = await getInProjectAssets(
-      bookId,
-      projectId,
-      isAutosave
-    );
+    const { apiPageAssetIds } = await getInProjectAssets(bookId, projectId);
 
     const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
 
@@ -132,12 +113,11 @@ export const useSaveData = () => {
     // update in project mark of assets
     const isSuccessOfInProject = await updateInProjectApi(
       inProjectVariables,
-      isAutosave,
       true
     );
 
     // update objects and other data
-    const isSuccess = await saveDigitalObjectsApi(variables, isAutosave);
+    const isSuccess = await saveDigitalObjectsApi(variables);
 
     await syncToPrint(sheetId, frame, elementMappings);
 

@@ -85,7 +85,12 @@ export const mutations = {
     state.disabledToolbarItems = items;
   },
   [APP._MUTATES.SET_LOADING_STATE](state, { value }) {
-    state.isLoading = value;
+    if (state.loadingScreen.keepLoading && value) return;
+
+    state.loadingScreen.isLoading = value;
+  },
+  [APP._MUTATES.SET_KEEP_LOADING](state, { value }) {
+    state.loadingScreen.keepLoading = value;
   },
   [APP._MUTATES.SET_FONTS](state, { fonts }) {
     state.fonts = fonts;

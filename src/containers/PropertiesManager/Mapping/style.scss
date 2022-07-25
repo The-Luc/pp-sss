@@ -24,6 +24,34 @@
     padding-bottom: 15px;
   }
 
+  /* RESET */
+  .reset {
+    border-top: 1px solid $color-gray13;
+    &__title {
+      display: flex;
+      align-items: center;
+    }
+    &__button {
+      font-family: $font-500;
+      text-decoration: none;
+      height: 25px;
+      color: $color-stoodio-toolbartext;
+      border: 1px solid $color-stoodio-toolbartext;
+      min-width: 70px;
+      margin-left: 5px;
+      border-radius: 30px;
+      .v-icon {
+        font-size: 17px;
+      }
+      &:hover {
+        background-color: $color-gray20;
+      }
+    }
+    .disable {
+      opacity: 0.5;
+    }
+  }
+
   /* LEARN MORE */
   .learn-more {
     padding-block: 15px;

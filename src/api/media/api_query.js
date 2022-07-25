@@ -94,7 +94,7 @@ export const getAlbumCategoryApi = async communityId => {
   };
 };
 
-export const getUserAlbumsApi = async (communityId, projectId) => {
+export const getUserAlbumsApi = async (_, projectId) => {
   const res = await graphqlRequest(getUserAlbumsQuery, {
     projectId
   });
@@ -156,12 +156,7 @@ export const getQrrentByIdApi = async (id, projectId) => {
  * @param {Boolean} isDigital is digital edition or not
  * @returns assets id of current project and of whole book
  */
-export const getInProjectAssetsApi = async (
-  bookId,
-  projectId,
-  isDigital,
-  isAutosave
-) => {
+export const getInProjectAssetsApi = async (bookId, projectId, isDigital) => {
   const type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
 
   const projectIdsArray = Array.isArray(projectId) ? projectId : [projectId];
@@ -174,7 +169,6 @@ export const getInProjectAssetsApi = async (
         projectId: +id,
         type
       },
-      isAutosave,
       true
     )
   );

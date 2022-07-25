@@ -69,6 +69,7 @@ class MutationClass extends BaseObject {
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
   SET_LOADING_STATE = 'setLoadingState';
+  SET_KEEP_LOADING = 'setKeepLoading';
   SET_FONTS = 'setFonts';
   SET_UPLOAD_TOKEN = 'setUploadToken';
 

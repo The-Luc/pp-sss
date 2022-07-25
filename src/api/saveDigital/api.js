@@ -5,22 +5,14 @@ import {
   saveDigitalObjectsMuataion
 } from './mutation';
 
-export const saveDigitalObjectsApi = async (variables, isAutosave) => {
-  const res = await graphqlRequest(
-    saveDigitalObjectsMuataion,
-    variables,
-    isAutosave
-  );
+export const saveDigitalObjectsApi = async variables => {
+  const res = await graphqlRequest(saveDigitalObjectsMuataion, variables);
 
   return isOk(res);
 };
 
-export const saveDigitalConfigApi = async (variables, isAutosave) => {
-  const res = await graphqlRequest(
-    saveDigitalConfigMutation,
-    variables,
-    isAutosave
-  );
+export const saveDigitalConfigApi = async variables => {
+  const res = await graphqlRequest(saveDigitalConfigMutation, variables);
 
   return isOk(res);
 };

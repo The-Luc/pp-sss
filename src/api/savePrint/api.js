@@ -15,30 +15,22 @@ const updatePageIdVariables = variables => {
   variables.rightId = variables.rightId || '';
 };
 
-export const savePrintConfigApi = async (variables, isAutosave) => {
+export const savePrintConfigApi = async variables => {
   updatePageIdVariables(variables);
 
-  const res = await graphqlRequest(
-    savePrintDataMutation,
-    variables,
-    isAutosave
-  );
+  const res = await graphqlRequest(savePrintDataMutation, variables);
 
   return isOk(res);
 };
 
-export const savePrintObjectApi = async (variables, isAutosave) => {
+export const savePrintObjectApi = async variables => {
   updatePageIdVariables(variables);
 
-  const res = await graphqlRequest(
-    savePrintObjectMutation,
-    variables,
-    isAutosave
-  );
+  const res = await graphqlRequest(savePrintObjectMutation, variables);
   return isOk(res);
 };
 
-export const updateInProjectApi = async (variables, isAutosave, isDigital) => {
+export const updateInProjectApi = async (variables, isDigital) => {
   const { addAssetIds, removeAssetIds } = variables;
   variables.type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
   variables.projectIdInt = parseInt(variables.projectId);
@@ -48,21 +40,13 @@ export const updateInProjectApi = async (variables, isAutosave, isDigital) => {
   const addingPromise = isEmpty(addAssetIds)
     ? []
     : addAssetIds.map(id =>
-        graphqlRequest(
-          addInProjectMutation,
-          { ...variables, assetId: id },
-          isAutosave
-        )
+        graphqlRequest(addInProjectMutation, { ...variables, assetId: id })
       );
 
   const removingPromise = isEmpty(removeAssetIds)
     ? []
     : removeAssetIds.map(id =>
-        graphqlRequest(
-          removeInProjectMutation,
-          { ...variables, assetId: id },
-          isAutosave
-        )
+        graphqlRequest(removeInProjectMutation, { ...variables, assetId: id })
       );
 
   const res = await Promise.all(addingPromise, removingPromise);

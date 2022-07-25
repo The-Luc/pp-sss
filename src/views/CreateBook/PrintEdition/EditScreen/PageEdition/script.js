@@ -20,7 +20,8 @@ import {
   useMappingSheet,
   useModal,
   useMappingProject,
-  useContentChanges
+  useContentChanges,
+  useBreakConnections
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -55,7 +56,8 @@ import {
   isLayoutMappingChecker,
   getBrokenCustomMapping,
   isCustomMappingChecker,
-  isAllowSyncCustomData
+  isAllowSyncCustomData,
+  isFbBackground
 } from '@/common/utils';
 
 import {
@@ -165,7 +167,7 @@ export default {
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, setKeepLoading } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -191,6 +193,7 @@ export default {
       handleTextContentChange,
       handleImageContentChange
     } = useContentChanges();
+    const { breakSingleConnection } = useBreakConnections();
 
     return {
       generalInfo,
@@ -207,6 +210,7 @@ export default {
       updateMediaSidebarOpen,
       setPropertiesType,
       setLoadingState,
+      setKeepLoading,
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
@@ -217,7 +221,8 @@ export default {
       createSingleElementMapping,
       getMappingConfig,
       handleTextContentChange,
-      handleImageContentChange
+      handleImageContentChange,
+      breakSingleConnection
     };
   },
   data() {
@@ -378,9 +383,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
+      this.setKeepLoading({ value: true });
 
-      await this.saveData(this.pageSelected.id, true);
+      await this.saveData(this.pageSelected.id);
 
+      this.setKeepLoading({ value: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
@@ -390,11 +397,10 @@ export default {
      * ONLY generate thumbnails and save objects when isCanvasChanged is true
      *
      * @param {String | Number} sheetId id of sheet need to save data
-     * @param {Boolean} isAutosave indicating autosaving or not
      * @returns {Promise} saved data
      *
      */
-    async saveData(sheetId, isAutosave) {
+    async saveData(sheetId) {
       this.setAutosaveTimer();
 
       const data = this.getDataEditScreen(sheetId);
@@ -404,6 +410,7 @@ export default {
         const objectIds = data.objects.map(o => o.id);
         const elementMappingIds = [];
 
+        // to check which objects have been deleted
         this.elementMappings.forEach(el => {
           if (!objectIds.includes(el.printElementId)) {
             elementMappingIds.push(el.id);
@@ -411,9 +418,10 @@ export default {
         });
 
         if (!isEmpty(elementMappingIds)) {
-          // update elementMapping
+          // update elementMapping on DB
           await this.updateElementMappingByIds(elementMappingIds);
 
+          // update elementMapping on frontend
           this.elementMappings.forEach(el => {
             if (elementMappingIds.includes(el.printElementId))
               el.printElementId = '';
@@ -423,7 +431,6 @@ export default {
 
       await this.savePrintEditScreen(
         data,
-        isAutosave,
         this.elementMappings,
         this.isCanvasChanged
       );
@@ -1254,7 +1261,11 @@ export default {
       this.setPropertiesObjectType({ type: '' });
     },
     removeObject() {
-      const ids = window.printCanvas.getActiveObjects().map(o => o.id);
+      const fbObjects = window.printCanvas.getActiveObjects();
+      const ids = fbObjects.map(o => o.id);
+
+      // call this function before deleting objects on canvas
+      this.customMappingDeleteObjects(fbObjects);
 
       this.deleteObjects({ ids });
 
@@ -1959,7 +1970,8 @@ export default {
         [EVENT_TYPE.GENERATE_PDF]: this.handleGeneratePDF,
 
         pageNumber: this.addPageNumber,
-        [EVENT_TYPE.APPLY_LAYOUT]: this.handleApplyLayout
+        [EVENT_TYPE.APPLY_LAYOUT]: this.handleApplyLayout,
+        [EVENT_TYPE.RESET_MAPPING_TYPE]: this.resetMappingType
       };
 
       const events = {
@@ -2026,9 +2038,7 @@ export default {
       });
 
       // get sheet element mappings
-      this.elementMappings = await this.storeElementMappings(
-        this.pageSelected.id
-      );
+      this.updateElementMappings();
 
       this.updateMappingIcon(listFabricObjects);
 
@@ -2045,7 +2055,6 @@ export default {
      */
     updateMappingIcon(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) {
-        // handle case layout mapping
         this.iconLayoutMapping(fbObjects);
         return;
       }
@@ -2064,19 +2073,19 @@ export default {
     iconCustomMapping(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
 
-      const mapIds = this.elementMappings.map(el => el.digitalElementId);
-
       const isSecondary = isSecondaryFormat(this.projectMappingConfig);
       const digitalIds = Object.keys(this.digitalObjects);
 
-      // the broken icons will show when:
-      // -  if an objects are not in digital frames, print is secondary
-      // -  object in `elementMappings`
+      // the broken icons shown
       fbObjects.forEach(o => {
-        if (
-          mapIds.includes(o.id) ||
-          (isSecondary && !digitalIds.includes(o.id))
-        )
+        const isNotInDigitalObject = !digitalIds.includes(o.id) && isSecondary;
+
+        const mapping = this.elementMappings.find(
+          el => el.printElementId === o.id
+        );
+        const isBroken = mapping?.mapped === false;
+
+        if (isBroken || isNotInDigitalObject)
           o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
@@ -2302,7 +2311,8 @@ export default {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
     /**
-     * Get digital object for show mapping icon
+     * Get digital object for show mapping icon when user change spread or when user apply new layout
+     *
      */
     async getDigitalObjects() {
       if (!this.pageSelected?.id) return;
@@ -2433,7 +2443,11 @@ export default {
       const { isDrawObjects, elementMappings, isShowModal } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects) {
@@ -2468,7 +2482,11 @@ export default {
       } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
-      this.isShowMappingContentChange = Boolean(isShowModal);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.isShowCustomMappingModal = Boolean(isShowModal);
+      } else {
+        this.isShowMappingContentChange = Boolean(isShowModal);
+      }
 
       // update canvas
       if (isDrawObjects) {
@@ -2519,13 +2537,13 @@ export default {
 
       this.printCanvas.requestRenderAll();
 
-      this.createSingleElementMapping(
-        this.pageSelected.id,
-        this.currentFrameId,
-        element.id, // print element id
-        element.id, // digital element id
-        false // mapped
-      );
+      const mapping =
+        this.elementMappings.find(el => el.digitalElementId === element.id) ||
+        {};
+
+      mapping.mapped = false;
+
+      this.breakSingleConnection(mapping?.id);
     },
     /**
      * Get project mappping config
@@ -2534,15 +2552,50 @@ export default {
       const bookId = this.$route.params.bookId;
       this.projectMappingConfig = await this.getMappingConfig(bookId);
     },
+    async fetchSheetMappingConfig() {
+      this.sheetMappingConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+    },
     /**
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      this.sheetMappingConfig = await this.getSheetMappingConfig(
-        this.pageSelected.id
-      );
+      await Promise.all([
+        await this.getDigitalObjects(),
+        await this.fetchSheetMappingConfig()
+      ]);
 
       await this.drawLayout();
+    },
+    /**
+     * Trigger when user reset sheet mapping type
+     */
+    async resetMappingType() {
+      await Promise.all([
+        this.getDigitalObjects(),
+        this.getProjectMappingConfig(),
+        this.fetchSheetMappingConfig()
+      ]);
+      // get sheet element mappings
+      this.updateElementMappings();
+
+      await this.drawLayout();
+    },
+    customMappingDeleteObjects(fbObjects) {
+      // handle show modal when is in custom mapping
+      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+
+      // a mapped object could have mappingInfo = undefined (for custom mapping)
+      // or mapping.mapped  = true
+      // therefore to check whether object is mapped we use mappingInfo.mapped !== false
+      this.isShowCustomMappingModal = fbObjects.some(
+        o => o?.mappingInfo?.mapped !== false && !isFbBackground(o)
+      );
+
+      if (this.isShowCustomMappingModal) {
+        this.toggleModal({ isOpenModal: true });
+      }
     }
   }
 };
