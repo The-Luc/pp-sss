@@ -93,7 +93,7 @@ import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
-import { useMappingProject } from './mapping';
+import { useMappingProject, useQuadrantMapping } from './mapping';
 import {
   getSheetInfoApi,
   getSheetPreviewInfoApi,
@@ -817,6 +817,7 @@ export const useApplyDigitalLayout = () => {
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
   const { applyMappedPrintLayout } = useMappingLayout(true);
   const { addingLayoutFrames } = useLayoutAddingSupport();
+  const { quadrantSyncMultiFrameToPrint } = useQuadrantMapping();
 
   const applyDigitalLayout = async layout => {
     const { id: sheetId } = currentSheet.value;
@@ -825,6 +826,9 @@ export const useApplyDigitalLayout = () => {
 
     // UPDATE for Mapped Layout
     await applyMappedPrintLayout(layout, finalFrames);
+
+    // sync layout to print via custom mapping mode
+    await quadrantSyncMultiFrameToPrint(sheetId, finalFrames);
 
     clearAllFrames();
     setFrames({ framesList: finalFrames });
