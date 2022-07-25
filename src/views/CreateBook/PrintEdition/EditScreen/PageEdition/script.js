@@ -2038,9 +2038,7 @@ export default {
       });
 
       // get sheet element mappings
-      this.elementMappings = await this.storeElementMappings(
-        this.pageSelected.id
-      );
+      this.updateElementMappings();
 
       this.updateMappingIcon(listFabricObjects);
 
@@ -2057,7 +2055,6 @@ export default {
      */
     updateMappingIcon(fbObjects) {
       if (isLayoutMappingChecker(this.sheetMappingConfig)) {
-        // handle case layout mapping
         this.iconLayoutMapping(fbObjects);
         return;
       }
@@ -2314,7 +2311,8 @@ export default {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
     /**
-     * Get digital object for show mapping icon
+     * Get digital object for show mapping icon when user change spread or when user apply new layout
+     *
      */
     async getDigitalObjects() {
       if (!this.pageSelected?.id) return;
@@ -2563,7 +2561,11 @@ export default {
      * Triggered when user apply digital layout
      */
     async handleApplyLayout() {
-      await this.fetchSheetMappingConfig();
+      await Promise.all([
+        await this.getDigitalObjects(),
+        await this.fetchSheetMappingConfig()
+      ]);
+
       await this.drawLayout();
     },
     /**
@@ -2571,13 +2573,12 @@ export default {
      */
     async resetMappingType() {
       await Promise.all([
+        this.getDigitalObjects(),
         this.getProjectMappingConfig(),
         this.fetchSheetMappingConfig()
       ]);
       // get sheet element mappings
-      this.elementMappings = await this.storeElementMappings(
-        this.pageSelected.id
-      );
+      this.updateElementMappings();
 
       await this.drawLayout();
     },
