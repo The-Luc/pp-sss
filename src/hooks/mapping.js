@@ -331,7 +331,7 @@ export const useMappingSheet = () => {
     printObjects,
     frames
   ) => {
-    deleteSheetMappings(sheetId);
+    await deleteSheetMappings(sheetId);
 
     // create new element mappings
     await createElementMappings(sheetId, mappings, printObjects, frames);
