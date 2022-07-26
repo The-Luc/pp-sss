@@ -123,10 +123,12 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.DELETE_OBJECTS_AND_THUMBNAIL](state, { frameIds }) {
     frameIds.map(frameId => {
-      state.frames[frameId].previewImageUrl = '';
-      state.frames[frameId].objects = [];
-      state.frames[frameId].playInIds = [];
-      state.frames[frameId].playOutIds = [];
+      if (state.frames[frameId]) {
+        state.frames[frameId].previewImageUrl = '';
+        state.frames[frameId].objects = [];
+        state.frames[frameId].playInIds = [];
+        state.frames[frameId].playOutIds = [];
+      }
     });
   },
   [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
