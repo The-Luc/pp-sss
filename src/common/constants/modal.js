@@ -22,5 +22,6 @@ export const MODAL_TYPES = {
   GENERATE_PDF: 'generatePDF',
   MAP_LAYOUT: 'mapLayout',
   APPLY_LAYOUT: 'applyLayout',
-  CONTENT_MAPPING_OVERVIEW: 'contentMappingOverview'
+  CONTENT_MAPPING_OVERVIEW: 'contentMappingOverview',
+  CONTENT_MAPPING: 'contentMappingModal'
 };
