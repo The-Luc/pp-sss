@@ -11,7 +11,8 @@ import {
   SAVED_AND_FAVORITES_TYPE,
   MODAL_TYPES,
   LAYOUT_SIZE_TYPES,
-  ASSORTED_TYPE_VALUE
+  ASSORTED_TYPE_VALUE,
+  CONTENT_MAPPING_MODAL
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -23,6 +24,7 @@ import {
   getLayoutSelected,
   isCoverLayoutChecker
 } from '@/common/utils';
+import { getItem, setItem } from '@/common/storage';
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
@@ -112,7 +114,8 @@ export default {
       favoriteLayouts: [],
       customLayouts: [],
       layouts: [],
-      extraLayouts: []
+      extraLayouts: [],
+      bookId: this.$route.params.bookId
     };
   },
   computed: {
@@ -233,8 +236,17 @@ export default {
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
      */
     onCancel() {
+      const isHideModal = getItem(CONTENT_MAPPING_MODAL + this.bookId) || false;
+      if (!isHideModal) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.CONTENT_MAPPING
+          }
+        });
+        setItem(CONTENT_MAPPING_MODAL + this.bookId, true);
+      }
       this.setToolNameSelected('');
-      this.$emit('close');
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
@@ -285,8 +297,7 @@ export default {
           }
         }
       });
-
-      this.onCancel();
+      this.setToolNameSelected('');
     },
 
     /**
