@@ -102,13 +102,8 @@ export const getFavoritesApi = async () => {
  *
  * @returns {Array}  layouts
  */
-export const getFavoriteLayoutsApi = async isIgnoreCache => {
-  const res = await graphqlRequest(
-    getFavoriteLayoutsQuery,
-    {},
-    false,
-    isIgnoreCache
-  );
+export const getFavoriteLayoutsApi = async () => {
+  const res = await graphqlRequest(getFavoriteLayoutsQuery, {});
 
   if (!isOk(res)) return [];
 

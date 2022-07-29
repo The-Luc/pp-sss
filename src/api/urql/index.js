@@ -26,7 +26,8 @@ import {
   updateTextStyle,
   updateImageStyle,
   createContainerCache,
-  updateProjectMappingConfig
+  updateProjectMappingConfig,
+  invalidateLayoutMapping
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -73,7 +74,9 @@ const urqlClient = createClient({
           create_text_style: updateTextStyle,
           create_image_style: updateImageStyle,
           create_container: createContainerCache,
-          update_project_mapping_configuration: updateProjectMappingConfig
+          update_project_mapping_configuration: updateProjectMappingConfig,
+          delete_template_element_mappings: invalidateLayoutMapping,
+          create_bulk_template_element_mapping: invalidateLayoutMapping
         }
       }
     }),

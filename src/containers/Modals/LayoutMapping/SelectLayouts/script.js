@@ -240,10 +240,9 @@ export default {
       const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
 
       const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
-      const isIgnoreCache = true;
 
       if (isAssorted) {
-        this.assortedLayouts = await this.getAssortedLayouts(isIgnoreCache);
+        this.assortedLayouts = await this.getAssortedLayouts();
 
         this.printLayouts =
           this.assortedLayouts.find(l => l.id === subValue)?.templates || [];
@@ -252,14 +251,12 @@ export default {
 
       this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value,
-        isIgnoreCache
+        this.printLayoutTypeSelected?.value
       );
 
       this.extraPrintLayouts = await this.getPrintLayoutByType(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value,
-        isIgnoreCache
+        this.printLayoutTypeSelected?.value
       );
     },
     /**
@@ -275,19 +272,14 @@ export default {
         return;
       }
 
-      const isIgnoreCache = true;
-
       this.digitalLayouts = await this.fetchDigitalLayouts(
         this.digitalThemeSelected?.id,
-        this.digitalLayoutTypeSelected?.value,
-        false, //is not supplemental
-        isIgnoreCache
+        this.digitalLayoutTypeSelected?.value
       );
 
       this.extraDigitalLayouts = await this.getDigitalLayoutByType(
         this.digitalThemeSelected?.id,
-        this.digitalLayoutTypeSelected?.value,
-        isIgnoreCache
+        this.digitalLayoutTypeSelected?.value
       );
     },
     /**
