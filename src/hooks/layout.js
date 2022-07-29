@@ -86,7 +86,8 @@ import {
   useFrameOrdering,
   useFrameAction,
   useSavePageData,
-  useMappingSheet
+  useMappingSheet,
+  useAppCommon
 } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
 import {
@@ -752,6 +753,7 @@ export const useApplyPrintLayout = () => {
 
   const { applyMappedDigitalLayout } = useMappingLayout();
   const { addingLayoutOnPages } = useLayoutAddingSupport();
+  const { setLoadingState } = useAppCommon();
 
   const applyPrintLayout = async ({
     themeId,
@@ -760,6 +762,7 @@ export const useApplyPrintLayout = () => {
     isScale,
     isFit
   }) => {
+    setLoadingState({ value: true, isFreeze: true });
     const { objects: objectList } = addingLayoutOnPages(
       layout,
       pagePosition,
@@ -778,20 +781,20 @@ export const useApplyPrintLayout = () => {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+    setLoadingState({ value: false, isFreeze: false });
   };
 
   return { applyPrintLayout };
 };
 
 export const useApplyDigitalLayout = () => {
+  const { setLoadingState } = useAppCommon();
   const { currentSheet } = useGetters({
     currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
-
   const { setSheetData } = useMutations({
     setSheetData: DIGITAL_MUTATES.SET_SHEET_DATA
   });
-
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
   const { applyMappedPrintLayout } = useMappingLayout(true);
   const { addingLayoutFrames } = useLayoutAddingSupport();
@@ -799,6 +802,7 @@ export const useApplyDigitalLayout = () => {
 
   const applyDigitalLayout = async layout => {
     const { id: sheetId } = currentSheet.value;
+    setLoadingState({ value: true, isFreeze: true });
 
     const finalFrames = await addingLayoutFrames(sheetId, layout.id);
 
@@ -812,6 +816,7 @@ export const useApplyDigitalLayout = () => {
     setFrames({ framesList: finalFrames });
 
     setCurrentFrameId({ id: finalFrames[0].id });
+    setLoadingState({ value: false, isFreeze: false });
 
     // Update sheet fields
     setSheetData({

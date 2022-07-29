@@ -84,13 +84,25 @@ export const mutations = {
   [APP._MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS](state, { items }) {
     state.disabledToolbarItems = items;
   },
-  [APP._MUTATES.SET_LOADING_STATE](state, { value }) {
-    if (state.loadingScreen.keepLoading && value) return;
+  [APP._MUTATES.SET_LOADING_STATE](state, { value, isFreeze }) {
+    if (isFreeze) {
+      state.loadingScreen.isLoading = value;
+      state.loadingScreen.isFreeze = true;
+      return;
+    }
+
+    // this check to exclude the case `isFreeze` is undefined
+    // only execute when isFreeze is false not undefined
+    if (isFreeze === false) {
+      state.loadingScreen.isLoading = value;
+      state.loadingScreen.isFreeze = false;
+      return;
+    }
+
+    // case: caller do not specify `isFreeze`
+    if (state.loadingScreen.isFreeze) return;
 
     state.loadingScreen.isLoading = value;
-  },
-  [APP._MUTATES.SET_KEEP_LOADING](state, { value }) {
-    state.loadingScreen.keepLoading = value;
   },
   [APP._MUTATES.SET_FONTS](state, { fonts }) {
     state.fonts = fonts;
