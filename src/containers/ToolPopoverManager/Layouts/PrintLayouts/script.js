@@ -364,13 +364,13 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustom(true);
+      this.customLayouts = await this.getCustom();
     },
     /**
      * Get assoreted layout
      */
     async getAssorted() {
-      this.assortedLayouts = await this.getAssortedLayouts(true);
+      this.assortedLayouts = await this.getAssortedLayouts();
     },
     /**
      * Filter layout types
@@ -439,15 +439,13 @@ export default {
 
       this.layouts = await this.getPrintLayouts(
         this.themeSelected?.id,
-        typeValue,
-        true
+        typeValue
       );
 
       // load more layout of the other themes
       this.extraLayouts = await this.getPrintLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value,
-        true
+        this.layoutTypeSelected?.value
       );
     },
     /**
