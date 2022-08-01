@@ -188,7 +188,7 @@ export default {
     }
   },
   setup() {
-    const { setLoadingState, setKeepLoading } = useAppCommon();
+    const { setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
@@ -246,7 +246,6 @@ export default {
 
     return {
       setLoadingState,
-      setKeepLoading,
       currentFrame,
       currentFrameId,
       setInfoBar,
@@ -2290,11 +2289,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      this.setKeepLoading({ value: true });
+      this.setLoadingState({ value: true, isFreeze: true });
 
       await this.saveData(this.currentFrameId);
 
-      this.setKeepLoading({ value: false });
+      this.setLoadingState({ value: false, isFreeze: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 

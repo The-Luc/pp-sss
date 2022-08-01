@@ -502,3 +502,27 @@ export const updateProjectMappingConfig = (res, args, cache) => {
     }
   );
 };
+
+/**
+ * To delete all cache relate to layout
+ */
+export const invalidateLayoutMapping = (_, __, cache) => {
+  cache.invalidate({ __typename: 'Query' }, 'themes');
+  cache.invalidate({ __typename: 'Query' }, 'template_favourites');
+  cache.invalidate({ __typename: 'Query' }, 'user_saved_digital_layouts');
+  cache.invalidate({ __typename: 'Query' }, 'user_saved_print_layouts', {
+    layout_type: 'SINGLE_PAGE'
+  });
+  cache.invalidate({ __typename: 'Query' }, 'user_saved_print_layouts', {
+    layout_type: 'DOUBLE_PAGE'
+  });
+
+  const themeIds = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cacheInfo => cacheInfo.fieldName === 'theme')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
+
+  themeIds.forEach(id =>
+    cache.invalidate({ __typename: 'Query' }, 'theme', { id })
+  );
+};

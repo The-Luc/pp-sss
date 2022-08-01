@@ -330,7 +330,7 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustomDigitalLayout(true);
+      this.customLayouts = await this.getCustomDigitalLayout();
     },
     /**
      * Get assoreted layout
@@ -409,14 +409,12 @@ export default {
       this.layouts = await this.getDigitalLayouts(
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,
-        this.isSupplemental,
-        true
+        this.isSupplemental
       );
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value,
-        true
+        this.layoutTypeSelected?.value
       );
     },
     /**
