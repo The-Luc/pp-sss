@@ -143,7 +143,12 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
-    const { saveSelectedPortraitFolders } = usePortrait();
+    const {
+      saveSelectedPortraitFolders,
+      createPortraitSheet,
+      getPortraitFolders,
+      getAndRemovePortraitSheet
+    } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
     const { removeElementMapingOfFrames } = useMappingSheet();
@@ -182,6 +187,9 @@ export default {
       saveSheetFrames,
       backgroundsProps,
       saveSelectedPortraitFolders,
+      createPortraitSheet,
+      getAndRemovePortraitSheet,
+      getPortraitFolders,
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
       getFramePlaybackData,
@@ -209,6 +217,7 @@ export default {
       modalType: MODAL_TYPES,
       canvasSize: { w: 800, h: 450 },
       sheetMedia: [],
+      isShowMappingWelcome: false,
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
@@ -262,9 +271,12 @@ export default {
   watch: {
     pageSelected: {
       deep: true,
-      handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
-          this.setIsPromptLayout(newVal);
+      async handler(newVal, oldVal) {
+        if (newVal.id && newVal?.id !== oldVal?.id) {
+          if (!isEmpty(this.defaultThemeId)) {
+            this.setIsPromptLayout(newVal);
+          }
+          await this.handlePortraitMapping(newVal.id);
         }
       }
     },
@@ -649,6 +661,7 @@ export default {
         isToggle: false,
         isOpen: false
       });
+      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -770,6 +783,7 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      this.isShowMappingWelcome = false;
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
 
@@ -795,6 +809,7 @@ export default {
           const requiredFrames = requiredScreens[screenId];
 
           if (isEmpty(requiredFrames)) return;
+
           const requiredFolders =
             Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
           const folders = settings.folders.splice(0, requiredFolders);
@@ -878,6 +893,9 @@ export default {
         this.generalInfo.bookId,
         selectedFolderIds
       );
+
+      // In digital, the first sheet is always the current sheet
+      this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
     },
     /**
      * Get require frame data
@@ -990,6 +1008,26 @@ export default {
       },
       500,
       { leading: true, trailing: false }
-    )
+    ),
+    /**
+     * To get portrait sheet mapping and
+     * open portrait modal
+     *
+     * @param {String} sheetId
+     */
+    async handlePortraitMapping(sheetId) {
+      const portraitFolderIds = await this.getAndRemovePortraitSheet(sheetId);
+
+      if (isEmpty(portraitFolderIds)) return;
+
+      const portraitFolders = await this.getPortraitFolders({
+        bookId: this.generalInfo.bookId
+      });
+      const folders = portraitFolders.filter(folder =>
+        portraitFolderIds.includes(folder.id)
+      );
+      this.isShowMappingWelcome = true;
+      this.onSelectPortraitFolders(folders);
+    }
   }
 };

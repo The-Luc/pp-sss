@@ -20,7 +20,8 @@ import {
   portraitFolders,
   getPrintSettingsQuery,
   getDigitalSettingsQuery,
-  portraitFoldersSelectedQuery
+  portraitFoldersSelectedQuery,
+  sheetPortraitQuery
 } from './queries';
 
 const getPortraitAssets = assets => {
@@ -84,4 +85,13 @@ export const getPortraiSettingsApi = async (bookId, isDigital) => {
       id: UniqueId.generateId(`portrait-setting-${edition}-`)
     };
   });
+};
+
+export const sheetPortraitApi = async sheetId => {
+  // const res = await graphqlRequest(sheetPortraitQuery, {sheetId});
+
+  // @todo: remove when api is ready
+  const fakeData = ['3088', '3089'];
+  // ===========================
+  return fakeData;
 };

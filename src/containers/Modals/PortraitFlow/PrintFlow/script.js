@@ -29,6 +29,10 @@ export default {
     },
     container: {
       type: String
+    },
+    isLoadMapping: {
+      type: Boolean,
+      required: false
     }
   },
   setup() {

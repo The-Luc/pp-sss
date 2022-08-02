@@ -1,5 +1,9 @@
 <template>
-  <div id="portrait-flow" :class="{ preview: isPreviewDisplayed }">
+  <div
+    v-if="!isShowMappingWelcome"
+    id="portrait-flow"
+    :class="{ preview: isPreviewDisplayed }"
+  >
     <CommonModal
       width="1162"
       container="#portrait-flow"
@@ -53,6 +57,30 @@
     <saved-modal :is-open-modal="isOpenModalSuccess" :message="message">
     </saved-modal>
   </div>
+
+  <confirm-action
+    v-else
+    header="Portrait Flow"
+    action-content="Get Started"
+    width="550"
+    :hide-cancel="true"
+    @onAccept="onAcceptMappingWelcome"
+  >
+    <p>Configure the following portrait sets:</p>
+    <div class="collection-name-wrap">
+      <p
+        v-for="folder in selectedFolders"
+        :key="folder.id"
+        class="collection-name"
+      >
+        {{ folder.name }}
+      </p>
+    </div>
+    <p class="portrait-note">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.<br />
+      Doloremque porro repellat expedita.
+    </p>
+  </confirm-action>
 </template>
 
 <script src="./script.js"></script>

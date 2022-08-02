@@ -110,7 +110,7 @@ const addOptionQuery = (url, name) => {
  * @param {Object} variables variables of query or mutations
  * @param {Boolean} isHideSpiner true if it's autosave
  * @param {Boolean} isIgnoreCache true if ignore cache data
- * @returns
+ * @returns <Promise>
  */
 export const graphqlRequest = async (
   query,
