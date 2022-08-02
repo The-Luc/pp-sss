@@ -11,6 +11,7 @@
       :preview-portraits-range="previewPortraitsRange"
       :container="container"
       :is-digital="true"
+      :is-load-mapping="isLoadMapping"
       @cancel="onCancel"
       @accept="onApply"
       @startChange="onStartChange"

@@ -8,7 +8,11 @@
         <button class="btn btn-action" @click="onAction">
           {{ actionContent }}
         </button>
-        <button class="btn btn-cancel" @click="onCancel">
+        <button
+          class="btn btn-cancel"
+          :class="{ hide: hideCancel }"
+          @click="onCancel"
+        >
           {{ cancelContent }}
         </button>
       </div>

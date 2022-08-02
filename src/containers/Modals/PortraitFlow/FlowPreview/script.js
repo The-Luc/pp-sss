@@ -147,7 +147,7 @@ export default {
 
         if (isEmpty(frameId)) return {};
 
-        return await this.getFrameBackground(frameId);
+        return this.getFrameBackground(frameId);
       });
 
       const backgrounds = await Promise.all(promises);

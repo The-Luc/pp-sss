@@ -34,6 +34,10 @@ export default {
     },
     container: {
       type: String
+    },
+    isLoadMapping: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {

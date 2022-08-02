@@ -22,6 +22,10 @@ export default {
     width: {
       type: String,
       default: '424'
+    },
+    hideCancel: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

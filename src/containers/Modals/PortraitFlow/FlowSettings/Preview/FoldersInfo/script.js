@@ -40,6 +40,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       const el = this.$refs.folderText;
+      if (!el) return;
 
       this.isOverflowing = el.scrollWidth > el.offsetWidth;
     });
