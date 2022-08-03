@@ -28,7 +28,7 @@ import {
   updateFrameOrderApi,
   deleteFrameApi
 } from '@/api/frame/api_mutation';
-import { resetObjects, isHalfSheet } from '@/common/utils';
+import { resetObjects, isHalfSheet, loop } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -183,36 +183,29 @@ export default {
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
 
-      if (numOfFramesNeeded > 0) {
-        const framePromise = Array(numOfFramesNeeded)
-          .fill(0)
-          .map(() => {
-            return createFrameApi(this.currentSheet.id, {
+      if (numOfFramesNeeded) {
+        if (numOfFramesNeeded > 0) {
+          const framePromise = loop(numOfFramesNeeded, () =>
+            createFrameApi(this.currentSheet.id, {
               previewImageUrl: '',
               objects: []
-            });
+            })
+          );
+
+          const newFrames = await Promise.all(framePromise);
+          newFrames.forEach(f => {
+            oriFrameIds.push(parseInt(f.id));
+            originalFrames.push(f);
           });
-
-        const newFrames = await Promise.all(framePromise);
-        newFrames.forEach(f => {
-          oriFrameIds.push(parseInt(f.id));
-          originalFrames.push(f);
-        });
-        oriFrameIds.sort();
-
-        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
-        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
-        this.setFrames({ framesList: originalFrames });
-      }
-      if (numOfFramesNeeded < 0) {
-        await Promise.all(
-          Array(Math.abs(numOfFramesNeeded))
-            .fill(0)
-            .map(() => {
+          oriFrameIds.sort();
+        } else {
+          await Promise.all(
+            loop(Math.abs(numOfFramesNeeded), function() {
               originalFrames.pop();
               return deleteFrameApi(oriFrameIds.pop());
             })
-        );
+          );
+        }
         const frameOrderIds = [...oriFrameIds, ...supFrameIds];
         await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
         this.setFrames({ framesList: originalFrames });
