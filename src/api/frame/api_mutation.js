@@ -22,8 +22,9 @@ export const createFrameApi = async (sheetId, frameParams) => {
   return get(res, 'data.create_digital_frame', {});
 };
 
-export const deleteFrameApi = async frameId => {
-  const res = await graphqlRequest(deleteFrameMutation, { frameId });
+export const deleteFrameApi = async id => {
+  const variable = { frameId: String(id) };
+  const res = await graphqlRequest(deleteFrameMutation, variable);
 
   return isOk(res);
 };

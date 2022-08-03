@@ -23,7 +23,11 @@ import {
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { updateSheetApi } from '@/api/sheet/api_mutation';
-import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
+import {
+  createFrameApi,
+  updateFrameOrderApi,
+  deleteFrameApi
+} from '@/api/frame/api_mutation';
 import { resetObjects, isHalfSheet } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
@@ -200,9 +204,22 @@ export default {
         await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
         this.setFrames({ framesList: originalFrames });
       }
+      if (numOfFramesNeeded < 0) {
+        await Promise.all(
+          Array(Math.abs(numOfFramesNeeded))
+            .fill(0)
+            .map(() => {
+              originalFrames.pop();
+              return deleteFrameApi(oriFrameIds.pop());
+            })
+        );
+        const frameOrderIds = [...oriFrameIds, ...supFrameIds];
+        await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
+        this.setFrames({ framesList: originalFrames });
+      }
       this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
 
-      const willUpdateFrames = frames
+      const willUpdateFrames = originalFrames
         .filter(frame => frame.fromLayout)
         .map(frame => {
           return {
