@@ -23,8 +23,12 @@ import {
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { updateSheetApi } from '@/api/sheet/api_mutation';
-import { createFrameApi, updateFrameOrderApi } from '@/api/frame/api_mutation';
-import { resetObjects, isHalfSheet } from '@/common/utils';
+import {
+  createFrameApi,
+  updateFrameOrderApi,
+  deleteFrameApi
+} from '@/api/frame/api_mutation';
+import { resetObjects, isHalfSheet, loop } from '@/common/utils';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -179,30 +183,36 @@ export default {
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
 
-      if (numOfFramesNeeded > 0) {
-        const framePromise = Array(numOfFramesNeeded)
-          .fill(0)
-          .map(() => {
-            return createFrameApi(this.currentSheet.id, {
+      if (numOfFramesNeeded) {
+        if (numOfFramesNeeded > 0) {
+          const framePromise = loop(numOfFramesNeeded, () =>
+            createFrameApi(this.currentSheet.id, {
               previewImageUrl: '',
               objects: []
-            });
+            })
+          );
+
+          const newFrames = await Promise.all(framePromise);
+          newFrames.forEach(f => {
+            oriFrameIds.push(parseInt(f.id));
+            originalFrames.push(f);
           });
-
-        const newFrames = await Promise.all(framePromise);
-        newFrames.forEach(f => {
-          oriFrameIds.push(parseInt(f.id));
-          originalFrames.push(f);
-        });
-        oriFrameIds.sort();
-
+          oriFrameIds.sort();
+        } else {
+          await Promise.all(
+            loop(Math.abs(numOfFramesNeeded), function() {
+              originalFrames.pop();
+              return deleteFrameApi(oriFrameIds.pop());
+            })
+          );
+        }
         const frameOrderIds = [...oriFrameIds, ...supFrameIds];
         await updateFrameOrderApi(this.currentSheet.id, frameOrderIds);
         this.setFrames({ framesList: originalFrames });
       }
       this.clearDigitalObjectsAndThumbnail({ frameIds: oriFrameIds });
 
-      const willUpdateFrames = frames
+      const willUpdateFrames = originalFrames
         .filter(frame => frame.fromLayout)
         .map(frame => {
           return {
