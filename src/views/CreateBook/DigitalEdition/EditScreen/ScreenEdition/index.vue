@@ -52,15 +52,13 @@
       header="Custom Mapping: Print to Digital"
       @onAccept="onClickGotItCustomMappingModal"
     >
-      The Primary Format listed for this project is "Print". This means the
-      mapping only goes from the print edition to the digital edition. Any
-      changes or additions made to your digital edition will not be reflected in
-      the print edition.
+      The Primary Format listed for this project is “Print”. This means the
+      mapping only goes from the print edition to the digital edition. Changes
+      made to the digital edition will not be reflected in the print edition.
       <br />
       <br />
-      Additionally, the mapped connections established when elements like text
-      and image boxes were added to your print edition are broken when the
-      element is edited in the digital edition.
+      Additionally, any changes made to shapes, clip art, media and/or text
+      elements will disable the mapping connection for those items.
     </mapping-layout-custom-change>
 
     <!-- ADDING VIDEO TO PRIMARY FORAMT MODAL -->
