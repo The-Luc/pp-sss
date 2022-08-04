@@ -890,3 +890,15 @@ export const isEqualString = (a, b) => {
 
   return a.toLowerCase() === b.toLowerCase();
 };
+
+/**
+ *
+ * @param {Number} a number of iterations
+ * @param {Function} callback callback function
+ * @return {Promise[]}
+ */
+export const loop = (a, callback) => {
+  return Array(a)
+    .fill(0)
+    .map((_, i) => callback(i));
+};
