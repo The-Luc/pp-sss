@@ -318,8 +318,16 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
  *
  * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
+ * @param {Array} allObjectIds print objectIds of current spread
+ * @param {Array} elementMappings array of element mapping
+ *
  */
-export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
+export const keepBrokenObjectsOfFrames = (
+  quadrants,
+  frames,
+  allObjectIds,
+  elementMappings
+) => {
   const objectIds = quadrants.map(q => q.objects.map(o => o.id)).flat();
 
   frames.forEach(f => {
@@ -330,7 +338,11 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
     const frameObjects = f.objects;
 
     frameObjects.forEach((o, idx) => {
-      if (!objectIds.includes(o.id)) {
+      const index = elementMappings.findIndex(el => o.id === el.printElementId);
+      if (
+        !objectIds.includes(o.id) &&
+        !(!allObjectIds.includes(o.id) && elementMappings[index]?.mapped)
+      ) {
         quadrant.objects.splice(idx, 0, o);
       }
     });
