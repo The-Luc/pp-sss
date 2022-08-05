@@ -351,3 +351,20 @@ export const updateImageZoomLevel = async object => {
   const { zoomLevel } = centercrop(fbObject.object);
   object.zoomLevel = zoomLevel;
 };
+
+/**
+ * Calc distance between two points
+ *
+ * @param {Object} point1
+ * @param {Object} point2
+ * @returns
+ */
+export const getDistance = (point1, point2) => {
+  const { x: x1, y: y1 } = point1;
+  const { x: x2, y: y2 } = point2;
+
+  const y = x2 - x1;
+  const x = y2 - y1;
+
+  return Math.sqrt(x * x + y * y);
+};
