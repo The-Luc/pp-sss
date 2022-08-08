@@ -56,20 +56,15 @@ export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
 /**
  * Save portrait collections which apply on a sheet for portrait mapping
  */
-export const createPortraitSheetApi = async (sheetId, collections) => {
-  console.log('create portrait sheet ');
-  console.log('sheetId', sheetId);
-  console.log('collections', collections);
-
-  // const res = await graphqlRequest(createPortraitSheetMutation, {
-  //   sheetId,
-  //   collections
-  // });
-  // console.log('res', res);
-
-  // return res;
+export const createPortraitSheetApi = (sheetId, collections) => {
+  return graphqlRequest(createPortraitSheetMutation, {
+    sheetId,
+    collections
+  });
 };
 
 export const deletePortraitSheetApi = id => {
+  if (!id) return;
+
   return graphqlRequest(deletePortraitSheetMutation, { id });
 };

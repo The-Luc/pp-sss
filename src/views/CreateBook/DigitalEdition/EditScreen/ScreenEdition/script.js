@@ -2201,7 +2201,8 @@ export default {
       }
 
       // handle case custom mapping
-      this.iconCustomMapping(fbObjects);
+      if (isCustomMappingChecker(this.sheetMappingConfig))
+        this.iconCustomMapping(fbObjects);
     },
 
     /**
@@ -2213,7 +2214,7 @@ export default {
      */
     iconCustomMapping(fbObjects) {
       const isSupplemental = !this.currentFrame.fromLayout;
-      if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
+      if (!isCustomMappingChecker(this.sheetMappingConfig) || isSupplemental)
         return;
 
       const printIds = Object.keys(this.printObjects);

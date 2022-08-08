@@ -32,16 +32,16 @@ export const addBookPortraitMutation = gql`
 `;
 
 export const createPortraitSheetMutation = gql`
-  mutation createPortraitSheet($sheetId: ID!, $collections: ID!) {
+  mutation createPortraitSheet($sheetId: ID!, $collections: [ID]!) {
     create_portrait_sheet_setting(
       sheet_id: $sheetId
-      portrait_layout_setting_id: "1"
-      portrait_collection_id: $collections
+      portrait_layout_setting_id: ""
+      portrait_collection_ids: $collections
     ) {
       sheet {
         id
       }
-      portrait_collection {
+      portrait_collections {
         id
       }
     }
@@ -51,9 +51,7 @@ export const createPortraitSheetMutation = gql`
 export const deletePortraitSheetMutation = gql`
   mutation deletePortraitSheet($id: ID!) {
     delete_portrait_sheet_setting(portrait_sheet_setting_id: $id) {
-      portrait_collection {
-        id
-      }
+      id
     }
   }
 `;

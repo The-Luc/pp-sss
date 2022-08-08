@@ -74,8 +74,11 @@ export const sheetPortraitQuery = gql`
   query sheetPotrait($sheetId: ID!) {
     sheet(id: $sheetId) {
       id
-      portrait_collection {
+      portrait_sheet_setting {
         id
+        portrait_collections {
+          id
+        }
       }
     }
   }

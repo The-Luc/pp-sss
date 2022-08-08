@@ -88,10 +88,14 @@ export const getPortraiSettingsApi = async (bookId, isDigital) => {
 };
 
 export const sheetPortraitApi = async sheetId => {
-  // const res = await graphqlRequest(sheetPortraitQuery, {sheetId});
+  const res = await graphqlRequest(sheetPortraitQuery, { sheetId });
 
-  // @todo: remove when api is ready
-  const fakeData = ['3088', '3089'];
-  // ===========================
-  return fakeData;
+  const portraitSheet = get(res, 'data.sheet.portrait_sheet_setting');
+
+  if (!portraitSheet) return {};
+
+  return {
+    id: portraitSheet.id,
+    collectionIds: portraitSheet.portrait_collections.map(({ id }) => id)
+  };
 };

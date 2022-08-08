@@ -47,6 +47,12 @@ export const isCustomMappingChecker = sheetConfig => {
   return mappingType === MAPPING_TYPES.CUSTOM.value;
 };
 
+export const isPortraitMappingChecker = sheetConfig => {
+  const { mappingType } = sheetConfig;
+
+  return mappingType === MAPPING_TYPES.PORTRAIT.value;
+};
+
 /**
  *  Allowing sync data condition:
  * - IS PRIMARY FORMAT

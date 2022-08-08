@@ -147,7 +147,8 @@ export default {
       saveSelectedPortraitFolders,
       createPortraitSheet,
       getPortraitFolders,
-      getAndRemovePortraitSheet
+      getAndRemovePortraitSheet,
+      setSheetPortraitConfig
     } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
@@ -188,6 +189,7 @@ export default {
       backgroundsProps,
       saveSelectedPortraitFolders,
       createPortraitSheet,
+      setSheetPortraitConfig,
       getAndRemovePortraitSheet,
       getPortraitFolders,
       getAllScreenPlaybackData,
@@ -895,7 +897,10 @@ export default {
       );
 
       // In digital, the first sheet is always the current sheet
+      // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
+
+      await Promise.all(screenWillUpdate.map(this.setSheetPortraitConfig));
     },
     /**
      * Get require frame data
@@ -1026,6 +1031,9 @@ export default {
       const folders = portraitFolders.filter(folder =>
         portraitFolderIds.includes(folder.id)
       );
+
+      if (isEmpty(folders)) return;
+
       this.isShowMappingWelcome = true;
       this.onSelectPortraitFolders(folders);
     }

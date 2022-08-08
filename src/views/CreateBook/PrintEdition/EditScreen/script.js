@@ -110,7 +110,8 @@ export default {
       saveSelectedPortraitFolders,
       getPortraitFolders,
       getAndRemovePortraitSheet,
-      createPortraitSheet
+      createPortraitSheet,
+      setSheetPortraitConfig
     } = usePortrait();
     const { uploadBase64Image } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
@@ -142,6 +143,7 @@ export default {
       backgroundsProps,
       saveSelectedPortraitFolders,
       createPortraitSheet,
+      setSheetPortraitConfig,
       uploadBase64Image,
       setLoadingState,
       getMedia,
@@ -563,6 +565,7 @@ export default {
       const pages = getPageObjects(settings, requiredPages);
 
       const saveQueue = [];
+      const updatedSheetIds = [];
       let firstSheetId = null;
 
       this.setLoadingState({ value: true });
@@ -579,6 +582,7 @@ export default {
         if (isEmpty(objects)) return;
 
         this.updateVisited({ sheetId: sheet.id });
+        updatedSheetIds.push(sheet.id);
         if (!firstSheetId) firstSheetId = sheet.id;
 
         const appliedPage = {
@@ -632,7 +636,10 @@ export default {
         selectedFolderIds
       );
 
+      // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(firstSheetId, selectedFolderIds);
+      await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
+
       // to get thumbnail generate base64 image
       this.$refs.canvasEditor.handleCanvasChanged();
 
@@ -673,10 +680,12 @@ export default {
       const portraitFolders = await this.getPortraitFolders({
         bookId: this.generalInfo.bookId
       });
+
       const folders = portraitFolders.filter(folder =>
         portraitFolderIds.includes(folder.id)
       );
 
+      if (isEmpty(folders)) return;
       this.onSelectPortraitFolders(folders);
       this.isShowMappingWelcome = true;
     }
