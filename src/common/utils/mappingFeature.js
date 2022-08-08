@@ -442,3 +442,22 @@ export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
     printObjects.splice(index, 1, o);
   });
 };
+
+/**
+ *
+ * @param {Array} printObjects
+ * @param {Array} frames
+ * @param {Array} elementMappings array of element mapping
+ *
+ */
+
+export const deleteObjectToPrint = (printObjects, frames, elementMappings) => {
+  const objectIds = frames.map(f => f.objects.map(o => o.id)).flat();
+  printObjects = printObjects.filter(o => {
+    const index = elementMappings.findIndex(el => o.id === el.printElementId);
+    if (!(!objectIds.includes(o.id) && elementMappings[index]?.mapped)) {
+      return o;
+    }
+  });
+  return printObjects;
+};

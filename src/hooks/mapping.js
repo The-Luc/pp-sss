@@ -33,7 +33,8 @@ import {
   isCustomMappingChecker,
   isAllowSyncData,
   allCurrentFrameObjects,
-  isAllowSyncDataSecondary
+  isAllowSyncDataSecondary,
+  deleteObjectToPrint
 } from '@/common/utils';
 import {
   projectMapping,
@@ -837,7 +838,7 @@ export const useQuadrantMapping = () => {
      Get print objects & MUTATE this `printObjects` array to update objects from digital frame
      Then call mutation to generate thumbnail & save data of this array as spread data
     */
-    const printObjects = cloneDeep(sheet.objects);
+    let printObjects = cloneDeep(sheet.objects);
     const fObjects = cloneDeep(frame.objects);
 
     // remove DIGITAL objects that are not mapping, meaning not sync these objects
@@ -848,6 +849,8 @@ export const useQuadrantMapping = () => {
     const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
 
     if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot find the appropriate quadrant
+
+    printObjects = deleteObjectToPrint(printObjects, frames, elementMappings); //delete PRINT objects with digital is primary
 
     const currFrame = { id: frame.id, objects: frame.objects };
     const allFrameObjects = allCurrentFrameObjects(frames, currFrame);
