@@ -33,7 +33,8 @@ import {
   isCustomMappingChecker,
   isAllowSyncData,
   allCurrentFrameObjects,
-  isAllowSyncDataSecondary
+  isAllowSyncDataSecondary,
+  deletePrintObject
 } from '@/common/utils';
 import {
   projectMapping,
@@ -802,7 +803,12 @@ export const useQuadrantMapping = () => {
     );
 
     // keep broken DIGITAL objects of digital frames
-    keepBrokenObjectsOfFrames(quadrantFrames, frames);
+    keepBrokenObjectsOfFrames(
+      quadrantFrames,
+      frames,
+      allObjectIds,
+      elementMappings
+    );
 
     // // update frames objects, and visited
     const willUpdateFrames = quadrantFrames.map(qd => ({
@@ -842,7 +848,9 @@ export const useQuadrantMapping = () => {
     //  quadrantIndex: 0, 1, 2 or 3 these are possible value
     const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
 
-    if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
+    if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot find the appropriate quadrant
+
+    deletePrintObject(printObjects, frames, elementMappings); // remove PRINT objects with digital is primary
 
     const currFrame = { id: frame.id, objects: frame.objects };
     const allFrameObjects = allCurrentFrameObjects(frames, currFrame);

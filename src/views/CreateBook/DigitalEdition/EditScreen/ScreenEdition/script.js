@@ -130,6 +130,7 @@ import {
   isAllowSyncLayoutData,
   getDigitalObjectById,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
@@ -3281,8 +3282,12 @@ export default {
       await this.drawLayout();
     },
     customMappingDeleteObjects(fbObjects) {
-      // handle show modal when is in custom mapping
-      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+      // handle show modal when is in custom mapping and print is primary
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isPrimaryFormat(this.projectMappingConfig, true)
+      )
+        return;
 
       // a mapped object could have mappingInfo = undefined (for custom mapping)
       // or mapping.mapped  = true

@@ -315,11 +315,19 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
 
 /**
  * To adding broken objects back to synced data from print
- *
+ * remove DIGITAL object when it removed in print (primary).
  * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
+ * @param {Array} allObjectIds print objectIds of current spread
+ * @param {Array} elementMappings array of element mapping
+ *
  */
-export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
+export const keepBrokenObjectsOfFrames = (
+  quadrants,
+  frames,
+  allObjectIds,
+  elementMappings
+) => {
   const objectIds = quadrants.map(q => q.objects.map(o => o.id)).flat();
 
   frames.forEach(f => {
@@ -330,7 +338,11 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
     const frameObjects = f.objects;
 
     frameObjects.forEach((o, idx) => {
-      if (!objectIds.includes(o.id)) {
+      const index = elementMappings.findIndex(el => o.id === el.printElementId);
+      if (
+        !objectIds.includes(o.id) &&
+        !(!allObjectIds.includes(o.id) && elementMappings[index]?.mapped) //remove object not includes in print and elementMappings.mapped is true
+      ) {
         quadrant.objects.splice(idx, 0, o);
       }
     });
@@ -428,5 +440,28 @@ export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
 
     // replace existing element by new element
     printObjects.splice(index, 1, o);
+  });
+};
+
+/**
+ * remove PRINT object when it removed in digital (primary).
+ * @param {Array} printObjects
+ * @param {Array} frames
+ * @param {Array} elementMappings array of element mapping
+ *
+ */
+
+export const deletePrintObject = (printObjects, frames, elementMappings) => {
+  const digitalObjectIds = frames.map(f => f.objects.map(o => o.id)).flat();
+  const objectsNeedDelete = printObjects.filter(o => {
+    const index = elementMappings.findIndex(el => o.id === el.printElementId);
+    //remove objects not includes in digital with elementMappings is true
+    if (!digitalObjectIds.includes(o.id) && elementMappings[index]?.mapped) {
+      return o;
+    }
+  });
+  objectsNeedDelete.map(o => {
+    const idx = printObjects.findIndex(printObject => printObject.id === o.id);
+    printObjects.splice(idx, 1);
   });
 };
