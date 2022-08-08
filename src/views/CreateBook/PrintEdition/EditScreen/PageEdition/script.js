@@ -52,6 +52,7 @@ import {
   getDigitalObjectById,
   isAllowSyncLayoutData,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isLayoutMappingChecker,
   getBrokenCustomMapping,
@@ -2585,7 +2586,7 @@ export default {
       // handle show modal when is in custom mapping and digital is primary
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
-        !isSecondaryFormat(this.projectMappingConfig)
+        isPrimaryFormat(this.projectMappingConfig)
       )
         return;
 

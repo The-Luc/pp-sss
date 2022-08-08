@@ -34,7 +34,7 @@ import {
   isAllowSyncData,
   allCurrentFrameObjects,
   isAllowSyncDataSecondary,
-  deleteObjectToPrint
+  deletePrintObject
 } from '@/common/utils';
 import {
   projectMapping,
@@ -838,7 +838,7 @@ export const useQuadrantMapping = () => {
      Get print objects & MUTATE this `printObjects` array to update objects from digital frame
      Then call mutation to generate thumbnail & save data of this array as spread data
     */
-    let printObjects = cloneDeep(sheet.objects);
+    const printObjects = cloneDeep(sheet.objects);
     const fObjects = cloneDeep(frame.objects);
 
     // remove DIGITAL objects that are not mapping, meaning not sync these objects
@@ -850,7 +850,7 @@ export const useQuadrantMapping = () => {
 
     if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot find the appropriate quadrant
 
-    printObjects = deleteObjectToPrint(printObjects, frames, elementMappings); //delete PRINT objects with digital is primary
+    deletePrintObject(printObjects, frames, elementMappings); // remove PRINT objects with digital is primary
 
     const currFrame = { id: frame.id, objects: frame.objects };
     const allFrameObjects = allCurrentFrameObjects(frames, currFrame);

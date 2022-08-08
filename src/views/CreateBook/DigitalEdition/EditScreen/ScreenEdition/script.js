@@ -130,6 +130,7 @@ import {
   isAllowSyncLayoutData,
   getDigitalObjectById,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
@@ -3284,7 +3285,7 @@ export default {
       // handle show modal when is in custom mapping and print is primary
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
-        !isSecondaryFormat(this.projectMappingConfig, true)
+        isPrimaryFormat(this.projectMappingConfig, true)
       )
         return;
 
