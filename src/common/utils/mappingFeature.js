@@ -322,7 +322,7 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
 /**
  * To adding broken objects back to synced data from print
  * remove DIGITAL object when it removed in print (primary).
- * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
+ * @param {Array<{objects: object, frameId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
  * @param {Array} allObjectIds print objectIds of current spread
  * @param {Array} elementMappings array of element mapping
@@ -456,7 +456,6 @@ export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
  * @param {Array} elementMappings array of element mapping
  *
  */
-
 export const deletePrintObject = (printObjects, frames, elementMappings) => {
   const digitalObjectIds = frames.map(f => f.objects.map(o => o.id)).flat();
   const objectsNeedDelete = printObjects.filter(o => {
@@ -466,7 +465,7 @@ export const deletePrintObject = (printObjects, frames, elementMappings) => {
       return o;
     }
   });
-  objectsNeedDelete.map(o => {
+  objectsNeedDelete.forEach(o => {
     const idx = printObjects.findIndex(printObject => printObject.id === o.id);
     printObjects.splice(idx, 1);
   });
