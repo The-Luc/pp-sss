@@ -270,6 +270,9 @@ export default {
       ]);
     }
   },
+  created() {
+    console.log('create ');
+  },
   watch: {
     pageSelected: {
       deep: true,
@@ -330,6 +333,8 @@ export default {
     next();
   },
   mounted() {
+    console.log('mounted');
+
     this.handleEventListeners();
   },
   destroyed() {
@@ -663,7 +668,6 @@ export default {
         isToggle: false,
         isOpen: false
       });
-      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -785,7 +789,6 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
-      this.isShowMappingWelcome = false;
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
 
@@ -896,11 +899,23 @@ export default {
         selectedFolderIds
       );
 
+      if (this.isShowMappingWelcome) {
+        // if true: the portrait modal is opened by mapping functionality
+        // therefore we do not need to create portrait mapping
+        this.isShowMappingWelcome = false;
+        return;
+      }
       // In digital, the first sheet is always the current sheet
       // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
 
-      await Promise.all(screenWillUpdate.map(this.setSheetPortraitConfig));
+      const sheetIds = [
+        this.pageSelected.id,
+        ...screenWillUpdate.map(({ sheetId }) => sheetId)
+      ];
+
+      await Promise.all(sheetIds.map(this.setSheetPortraitConfig));
+      this.isShowMappingWelcome = false;
     },
     /**
      * Get require frame data
@@ -1021,6 +1036,7 @@ export default {
      * @param {String} sheetId
      */
     async handlePortraitMapping(sheetId) {
+      this.isShowMappingWelcome = false;
       const portraitFolderIds = await this.getAndRemovePortraitSheet(sheetId);
 
       if (isEmpty(portraitFolderIds)) return;

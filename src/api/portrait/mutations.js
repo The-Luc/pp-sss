@@ -38,6 +38,7 @@ export const createPortraitSheetMutation = gql`
       portrait_layout_setting_id: ""
       portrait_collection_ids: $collections
     ) {
+      id
       sheet {
         id
       }
@@ -52,6 +53,9 @@ export const deletePortraitSheetMutation = gql`
   mutation deletePortraitSheet($id: ID!) {
     delete_portrait_sheet_setting(portrait_sheet_setting_id: $id) {
       id
+      sheet {
+        id
+      }
     }
   }
 `;

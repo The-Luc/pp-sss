@@ -92,7 +92,7 @@ export const sheetPortraitApi = async sheetId => {
 
   const portraitSheet = get(res, 'data.sheet.portrait_sheet_setting');
 
-  if (!portraitSheet) return {};
+  if (!portraitSheet || !portraitSheet.portrait_collections) return {};
 
   return {
     id: portraitSheet.id,

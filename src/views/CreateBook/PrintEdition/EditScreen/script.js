@@ -549,7 +549,6 @@ export default {
     onClosePortrait() {
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
       this.modalDisplay.portaitFlow = false;
-      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -558,7 +557,6 @@ export default {
      * @param {Array} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
-      this.isShowMappingWelcome = false;
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
 
@@ -636,15 +634,22 @@ export default {
         selectedFolderIds
       );
 
-      // Create portrait mapping setting on the current sheet
-      this.createPortraitSheet(firstSheetId, selectedFolderIds);
-      await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
-
       // to get thumbnail generate base64 image
       this.$refs.canvasEditor.handleCanvasChanged();
 
       // update in-project of photoside bar
       this.sheetMedia = await this.getMedia();
+
+      if (this.isShowMappingWelcome) {
+        // if true: the portrait modal is opened by mapping functionality
+        // therefore we do not need to create portrait mapping
+        this.isShowMappingWelcome = false;
+        return;
+      }
+      // Create portrait mapping setting on the current sheet
+      this.createPortraitSheet(firstSheetId, selectedFolderIds);
+      await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
+      this.isShowMappingWelcome = false;
     },
     /**
      * Selected portrait folders
@@ -673,6 +678,7 @@ export default {
      * @param {String} sheetId
      */
     async handlePortraitMapping(sheetId) {
+      this.isShowMappingWelcome = false;
       const portraitFolderIds = await this.getAndRemovePortraitSheet(sheetId);
 
       if (isEmpty(portraitFolderIds)) return;
