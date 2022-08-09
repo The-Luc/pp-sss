@@ -559,6 +559,7 @@ export default {
     async onApplyPortrait(settings, requiredPages) {
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
+      this.setLoadingState({ value: true, isFreeze: true });
 
       const pages = getPageObjects(settings, requiredPages);
 
@@ -640,16 +641,17 @@ export default {
       // update in-project of photoside bar
       this.sheetMedia = await this.getMedia();
 
-      if (this.isShowMappingWelcome) {
-        // if true: the portrait modal is opened by mapping functionality
-        // therefore we do not need to create portrait mapping
-        this.isShowMappingWelcome = false;
-        return;
-      }
+      // if the portrait modal is opened by mapping functionality (isShowMappingWelcome =  true);
+      // we do not need to create portrait mapping
+      const shouldCreateMapping = !this.isShowMappingWelcome;
+      this.isShowMappingWelcome = false;
+
+      if (!shouldCreateMapping) return;
+
       // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(firstSheetId, selectedFolderIds);
       await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
-      this.isShowMappingWelcome = false;
+      this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
      * Selected portrait folders

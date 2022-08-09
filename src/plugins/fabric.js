@@ -21,7 +21,8 @@ import {
   videoRewindEvent,
   videoSeekEvent,
   videoToggleStatusEvent,
-  isFbTextObject
+  isFbTextObject,
+  getDistance
 } from '@/common/utils';
 import {
   handleRenderOverlayImage,
@@ -1188,7 +1189,14 @@ export const renderObjectOverlay = (target, icon) => {
 
   if (showOverlay?.isDisplayed) return;
 
-  const { top, left, width, height } = target.getBoundingRect();
+  const [tl, tr, br] = target.getCoords();
+
+  const width = getDistance(tl, tr);
+  const height = getDistance(tr, br);
+
+  const top = tl.y;
+  const left = tl.x;
+
   const centerX = left + width / 2;
   const centerY = top + height / 2;
 
@@ -1201,9 +1209,11 @@ export const renderObjectOverlay = (target, icon) => {
   const calcAngle = (Math.PI * (angle % 360)) / 180;
 
   ctx.save();
-  ctx.translate(centerX, centerY);
-  ctx.rotate(calcAngle);
-  ctx.translate(-centerX, -centerY);
+  if (angle) {
+    ctx.translate(left, top);
+    ctx.rotate(calcAngle);
+    ctx.translate(-left, -top);
+  }
 
   ctx.fillStyle = OVERLAY_BACKGROUND_COLOR;
   ctx.fillRect(left, top, width, height);
