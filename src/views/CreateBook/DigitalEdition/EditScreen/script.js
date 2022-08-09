@@ -270,9 +270,6 @@ export default {
       ]);
     }
   },
-  created() {
-    console.log('create ');
-  },
   watch: {
     pageSelected: {
       deep: true,
@@ -333,8 +330,6 @@ export default {
     next();
   },
   mounted() {
-    console.log('mounted');
-
     this.handleEventListeners();
   },
   destroyed() {
@@ -791,6 +786,7 @@ export default {
     async onApplyPortrait(settings, requiredPages) {
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
+      this.setLoadingState({ value: true, isFreeze: true });
 
       const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
@@ -890,6 +886,18 @@ export default {
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
 
+      await this.updatePortraitRelated(screenWillUpdate);
+      this.setLoadingState({ value: false, isFreeze: false });
+    },
+    /**
+     * To handle api related to portrait:
+     * - Save selected portrait to book
+     * - create portrait sheet mapping config
+     *
+     * @param {{sheetId: string, previewImageUrl: string}[]} screenWillUpdate
+     * @returns
+     */
+    async updatePortraitRelated(screenWillUpdate) {
       const selectedFolderIds = this.modal[
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
@@ -899,12 +907,13 @@ export default {
         selectedFolderIds
       );
 
-      if (this.isShowMappingWelcome) {
-        // if true: the portrait modal is opened by mapping functionality
-        // therefore we do not need to create portrait mapping
-        this.isShowMappingWelcome = false;
-        return;
-      }
+      // if the portrait modal is opened by mapping functionality (isShowMappingWelcome =  true);
+      // we do not need to create portrait mapping
+      const shouldCreateMapping = !this.isShowMappingWelcome;
+      this.isShowMappingWelcome = false;
+
+      if (!shouldCreateMapping) return;
+
       // In digital, the first sheet is always the current sheet
       // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
@@ -915,7 +924,6 @@ export default {
       ];
 
       await Promise.all(sheetIds.map(this.setSheetPortraitConfig));
-      this.isShowMappingWelcome = false;
     },
     /**
      * Get require frame data
