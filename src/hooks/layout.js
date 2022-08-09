@@ -836,7 +836,7 @@ export const useMappingLayout = isDigital => {
   const { currentSheet } = useGetters({
     currentSheet: GETTERS.CURRENT_SHEET
   });
-  const { updateSheetMappingConfig, updateElementMappings } = useMappingSheet();
+  const { updateElementMappings } = useMappingSheet();
   const { addingLayoutFrames, addingLayoutOnPages } = useLayoutAddingSupport();
   const { savePageData } = useSavePageData();
 
@@ -846,10 +846,10 @@ export const useMappingLayout = isDigital => {
    */
   const updateSheet = async sheetId => {
     const mappingType = MAPPING_TYPES.LAYOUT.value;
-    await Promise.all([
-      updateSheetMappingConfig(sheetId, { mappingType }),
-      updateSheetApi(sheetId, { isVisited: true })
-    ]);
+    await updateSheetApi(sheetId, {
+      isVisited: true,
+      mapping_type: mappingType
+    });
   };
 
   // trigger when use apply a mapped layout on print editor

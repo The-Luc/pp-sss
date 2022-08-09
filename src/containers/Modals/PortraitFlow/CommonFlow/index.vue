@@ -76,10 +76,7 @@
         {{ folder.name }}
       </p>
     </div>
-    <p class="portrait-note">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.<br />
-      Doloremque porro repellat expedita.
-    </p>
+    <p class="portrait-note"></p>
   </confirm-action>
 </template>
 
