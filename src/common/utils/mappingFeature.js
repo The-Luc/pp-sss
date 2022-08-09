@@ -456,7 +456,6 @@ export const copyObjectsFrameObjectsToPrint = (printObjects, fObjects) => {
  * @param {Array} elementMappings array of element mapping
  *
  */
-
 export const deletePrintObject = (printObjects, frames, elementMappings) => {
   const digitalObjectIds = frames.map(f => f.objects.map(o => o.id)).flat();
   const objectsNeedDelete = printObjects.filter(o => {
@@ -466,7 +465,7 @@ export const deletePrintObject = (printObjects, frames, elementMappings) => {
       return o;
     }
   });
-  objectsNeedDelete.map(o => {
+  objectsNeedDelete.forEach(o => {
     const idx = printObjects.findIndex(printObject => printObject.id === o.id);
     printObjects.splice(idx, 1);
   });
