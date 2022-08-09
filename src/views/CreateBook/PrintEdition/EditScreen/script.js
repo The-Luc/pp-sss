@@ -549,6 +549,7 @@ export default {
     onClosePortrait() {
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
       this.modalDisplay.portaitFlow = false;
+      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -651,6 +652,8 @@ export default {
       // Create portrait mapping setting on the current sheet
       this.createPortraitSheet(firstSheetId, selectedFolderIds);
       await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
+
+      this.onClosePortrait();
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**

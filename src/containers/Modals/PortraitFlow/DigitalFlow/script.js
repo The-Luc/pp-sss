@@ -157,7 +157,7 @@ export default {
         return;
       }
       this.$emit('accept', this.flowSettings, this.requiredFrames);
-      this.onCancel();
+      this.flowSettings = {};
     },
     /**
      * Cancel apply portrait

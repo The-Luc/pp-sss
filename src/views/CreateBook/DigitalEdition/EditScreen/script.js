@@ -663,6 +663,7 @@ export default {
         isToggle: false,
         isOpen: false
       });
+      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -887,6 +888,7 @@ export default {
       this.setToolNameSelected('');
 
       await this.updatePortraitRelated(screenWillUpdate);
+      this.onClosePortrait();
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
