@@ -55,8 +55,7 @@
         @onCancel="onCloseConfirmReset"
       >
         Warning: If you proceed with resetting the Content Mapping all design
-        will be removed from both the primary and secondary formats. Do you wish
-        to proceed?
+        will be removed from both the primary and secondary formats.
         <p style="margin-top: 20px">
           Do you wish to proceed?
         </p>
