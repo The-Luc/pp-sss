@@ -69,6 +69,7 @@
       v-if="modal[modalType.PORTRAIT_FLOW].isOpen"
       container="#editor"
       :selected-folders="modal[modalType.PORTRAIT_FLOW].data.folders"
+      :is-load-mapping="isShowMappingWelcome"
       @cancel="onClosePortrait"
       @accept="onApplyPortrait"
     ></portrait-flow>

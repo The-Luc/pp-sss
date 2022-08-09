@@ -143,7 +143,13 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
-    const { saveSelectedPortraitFolders } = usePortrait();
+    const {
+      saveSelectedPortraitFolders,
+      createPortraitSheet,
+      getPortraitFolders,
+      getAndRemovePortraitSheet,
+      setSheetPortraitConfig
+    } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
     const { removeElementMapingOfFrames } = useMappingSheet();
@@ -182,6 +188,10 @@ export default {
       saveSheetFrames,
       backgroundsProps,
       saveSelectedPortraitFolders,
+      createPortraitSheet,
+      setSheetPortraitConfig,
+      getAndRemovePortraitSheet,
+      getPortraitFolders,
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
       getFramePlaybackData,
@@ -209,6 +219,7 @@ export default {
       modalType: MODAL_TYPES,
       canvasSize: { w: 800, h: 450 },
       sheetMedia: [],
+      isShowMappingWelcome: false,
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
@@ -259,12 +270,18 @@ export default {
       ]);
     }
   },
+  created() {
+    console.log('create ');
+  },
   watch: {
     pageSelected: {
       deep: true,
-      handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
-          this.setIsPromptLayout(newVal);
+      async handler(newVal, oldVal) {
+        if (newVal.id && newVal?.id !== oldVal?.id) {
+          if (!isEmpty(this.defaultThemeId)) {
+            this.setIsPromptLayout(newVal);
+          }
+          await this.handlePortraitMapping(newVal.id);
         }
       }
     },
@@ -316,6 +333,8 @@ export default {
     next();
   },
   mounted() {
+    console.log('mounted');
+
     this.handleEventListeners();
   },
   destroyed() {
@@ -795,6 +814,7 @@ export default {
           const requiredFrames = requiredScreens[screenId];
 
           if (isEmpty(requiredFrames)) return;
+
           const requiredFolders =
             Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
           const folders = settings.folders.splice(0, requiredFolders);
@@ -878,6 +898,24 @@ export default {
         this.generalInfo.bookId,
         selectedFolderIds
       );
+
+      if (this.isShowMappingWelcome) {
+        // if true: the portrait modal is opened by mapping functionality
+        // therefore we do not need to create portrait mapping
+        this.isShowMappingWelcome = false;
+        return;
+      }
+      // In digital, the first sheet is always the current sheet
+      // Create portrait mapping setting on the current sheet
+      this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
+
+      const sheetIds = [
+        this.pageSelected.id,
+        ...screenWillUpdate.map(({ sheetId }) => sheetId)
+      ];
+
+      await Promise.all(sheetIds.map(this.setSheetPortraitConfig));
+      this.isShowMappingWelcome = false;
     },
     /**
      * Get require frame data
@@ -990,6 +1028,30 @@ export default {
       },
       500,
       { leading: true, trailing: false }
-    )
+    ),
+    /**
+     * To get portrait sheet mapping and
+     * open portrait modal
+     *
+     * @param {String} sheetId
+     */
+    async handlePortraitMapping(sheetId) {
+      this.isShowMappingWelcome = false;
+      const portraitFolderIds = await this.getAndRemovePortraitSheet(sheetId);
+
+      if (isEmpty(portraitFolderIds)) return;
+
+      const portraitFolders = await this.getPortraitFolders({
+        bookId: this.generalInfo.bookId
+      });
+      const folders = portraitFolders.filter(folder =>
+        portraitFolderIds.includes(folder.id)
+      );
+
+      if (isEmpty(folders)) return;
+
+      this.isShowMappingWelcome = true;
+      this.onSelectPortraitFolders(folders);
+    }
   }
 };

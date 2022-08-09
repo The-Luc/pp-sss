@@ -5,7 +5,8 @@ import { getSheetFramesQuery } from '../frame/queries';
 import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery,
-  portraitFoldersSelectedQuery
+  portraitFoldersSelectedQuery,
+  sheetPortraitQuery
 } from '../portrait/queries';
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
@@ -524,5 +525,42 @@ export const invalidateLayoutMapping = (_, __, cache) => {
 
   themeIds.forEach(id =>
     cache.invalidate({ __typename: 'Query' }, 'theme', { id })
+  );
+};
+
+export const deletePortraitSheet = (res, _, cache) => {
+  const sheetId = get(res, 'delete_portrait_sheet_setting.sheet.id');
+
+  if (!sheetId) return;
+
+  cache.updateQuery(
+    {
+      query: sheetPortraitQuery,
+      variables: { sheetId }
+    },
+    data => {
+      if (data) {
+        data.sheet.portrait_sheet_setting = null;
+      }
+      return data;
+    }
+  );
+};
+
+export const createPortraitSheet = (res, args, cache) => {
+  const sheetId = get(args, 'sheet_id');
+  const setting = get(res, 'create_portrait_sheet_setting', null);
+
+  cache.updateQuery(
+    {
+      query: sheetPortraitQuery,
+      variables: { sheetId }
+    },
+    data => {
+      if (data) {
+        data.sheet.portrait_sheet_setting = setting;
+      }
+      return data;
+    }
   );
 };

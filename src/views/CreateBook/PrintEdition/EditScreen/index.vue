@@ -60,6 +60,7 @@
       v-if="modalDisplay.portaitFlow"
       container="#editor"
       :selected-folders="selectedFolders"
+      :is-load-mapping="isShowMappingWelcome"
       @cancel="onClosePortrait"
       @accept="onApplyPortrait"
     ></portrait-flow>

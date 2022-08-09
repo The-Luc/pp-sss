@@ -130,6 +130,7 @@ import {
   isAllowSyncLayoutData,
   getDigitalObjectById,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
@@ -2201,7 +2202,8 @@ export default {
       }
 
       // handle case custom mapping
-      this.iconCustomMapping(fbObjects);
+      if (isCustomMappingChecker(this.sheetMappingConfig))
+        this.iconCustomMapping(fbObjects);
     },
 
     /**
@@ -2213,7 +2215,7 @@ export default {
      */
     iconCustomMapping(fbObjects) {
       const isSupplemental = !this.currentFrame.fromLayout;
-      if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
+      if (!isCustomMappingChecker(this.sheetMappingConfig) || isSupplemental)
         return;
 
       const printIds = Object.keys(this.printObjects);
@@ -3281,8 +3283,12 @@ export default {
       await this.drawLayout();
     },
     customMappingDeleteObjects(fbObjects) {
-      // handle show modal when is in custom mapping
-      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+      // handle show modal when is in custom mapping and print is primary
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isPrimaryFormat(this.projectMappingConfig, true)
+      )
+        return;
 
       // a mapped object could have mappingInfo = undefined (for custom mapping)
       // or mapping.mapped  = true
