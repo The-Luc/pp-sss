@@ -357,7 +357,7 @@ export const updateImageZoomLevel = async object => {
  *
  * @param {Object} point1
  * @param {Object} point2
- * @returns
+ * @returns {Number}
  */
 export const getDistance = (point1, point2) => {
   const { x: x1, y: y1 } = point1;
