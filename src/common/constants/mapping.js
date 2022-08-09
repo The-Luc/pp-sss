@@ -24,6 +24,10 @@ export const MAPPING_TYPES = {
   CUSTOM: {
     name: 'Custom Mapping',
     value: 'CUSTOM'
+  },
+  PORTRAIT: {
+    name: 'Portrait Mapping',
+    value: 'PORTRAIT'
   }
 };
 

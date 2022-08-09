@@ -237,6 +237,8 @@ export const useMappingSheet = () => {
   };
 
   const updateSheetMappingConfig = async (sheetId, config) => {
+    if (isEmpty(config)) return;
+
     const params = sheetMappingConfigToApiMapping(config);
 
     return updateSheetMappingConfigApi(sheetId, params);

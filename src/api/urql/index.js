@@ -27,7 +27,9 @@ import {
   updateImageStyle,
   createContainerCache,
   updateProjectMappingConfig,
-  invalidateLayoutMapping
+  invalidateLayoutMapping,
+  deletePortraitSheet,
+  createPortraitSheet
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -76,7 +78,9 @@ const urqlClient = createClient({
           create_container: createContainerCache,
           update_project_mapping_configuration: updateProjectMappingConfig,
           delete_template_element_mappings: invalidateLayoutMapping,
-          create_bulk_template_element_mapping: invalidateLayoutMapping
+          create_bulk_template_element_mapping: invalidateLayoutMapping,
+          delete_portrait_sheet_setting: deletePortraitSheet,
+          create_portrait_sheet_setting: createPortraitSheet
         }
       }
     }),
@@ -110,7 +114,7 @@ const addOptionQuery = (url, name) => {
  * @param {Object} variables variables of query or mutations
  * @param {Boolean} isHideSpiner true if it's autosave
  * @param {Boolean} isIgnoreCache true if ignore cache data
- * @returns
+ * @returns <Promise>
  */
 export const graphqlRequest = async (
   query,

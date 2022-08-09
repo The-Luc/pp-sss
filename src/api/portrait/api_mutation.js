@@ -1,6 +1,11 @@
 import { graphqlRequest } from '../urql';
 
-import { saveSettingMutation, addBookPortraitMutation } from './mutations';
+import {
+  saveSettingMutation,
+  addBookPortraitMutation,
+  createPortraitSheetMutation,
+  deletePortraitSheetMutation
+} from './mutations';
 import { getPortraitFoldersIdSelected } from './api_query';
 import { isEmpty, isOk } from '@/common/utils';
 
@@ -46,4 +51,20 @@ export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
   );
 
   return Promise.all(promises);
+};
+
+/**
+ * Save portrait collections which apply on a sheet for portrait mapping
+ */
+export const createPortraitSheetApi = (sheetId, collections) => {
+  return graphqlRequest(createPortraitSheetMutation, {
+    sheetId,
+    collections
+  });
+};
+
+export const deletePortraitSheetApi = id => {
+  if (!id) return;
+
+  return graphqlRequest(deletePortraitSheetMutation, { id });
 };
