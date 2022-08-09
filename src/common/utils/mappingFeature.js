@@ -322,7 +322,7 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
 /**
  * To adding broken objects back to synced data from print
  * remove DIGITAL object when it removed in print (primary).
- * @param {Array<{objects: object, framdId: string}>} quadrants quadrant array
+ * @param {Array<{objects: object, frameId: string}>} quadrants quadrant array
  * @param {Array} frames array of frame data
  * @param {Array} allObjectIds print objectIds of current spread
  * @param {Array} elementMappings array of element mapping
