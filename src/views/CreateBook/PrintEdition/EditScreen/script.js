@@ -533,6 +533,11 @@ export default {
       this.isOpenCropControl = true;
     },
     onToggleModal({ name, isToggle }) {
+      if (name === TOOL_NAME.PORTRAIT) {
+        // user hit the portrait button on tool menu
+        this.isShowMappingWelcome = false; // to hide the portrait mapping modal
+      }
+
       if (isEmpty(name)) {
         Object.values(this.modalDisplay).forEach(m => {
           this.modalDisplay[m] = false;
@@ -549,7 +554,6 @@ export default {
     onClosePortrait() {
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
       this.modalDisplay.portaitFlow = false;
-      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -567,8 +571,6 @@ export default {
       const saveQueue = [];
       const updatedSheetIds = [];
       let firstSheetId = null;
-
-      this.setLoadingState({ value: true });
 
       Object.values(this.getSheets).forEach(sheet => {
         const leftPageNumber = +sheet?.pageLeftName;
@@ -627,8 +629,6 @@ export default {
 
       await Promise.all(saveQueue);
 
-      this.setLoadingState({ value: false });
-
       const selectedFolderIds = this.selectedFolders.map(item => item.id);
 
       this.saveSelectedPortraitFolders(
@@ -644,16 +644,13 @@ export default {
 
       // if the portrait modal is opened by mapping functionality (isShowMappingWelcome =  true);
       // we do not need to create portrait mapping
-      const shouldCreateMapping = !this.isShowMappingWelcome;
-      this.isShowMappingWelcome = false;
+      // therefore when `isShowMpaaingWelcome = false => create portrait mapping
+      if (!this.isShowMappingWelcome) {
+        // Create portrait mapping setting on the current sheet
+        this.createPortraitSheet(firstSheetId, selectedFolderIds);
+        await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
+      }
 
-      if (!shouldCreateMapping) return;
-
-      // Create portrait mapping setting on the current sheet
-      this.createPortraitSheet(firstSheetId, selectedFolderIds);
-      await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
-
-      this.onClosePortrait();
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
