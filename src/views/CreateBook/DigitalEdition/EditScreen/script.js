@@ -663,7 +663,6 @@ export default {
         isToggle: false,
         isOpen: false
       });
-      this.isShowMappingWelcome = false;
       this.setToolNameSelected('');
     },
     /**
@@ -770,6 +769,11 @@ export default {
      * @param {Boolean} isOpen    if not toggle, open or hide modal
      */
     onToggleModal({ modal, isToggle = true, isOpen = true }) {
+      if (modal === TOOL_NAME.PORTRAIT && isOpen) {
+        // user hit the portrait button on tool menu
+        this.isShowMappingWelcome = false; // to hide the portrait mapping modal
+      }
+
       Object.keys(this.modal).forEach(k => {
         if (k !== modal) this.modal[k].isOpen = false;
       });
@@ -803,7 +807,6 @@ export default {
         return obj;
       }, {});
 
-      this.setLoadingState({ value: true });
       const screenWillUpdate = [];
 
       const framePromise = Object.keys(requiredScreens).map(
@@ -882,13 +885,10 @@ export default {
           this.updateSheetThumbnail({ sheetId, thumbnailUrl: previewImageUrl });
       });
 
-      this.setLoadingState({ value: false });
-
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
 
       await this.updatePortraitRelated(screenWillUpdate);
-      this.onClosePortrait();
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
@@ -911,10 +911,7 @@ export default {
 
       // if the portrait modal is opened by mapping functionality (isShowMappingWelcome =  true);
       // we do not need to create portrait mapping
-      const shouldCreateMapping = !this.isShowMappingWelcome;
-      this.isShowMappingWelcome = false;
-
-      if (!shouldCreateMapping) return;
+      if (this.isShowMappingWelcome) return;
 
       // In digital, the first sheet is always the current sheet
       // Create portrait mapping setting on the current sheet
@@ -1060,8 +1057,10 @@ export default {
 
       if (isEmpty(folders)) return;
 
+      // set folders
+      this.modal[MODAL_TYPES.PORTRAIT_FLOW].data = { folders };
       this.isShowMappingWelcome = true;
-      this.onSelectPortraitFolders(folders);
+      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
     }
   }
 };

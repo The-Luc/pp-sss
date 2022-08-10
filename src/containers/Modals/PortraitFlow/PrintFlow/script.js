@@ -172,7 +172,7 @@ export default {
         return;
       }
       this.$emit('accept', this.flowSettings, this.requiredPages);
-      this.flowSettings = {};
+      this.onCancel();
     },
     /**
      * Cancel apply portrait
