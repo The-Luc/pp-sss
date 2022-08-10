@@ -771,7 +771,6 @@ export default {
     onToggleModal({ modal, isToggle = true, isOpen = true }) {
       if (modal === TOOL_NAME.PORTRAIT && isOpen) {
         // user hit the portrait button on tool menu
-
         this.isShowMappingWelcome = false; // to hide the portrait mapping modal
       }
 

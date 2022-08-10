@@ -59,8 +59,6 @@ export default {
       return this.selectedFolders.length > 1;
     },
     maxPortraitPerPage() {
-      if (isEmpty(this.flowSettings?.layoutSettings)) return;
-
       const { rowCount, colCount } = this.flowSettings.layoutSettings;
 
       return rowCount * colCount;
@@ -223,8 +221,6 @@ export default {
      * @returns {Array} page list
      */
     getMultiFolderRequiredPages() {
-      if (isEmpty(this.flowSettings)) return;
-
       const { flowOption, pages } = this.flowSettings.flowMultiSettings;
 
       if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {

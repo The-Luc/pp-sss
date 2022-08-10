@@ -174,8 +174,6 @@ export default {
      * Emit accept event to parent
      */
     onAccept() {
-      console.log('accept apply portrait');
-
       this.$emit('accept');
     },
     /**
