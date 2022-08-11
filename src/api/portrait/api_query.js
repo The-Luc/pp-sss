@@ -20,7 +20,8 @@ import {
   portraitFolders,
   getPrintSettingsQuery,
   getDigitalSettingsQuery,
-  portraitFoldersSelectedQuery
+  portraitFoldersSelectedQuery,
+  sheetPortraitQuery
 } from './queries';
 
 const getPortraitAssets = assets => {
@@ -84,4 +85,17 @@ export const getPortraiSettingsApi = async (bookId, isDigital) => {
       id: UniqueId.generateId(`portrait-setting-${edition}-`)
     };
   });
+};
+
+export const sheetPortraitApi = async sheetId => {
+  const res = await graphqlRequest(sheetPortraitQuery, { sheetId });
+
+  const portraitSheet = get(res, 'data.sheet.portrait_sheet_setting');
+
+  if (!portraitSheet || !portraitSheet.portrait_collections) return {};
+
+  return {
+    id: portraitSheet.id,
+    collectionIds: portraitSheet.portrait_collections.map(({ id }) => id)
+  };
 };

@@ -130,6 +130,7 @@ import {
   isAllowSyncLayoutData,
   getDigitalObjectById,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
@@ -188,7 +189,7 @@ export default {
     }
   },
   setup() {
-    const { setLoadingState, setKeepLoading } = useAppCommon();
+    const { setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
@@ -246,7 +247,6 @@ export default {
 
     return {
       setLoadingState,
-      setKeepLoading,
       currentFrame,
       currentFrameId,
       setInfoBar,
@@ -2202,7 +2202,8 @@ export default {
       }
 
       // handle case custom mapping
-      this.iconCustomMapping(fbObjects);
+      if (isCustomMappingChecker(this.sheetMappingConfig))
+        this.iconCustomMapping(fbObjects);
     },
 
     /**
@@ -2214,7 +2215,7 @@ export default {
      */
     iconCustomMapping(fbObjects) {
       const isSupplemental = !this.currentFrame.fromLayout;
-      if (isLayoutMappingChecker(this.sheetMappingConfig) || isSupplemental)
+      if (!isCustomMappingChecker(this.sheetMappingConfig) || isSupplemental)
         return;
 
       const printIds = Object.keys(this.printObjects);
@@ -2290,11 +2291,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      this.setKeepLoading({ value: true });
+      this.setLoadingState({ value: true, isFreeze: true });
 
       await this.saveData(this.currentFrameId);
 
-      this.setKeepLoading({ value: false });
+      this.setLoadingState({ value: false, isFreeze: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
@@ -3282,8 +3283,12 @@ export default {
       await this.drawLayout();
     },
     customMappingDeleteObjects(fbObjects) {
-      // handle show modal when is in custom mapping
-      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+      // handle show modal when is in custom mapping and print is primary
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isPrimaryFormat(this.projectMappingConfig, true)
+      )
+        return;
 
       // a mapped object could have mappingInfo = undefined (for custom mapping)
       // or mapping.mapped  = true

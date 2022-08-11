@@ -24,7 +24,12 @@ import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
-import { EVENT_TYPE } from '@/common/constants';
+import {
+  EVENT_TYPE,
+  CONTENT_MAPPING_MODAL,
+  MODAL_TYPES
+} from '@/common/constants';
+import { getItem, setItem } from '@/common/storage';
 
 export default {
   setup() {
@@ -66,6 +71,11 @@ export default {
     ScaleFitOption,
     ConfirmAction,
     OptionApplyMapLayout
+  },
+  data() {
+    return {
+      bookId: this.$route.params.bookId
+    };
   },
   computed: {
     layout() {
@@ -211,6 +221,17 @@ export default {
       this.$root.$emit(EVENT_TYPE.APPLY_LAYOUT);
       this.$root.$emit('pageNumber');
       this.onCancel();
+
+      const isHideModal = getItem(CONTENT_MAPPING_MODAL + this.bookId) || false;
+      if (!isHideModal) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.CONTENT_MAPPING
+          }
+        });
+        setItem(CONTENT_MAPPING_MODAL + this.bookId, true);
+      }
     },
     /**
      * Trigger when user hit Cancel on Non-maped Layout Confirm modal

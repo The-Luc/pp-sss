@@ -64,17 +64,8 @@ export const getPrintLayoutsPreviewApi = async themeId => {
  * @param {String} categoryId  id of a category
  * @returns array of layout object
  */
-export const getLayoutsByThemeAndTypeApi = async (
-  themeId,
-  layoutTypeId,
-  isIgnoreCache
-) => {
-  const res = await graphqlRequest(
-    getLayoutsQuery,
-    { themeId },
-    false,
-    isIgnoreCache
-  );
+export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
+  const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
   const dbTemplates = get(res, 'data.theme.templates', []);
@@ -103,19 +94,14 @@ export const getLayoutsByThemeAndTypeApi = async (
  * @param {String} categoryId  id of a category
  * @returns array of layout object
  */
-export const getPrintLayoutsByTypeApi = async (layoutTypeId, isIgnoreCache) => {
+export const getPrintLayoutsByTypeApi = async layoutTypeId => {
   const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
 
   if (!layoutType) return [];
 
-  const res = await graphqlRequest(
-    getLayoutsByTypeQuery,
-    {
-      layoutUse: layoutType
-    },
-    false,
-    isIgnoreCache
-  );
+  const res = await graphqlRequest(getLayoutsByTypeQuery, {
+    layoutUse: layoutType
+  });
 
   if (!isOk(res)) return [];
   const dbThemes = get(res, 'data.themes', []);
@@ -201,13 +187,8 @@ export const getLayoutElementsApi = async id => {
 };
 
 /** GET ASSORTED LAYOUTS */
-export const getAssortedLayoutsApi = async isIgnoreCache => {
-  const res = await graphqlRequest(
-    getAssortedLayoutQuery,
-    {},
-    false,
-    isIgnoreCache
-  );
+export const getAssortedLayoutsApi = async () => {
+  const res = await graphqlRequest(getAssortedLayoutQuery, {});
 
   if (!isOk(res)) return;
 
@@ -227,13 +208,8 @@ export const getAssortedLayoutsApi = async isIgnoreCache => {
 };
 
 /** GET CUSTOM PRINT LAYOUTS */
-export const getCustomPrintLayoutApi = async isIgnoreCache => {
-  const res = await graphqlRequest(
-    getUserLayoutsQuery,
-    {},
-    false,
-    isIgnoreCache
-  );
+export const getCustomPrintLayoutApi = async () => {
+  const res = await graphqlRequest(getUserLayoutsQuery, {});
 
   if (!isOk(res)) return;
 
@@ -250,13 +226,8 @@ const removeMediaContent = layouts => {
   });
 };
 
-export const getCustomDigitalLayoutApi = async isIgnoreCache => {
-  const res = await graphqlRequest(
-    getUserDigitalLayoutsQuery,
-    {},
-    false,
-    isIgnoreCache
-  );
+export const getCustomDigitalLayoutApi = async () => {
+  const res = await graphqlRequest(getUserDigitalLayoutsQuery, {});
 
   if (!isOk(res)) return;
 
@@ -266,13 +237,8 @@ export const getCustomDigitalLayoutApi = async isIgnoreCache => {
 };
 
 /** GET DIGITAL LAYOUTS */
-export const getDigitalLayoutsApi = async (themeId, isIgnoreCache) => {
-  const res = await graphqlRequest(
-    getDigitalTemplateQuery,
-    { themeId },
-    false,
-    isIgnoreCache
-  );
+export const getDigitalLayoutsApi = async themeId => {
+  const res = await graphqlRequest(getDigitalTemplateQuery, { themeId });
 
   if (!isOk(res)) return;
 
@@ -282,22 +248,14 @@ export const getDigitalLayoutsApi = async (themeId, isIgnoreCache) => {
 };
 
 /** GET DIGITAL LAYOUTS BY LAYOUT TYPE - LOAD MORE */
-export const getDigitalLayoutsByTypeApi = async (
-  layoutTypeId,
-  isIgnoreCache
-) => {
+export const getDigitalLayoutsByTypeApi = async layoutTypeId => {
   const layoutUse = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
 
   if (!layoutUse) return [];
 
-  const res = await graphqlRequest(
-    getDigitalTemplateByTypeQuery,
-    {
-      layoutUse
-    },
-    false,
-    isIgnoreCache
-  );
+  const res = await graphqlRequest(getDigitalTemplateByTypeQuery, {
+    layoutUse
+  });
 
   if (!isOk(res)) return [];
 

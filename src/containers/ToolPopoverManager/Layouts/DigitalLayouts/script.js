@@ -11,13 +11,15 @@ import {
   DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
   ASSORTED_TYPE_VALUE,
-  EVENT_TYPE
+  EVENT_TYPE,
+  CONTENT_MAPPING_MODAL
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
   isEmpty,
   getLayoutSelected
 } from '@/common/utils';
+import { getItem, setItem } from '@/common/storage';
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
@@ -111,7 +113,8 @@ export default {
       customLayouts: [],
       layouts: [],
       favoriteLayouts: [],
-      extraLayouts: []
+      extraLayouts: [],
+      bookId: this.$route.params.bookId
     };
   },
   computed: {
@@ -253,8 +256,17 @@ export default {
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
      */
     onCancel() {
+      const isHideModal = getItem(CONTENT_MAPPING_MODAL + this.bookId) || false;
+      if (!isHideModal) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.CONTENT_MAPPING
+          }
+        });
+        setItem(CONTENT_MAPPING_MODAL + this.bookId, true);
+      }
       this.setToolNameSelected('');
-      this.$emit('close');
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
@@ -318,7 +330,7 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustomDigitalLayout(true);
+      this.customLayouts = await this.getCustomDigitalLayout();
     },
     /**
      * Get assoreted layout
@@ -397,14 +409,12 @@ export default {
       this.layouts = await this.getDigitalLayouts(
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,
-        this.isSupplemental,
-        true
+        this.isSupplemental
       );
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value,
-        true
+        this.layoutTypeSelected?.value
       );
     },
     /**

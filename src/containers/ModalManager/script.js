@@ -31,6 +31,7 @@ import SaveDigitalLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Moda
 
 import ApplyLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ApplyLayout';
 import ContentMappingOverview from '@/containers/Modals/ContentMappingOverview';
+import ContentMappingModal from '@/containers/Modals/ContentMappingModal';
 
 const {
   HELP,
@@ -55,7 +56,8 @@ const {
   GENERATE_PDF,
   MAP_LAYOUT,
   APPLY_LAYOUT,
-  CONTENT_MAPPING_OVERVIEW
+  CONTENT_MAPPING_OVERVIEW,
+  CONTENT_MAPPING
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -81,7 +83,8 @@ const ModalList = {
   [GENERATE_PDF]: GENERATE_PDF,
   [MAP_LAYOUT]: MAP_LAYOUT,
   [APPLY_LAYOUT]: APPLY_LAYOUT,
-  [CONTENT_MAPPING_OVERVIEW]: CONTENT_MAPPING_OVERVIEW
+  [CONTENT_MAPPING_OVERVIEW]: CONTENT_MAPPING_OVERVIEW,
+  [CONTENT_MAPPING]: CONTENT_MAPPING
 };
 
 export default {
@@ -111,7 +114,8 @@ export default {
     [MODAL_TYPES.GENERATE_PDF]: GeneratePDF,
     [MODAL_TYPES.APPLY_LAYOUT]: ApplyLayout,
     [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping,
-    [CONTENT_MAPPING_OVERVIEW]: ContentMappingOverview
+    [CONTENT_MAPPING_OVERVIEW]: ContentMappingOverview,
+    [CONTENT_MAPPING]: ContentMappingModal
   },
   computed: {
     ...mapGetters({

@@ -33,6 +33,10 @@
       color: $color-white;
       border-color: $color-gray13;
       background-color: $color-gray13;
+
+      &.hide {
+        display: none;
+      }
     }
   }
 }

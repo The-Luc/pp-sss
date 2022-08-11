@@ -19,6 +19,7 @@ import {
   BACKGROUND_TYPE_NAME,
   OBJECT_TYPE
 } from '@/common/constants';
+import { isBackground } from '@/common/utils';
 
 export const useBackgroundProperties = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -143,7 +144,7 @@ export const useBackgroundAction = () => {
     if (!frameId) return {};
 
     const objects = await getFrameObjectsApi(frameId);
-    return objects[0].type === OBJECT_TYPE.BACKGROUND ? objects[0] : {};
+    return isBackground(objects[0]) ? objects[0] : {};
   };
 
   const getFrameBackgrounds = async frameIds => {

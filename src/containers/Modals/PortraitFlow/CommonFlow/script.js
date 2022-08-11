@@ -4,9 +4,11 @@ import FlowSettings from '../FlowSettings';
 import FlowPreview from '../FlowPreview';
 import SaveSettingsModal from '../SaveSettings/SavedSettingModal';
 import SavedModal from '../SaveSettings/SavedModal';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import { PortraitFlowData } from '@/common/models';
 import { usePortraitFlow } from '@/views/CreateBook/composables';
+import { useModal } from '@/hooks';
 
 import {
   DEFAULT_PAGE_TITLE,
@@ -29,7 +31,8 @@ export default {
     FlowSettings,
     FlowPreview,
     SavedModal,
-    SaveSettingsModal
+    SaveSettingsModal,
+    ConfirmAction
   },
   props: {
     isOpen: {
@@ -74,12 +77,17 @@ export default {
     isAcceptButtonDisabled: {
       type: Boolean,
       default: false
+    },
+    isLoadMapping: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
     const { saveSettings, getSavedSettings } = usePortraitFlow();
+    const { toggleModal } = useModal();
 
-    return { saveSettings, getSavedSettings };
+    return { saveSettings, getSavedSettings, toggleModal };
   },
   data() {
     return {
@@ -91,10 +99,16 @@ export default {
       triggerTab: false,
       saveMsg: 'Your settings have been saved',
       loadMsg: 'Your saved portrait settings have loaded',
-      message: ''
+      message: '',
+      isShowMappingWelcome: false
     };
   },
   async created() {
+    // if there is portrait sheet mapping on the current sheet
+    if (this.isLoadMapping) {
+      this.isShowMappingWelcome = true;
+      this.toggleModal({ isOpenModal: true });
+    }
     const flowSettings = new PortraitFlowData({
       startOnPageNumber: this.startNumber,
       totalPortraitsCount: this.getTotalPortrait(),
@@ -377,6 +391,13 @@ export default {
      */
     onCancelSaveSettings() {
       this.isOpenSaveSettingsModal = false;
+    },
+    /**
+     * Trigger when user hit Get Started button on mapping welcome modal
+     */
+    onAcceptMappingWelcome() {
+      this.isShowMappingWelcome = false;
+      this.toggleModal({ isOpenModal: false });
     }
   }
 };

@@ -86,14 +86,15 @@ import {
   useFrameOrdering,
   useFrameAction,
   useSavePageData,
-  useMappingSheet
+  useMappingSheet,
+  useAppCommon
 } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
 import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
-import { useMappingProject } from './mapping';
+import { useMappingProject, useQuadrantMapping } from './mapping';
 import {
   getSheetInfoApi,
   getSheetPreviewInfoApi,
@@ -157,8 +158,8 @@ export const useGetDigitalLayouts = () => {
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
-  const getDigitalLayouts = async (themeId, layoutTypeId, isIgnoreCache) => {
-    const layouts = await getDigitalLayoutsApi(themeId, isIgnoreCache);
+  const getDigitalLayouts = async (themeId, layoutTypeId) => {
+    const layouts = await getDigitalLayoutsApi(themeId);
 
     const isSupplemental =
       layoutTypeId === DIGITAL_LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value;
@@ -278,8 +279,8 @@ export const useCustomLayout = () => {
     });
   };
 
-  const getCustomPrintLayout = async isIgnoreCache => {
-    const layouts = await getCustomPrintLayoutApi(isIgnoreCache);
+  const getCustomPrintLayout = async () => {
+    const layouts = await getCustomPrintLayoutApi();
     return layouts.map(layout => ({
       ...layout,
       isCustom: true
@@ -288,8 +289,8 @@ export const useCustomLayout = () => {
   /**
    * Return package and supplemental layouts that user saved
    */
-  const getCustomDigitalLayout = async isIgnoreCache => {
-    return getCustomDigitalLayoutApi(isIgnoreCache);
+  const getCustomDigitalLayout = async () => {
+    return getCustomDigitalLayoutApi();
   };
 
   const saveCustomDigitalLayout = async setting => {
@@ -347,7 +348,7 @@ export const useGetLayouts = () => {
   const { getCustom, getCustomDigitalLayout } = useCustomLayout();
   const { getDigitalLayouts: fetchDigitalLayouts } = useGetDigitalLayouts();
 
-  const getPrintLayouts = async (theme, layoutType, isIgnoreCache) => {
+  const getPrintLayouts = async (theme, layoutType) => {
     if (isEmpty(theme) || isEmpty(layoutType)) {
       return [];
     }
@@ -355,44 +356,27 @@ export const useGetLayouts = () => {
     const isSelectFavorite = layoutType === SAVED_AND_FAVORITES_TYPE.value;
 
     if (!isSelectFavorite) {
-      return getLayoutsByThemeAndTypeApi(theme, layoutType, isIgnoreCache);
+      return getLayoutsByThemeAndTypeApi(theme, layoutType);
     }
 
-    const layouts = await Promise.all([
-      getFavoriteLayouts(isIgnoreCache),
-      getCustom(isIgnoreCache)
-    ]);
+    const layouts = await Promise.all([getFavoriteLayouts(), getCustom()]);
 
     return layouts.flat();
   };
 
-  const getPrintLayoutByType = async (
-    currentThemeId,
-    layoutTypeId,
-    isIgnoreCache
-  ) => {
+  const getPrintLayoutByType = async (currentThemeId, layoutTypeId) => {
     if (!layoutTypeId) return [];
 
-    const templates = await getPrintLayoutsByTypeApi(
-      layoutTypeId,
-      isIgnoreCache
-    );
+    const templates = await getPrintLayoutsByTypeApi(layoutTypeId);
     const newTemplates = templates.filter(t => t.themeId !== currentThemeId);
 
     return uniqBy(newTemplates, 'id');
   };
 
-  const getDigitalLayoutByType = async (
-    currentThemeId,
-    layoutTypeId,
-    isIgnoreCache
-  ) => {
+  const getDigitalLayoutByType = async (currentThemeId, layoutTypeId) => {
     if (!layoutTypeId) return [];
 
-    const templates = await getDigitalLayoutsByTypeApi(
-      layoutTypeId,
-      isIgnoreCache
-    );
+    const templates = await getDigitalLayoutsByTypeApi(layoutTypeId);
     const newTemplates = templates.filter(
       t => t.themeId !== currentThemeId && !t.isSupplemental
     );
@@ -400,22 +384,17 @@ export const useGetLayouts = () => {
     return uniqBy(newTemplates, 'id');
   };
 
-  const getDigitalLayouts = async (
-    theme,
-    layoutType,
-    isSupplemental,
-    isIgnoreCache
-  ) => {
+  const getDigitalLayouts = async (theme, layoutType, isSupplemental) => {
     if (isEmpty(theme) || isEmpty(layoutType)) {
       return [];
     }
 
     const isSelectFavorite = layoutType === SAVED_AND_FAVORITES_TYPE.value;
     if (!isSelectFavorite) {
-      return fetchDigitalLayouts(theme, layoutType, isIgnoreCache);
+      return fetchDigitalLayouts(theme, layoutType);
     }
 
-    const customLayouts = await getCustomDigitalLayout(isIgnoreCache);
+    const customLayouts = await getCustomDigitalLayout();
 
     const customPackage = customLayouts.filter(
       layout => !layout.isSupplemental
@@ -774,6 +753,7 @@ export const useApplyPrintLayout = () => {
 
   const { applyMappedDigitalLayout } = useMappingLayout();
   const { addingLayoutOnPages } = useLayoutAddingSupport();
+  const { setLoadingState } = useAppCommon();
 
   const applyPrintLayout = async ({
     themeId,
@@ -782,6 +762,7 @@ export const useApplyPrintLayout = () => {
     isScale,
     isFit
   }) => {
+    setLoadingState({ value: true, isFreeze: true });
     const { objects: objectList } = addingLayoutOnPages(
       layout,
       pagePosition,
@@ -800,36 +781,42 @@ export const useApplyPrintLayout = () => {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+    setLoadingState({ value: false, isFreeze: false });
   };
 
   return { applyPrintLayout };
 };
 
 export const useApplyDigitalLayout = () => {
+  const { setLoadingState } = useAppCommon();
   const { currentSheet } = useGetters({
     currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
-
   const { setSheetData } = useMutations({
     setSheetData: DIGITAL_MUTATES.SET_SHEET_DATA
   });
-
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
   const { applyMappedPrintLayout } = useMappingLayout(true);
   const { addingLayoutFrames } = useLayoutAddingSupport();
+  const { quadrantSyncMultiFrameToPrint } = useQuadrantMapping();
 
   const applyDigitalLayout = async layout => {
     const { id: sheetId } = currentSheet.value;
+    setLoadingState({ value: true, isFreeze: true });
 
     const finalFrames = await addingLayoutFrames(sheetId, layout.id);
 
     // UPDATE for Mapped Layout
     await applyMappedPrintLayout(layout, finalFrames);
 
+    // sync layout to print via custom mapping mode
+    await quadrantSyncMultiFrameToPrint(sheetId, finalFrames);
+
     clearAllFrames();
     setFrames({ framesList: finalFrames });
 
     setCurrentFrameId({ id: finalFrames[0].id });
+    setLoadingState({ value: false, isFreeze: false });
 
     // Update sheet fields
     setSheetData({
@@ -849,7 +836,7 @@ export const useMappingLayout = isDigital => {
   const { currentSheet } = useGetters({
     currentSheet: GETTERS.CURRENT_SHEET
   });
-  const { updateSheetMappingConfig, updateElementMappings } = useMappingSheet();
+  const { updateElementMappings } = useMappingSheet();
   const { addingLayoutFrames, addingLayoutOnPages } = useLayoutAddingSupport();
   const { savePageData } = useSavePageData();
 
@@ -859,10 +846,10 @@ export const useMappingLayout = isDigital => {
    */
   const updateSheet = async sheetId => {
     const mappingType = MAPPING_TYPES.LAYOUT.value;
-    await Promise.all([
-      updateSheetMappingConfig(sheetId, { mappingType }),
-      updateSheetApi(sheetId, { isVisited: true })
-    ]);
+    await updateSheetApi(sheetId, {
+      isVisited: true,
+      mapping_type: mappingType
+    });
   };
 
   // trigger when use apply a mapped layout on print editor

@@ -12,6 +12,7 @@
       :warning-text="warningText"
       :container="container"
       :is-accept-button-disabled="isAcceptButtonDisabled"
+      :is-load-mapping="isLoadMapping"
       @cancel="onCancel"
       @accept="onApply"
       @startChange="onStartPageChange"

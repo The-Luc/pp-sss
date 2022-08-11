@@ -33,7 +33,8 @@ import {
   isCustomMappingChecker,
   isAllowSyncData,
   allCurrentFrameObjects,
-  isAllowSyncDataSecondary
+  isAllowSyncDataSecondary,
+  deletePrintObject
 } from '@/common/utils';
 import {
   projectMapping,
@@ -236,6 +237,8 @@ export const useMappingSheet = () => {
   };
 
   const updateSheetMappingConfig = async (sheetId, config) => {
+    if (isEmpty(config)) return;
+
     const params = sheetMappingConfigToApiMapping(config);
 
     return updateSheetMappingConfigApi(sheetId, params);
@@ -644,7 +647,12 @@ export const useQuadrantMapping = () => {
   const { getBookInfo } = useGetters({
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
-  const { updateElementMappingByIds } = useMappingSheet();
+  const {
+    updateElementMappingByIds,
+    getSheetMappingConfig
+  } = useMappingSheet();
+  const { generalInfo } = useAppCommon();
+  const { getMappingConfig } = useMappingProject();
 
   /**
    * To create element mapping params of custom mapping
@@ -797,7 +805,12 @@ export const useQuadrantMapping = () => {
     );
 
     // keep broken DIGITAL objects of digital frames
-    keepBrokenObjectsOfFrames(quadrantFrames, frames);
+    keepBrokenObjectsOfFrames(
+      quadrantFrames,
+      frames,
+      allObjectIds,
+      elementMappings
+    );
 
     // // update frames objects, and visited
     const willUpdateFrames = quadrantFrames.map(qd => ({
@@ -837,7 +850,9 @@ export const useQuadrantMapping = () => {
     //  quadrantIndex: 0, 1, 2 or 3 these are possible value
     const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
 
-    if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
+    if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot find the appropriate quadrant
+
+    deletePrintObject(printObjects, frames, elementMappings); // remove PRINT objects with digital is primary
 
     const currFrame = { id: frame.id, objects: frame.objects };
     const allFrameObjects = allCurrentFrameObjects(frames, currFrame);
@@ -866,7 +881,77 @@ export const useQuadrantMapping = () => {
     await Promise.all(promise);
   };
 
-  return { quadrantSyncToDigital, quadrantSyncToPrint };
+  /**
+   * sync layout frame to print in custom mapping mode
+   *   - clear all element mappings
+   *
+   * @param {string} sheetId
+   * @param {array} inputFrames frame from layout
+   */
+  const quadrantSyncMultiFrameToPrint = async (sheetId, frames) => {
+    const bookId = generalInfo.value.bookId;
+
+    // check mapping config
+    const config = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
+    if (
+      !isAllowSyncData(config, sheetConfig, true) ||
+      !isCustomMappingChecker(sheetConfig)
+    )
+      return;
+
+    const sheet = await getSheetInfoApi(sheetId);
+
+    const { coverOption } = getBookInfo.value;
+    const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
+    const printObjects = cloneDeep(sheet.objects);
+
+    await frames.reduce(async (acc, frame) => {
+      await acc;
+
+      // if this is supplemental frame => no mapping need
+      if (frame.isSupplemental) return;
+
+      const fObjects = cloneDeep(frame.objects);
+
+      // get frame quadrant index: handle case COVER and supplemental
+      //  quadrantIndex: 0, 1, 2 or 3 these are possible value
+      const quadrantIndex = calcQuadrantIndexOfFrame(sheet, frames, frame.id);
+
+      if (quadrantIndex === undefined || quadrantIndex < 0) return; // cannot fint the appropriate quadrant
+
+      const frameObjectIds = frame.objects.map(o => o.id);
+      // create element mapping params
+      const createParams = frameObjectIds.map(id => ({
+        print_element_uid: id,
+        digital_element_uid: id
+      }));
+
+      await createElementMappingApi(sheetId, frame.id, createParams);
+
+      // modify object's positions and dimensions based on theirs quadrant
+      modifyDigitalQuadrantObjects(sheet, fObjects, quadrantIndex, isHardCover);
+
+      // update image zoom level
+      await Promise.all(fObjects.map(o => updateImageZoomLevel(o)));
+
+      // SYNC DATA DIRECTION: printObjects <== fObjects
+      copyObjectsFrameObjectsToPrint(printObjects, fObjects);
+    }, Promise.resolve());
+
+    const promise = [savePageData(sheetId, printObjects)];
+    !sheet.isVisited &&
+      promise.push(updateSheetApi(sheetId, { isVisited: true }));
+
+    await Promise.all(promise);
+  };
+
+  return {
+    quadrantSyncToDigital,
+    quadrantSyncToPrint,
+    quadrantSyncMultiFrameToPrint
+  };
 };
 
 export const useSyncData = () => {

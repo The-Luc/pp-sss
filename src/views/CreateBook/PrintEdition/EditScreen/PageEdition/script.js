@@ -52,6 +52,7 @@ import {
   getDigitalObjectById,
   isAllowSyncLayoutData,
   isSecondaryFormat,
+  isPrimaryFormat,
   updateCanvasMapping,
   isLayoutMappingChecker,
   getBrokenCustomMapping,
@@ -167,7 +168,7 @@ export default {
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
-    const { setLoadingState, setKeepLoading } = useAppCommon();
+    const { setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -210,7 +211,6 @@ export default {
       updateMediaSidebarOpen,
       setPropertiesType,
       setLoadingState,
-      setKeepLoading,
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
@@ -383,11 +383,11 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      this.setKeepLoading({ value: true });
+      this.setLoadingState({ value: false, isFreeze: true });
 
       await this.saveData(this.pageSelected.id);
 
-      this.setKeepLoading({ value: false });
+      this.setLoadingState({ value: false, isFreeze: false });
       this.updateSavingStatus({ status: SAVE_STATUS.END });
     },
 
@@ -2060,7 +2060,9 @@ export default {
       }
 
       // handle case custom mapping
-      this.iconCustomMapping(fbObjects);
+      if (isCustomMappingChecker(this.sheetMappingConfig)) {
+        this.iconCustomMapping(fbObjects);
+      }
     },
 
     /**
@@ -2071,7 +2073,7 @@ export default {
      * @param {Array} fbObjects fabric objects
      */
     iconCustomMapping(fbObjects) {
-      if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
+      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
 
       const isSecondary = isSecondaryFormat(this.projectMappingConfig);
       const digitalIds = Object.keys(this.digitalObjects);
@@ -2583,8 +2585,12 @@ export default {
       await this.drawLayout();
     },
     customMappingDeleteObjects(fbObjects) {
-      // handle show modal when is in custom mapping
-      if (!isCustomMappingChecker(this.sheetMappingConfig)) return;
+      // handle show modal when is in custom mapping and digital is primary
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isPrimaryFormat(this.projectMappingConfig)
+      )
+        return;
 
       // a mapped object could have mappingInfo = undefined (for custom mapping)
       // or mapping.mapped  = true

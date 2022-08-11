@@ -143,7 +143,13 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
-    const { saveSelectedPortraitFolders } = usePortrait();
+    const {
+      saveSelectedPortraitFolders,
+      createPortraitSheet,
+      getPortraitFolders,
+      getAndRemovePortraitSheet,
+      setSheetPortraitConfig
+    } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
     const { removeElementMapingOfFrames } = useMappingSheet();
@@ -182,6 +188,10 @@ export default {
       saveSheetFrames,
       backgroundsProps,
       saveSelectedPortraitFolders,
+      createPortraitSheet,
+      setSheetPortraitConfig,
+      getAndRemovePortraitSheet,
+      getPortraitFolders,
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
       getFramePlaybackData,
@@ -209,6 +219,7 @@ export default {
       modalType: MODAL_TYPES,
       canvasSize: { w: 800, h: 450 },
       sheetMedia: [],
+      isShowMappingWelcome: false,
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
@@ -262,9 +273,12 @@ export default {
   watch: {
     pageSelected: {
       deep: true,
-      handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
-          this.setIsPromptLayout(newVal);
+      async handler(newVal, oldVal) {
+        if (newVal.id && newVal?.id !== oldVal?.id) {
+          if (!isEmpty(this.defaultThemeId)) {
+            this.setIsPromptLayout(newVal);
+          }
+          await this.handlePortraitMapping(newVal.id);
         }
       }
     },
@@ -755,6 +769,11 @@ export default {
      * @param {Boolean} isOpen    if not toggle, open or hide modal
      */
     onToggleModal({ modal, isToggle = true, isOpen = true }) {
+      if (modal === TOOL_NAME.PORTRAIT && isOpen) {
+        // user hit the portrait button on tool menu
+        this.isShowMappingWelcome = false; // to hide the portrait mapping modal
+      }
+
       Object.keys(this.modal).forEach(k => {
         if (k !== modal) this.modal[k].isOpen = false;
       });
@@ -772,6 +791,7 @@ export default {
     async onApplyPortrait(settings, requiredPages) {
       // reset auto save timer
       this.$refs.canvasEditor.setAutosaveTimer();
+      this.setLoadingState({ value: true, isFreeze: true });
 
       const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
@@ -787,7 +807,6 @@ export default {
         return obj;
       }, {});
 
-      this.setLoadingState({ value: true });
       const screenWillUpdate = [];
 
       const framePromise = Object.keys(requiredScreens).map(
@@ -795,6 +814,7 @@ export default {
           const requiredFrames = requiredScreens[screenId];
 
           if (isEmpty(requiredFrames)) return;
+
           const requiredFolders =
             Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
           const folders = settings.folders.splice(0, requiredFolders);
@@ -865,11 +885,21 @@ export default {
           this.updateSheetThumbnail({ sheetId, thumbnailUrl: previewImageUrl });
       });
 
-      this.setLoadingState({ value: false });
-
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
 
+      await this.updatePortraitRelated(screenWillUpdate);
+      this.setLoadingState({ value: false, isFreeze: false });
+    },
+    /**
+     * To handle api related to portrait:
+     * - Save selected portrait to book
+     * - create portrait sheet mapping config
+     *
+     * @param {{sheetId: string, previewImageUrl: string}[]} screenWillUpdate
+     * @returns
+     */
+    async updatePortraitRelated(screenWillUpdate) {
       const selectedFolderIds = this.modal[
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
@@ -878,6 +908,21 @@ export default {
         this.generalInfo.bookId,
         selectedFolderIds
       );
+
+      // if the portrait modal is opened by mapping functionality (isShowMappingWelcome =  true);
+      // we do not need to create portrait mapping
+      if (this.isShowMappingWelcome) return;
+
+      // In digital, the first sheet is always the current sheet
+      // Create portrait mapping setting on the current sheet
+      this.createPortraitSheet(this.pageSelected.id, selectedFolderIds);
+
+      const sheetIds = [
+        this.pageSelected.id,
+        ...screenWillUpdate.map(({ sheetId }) => sheetId)
+      ];
+
+      await Promise.all(sheetIds.map(this.setSheetPortraitConfig));
     },
     /**
      * Get require frame data
@@ -990,6 +1035,32 @@ export default {
       },
       500,
       { leading: true, trailing: false }
-    )
+    ),
+    /**
+     * To get portrait sheet mapping and
+     * open portrait modal
+     *
+     * @param {String} sheetId
+     */
+    async handlePortraitMapping(sheetId) {
+      this.isShowMappingWelcome = false;
+      const portraitFolderIds = await this.getAndRemovePortraitSheet(sheetId);
+
+      if (isEmpty(portraitFolderIds)) return;
+
+      const portraitFolders = await this.getPortraitFolders({
+        bookId: this.generalInfo.bookId
+      });
+      const folders = portraitFolders.filter(folder =>
+        portraitFolderIds.includes(folder.id)
+      );
+
+      if (isEmpty(folders)) return;
+
+      // set folders
+      this.modal[MODAL_TYPES.PORTRAIT_FLOW].data = { folders };
+      this.isShowMappingWelcome = true;
+      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
+    }
   }
 };
