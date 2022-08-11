@@ -40,7 +40,7 @@ export const isFbBackground = bg =>
  * @returns {Object}                default background type
  */
 const getDefaultType = (themes, themeId) => {
-  const sub = themes.find(({ id }) => id === themeId);
+  const sub = themes.find(({ id }) => id === themeId) || themes[0];
 
   return {
     value: BACKGROUND_TYPE.THEME.id,

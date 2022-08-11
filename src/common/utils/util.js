@@ -60,7 +60,9 @@ const mapSubData = (sourceObject, rules, data) => {
  * @returns {Object} Object theme option
  */
 export const getThemeOptSelectedById = (listThemeOpts, themeId) => {
-  return listThemeOpts.find(themeOpt => themeOpt.id === themeId);
+  return (
+    listThemeOpts.find(themeOpt => themeOpt.id === themeId) || listThemeOpts[0]
+  );
 };
 
 /**
