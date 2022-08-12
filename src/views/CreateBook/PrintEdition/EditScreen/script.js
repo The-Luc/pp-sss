@@ -570,7 +570,7 @@ export default {
 
       const saveQueue = [];
       const updatedSheetIds = [];
-      let firstSheetId = null;
+      let activeSheet = null;
 
       Object.values(this.getSheets).forEach(sheet => {
         const leftPageNumber = +sheet?.pageLeftName;
@@ -585,7 +585,6 @@ export default {
 
         this.updateVisited({ sheetId: sheet.id });
         updatedSheetIds.push(sheet.id);
-        if (!firstSheetId) firstSheetId = sheet.id;
 
         const appliedPage = {
           isLeft: !isEmpty(leftObjects),
@@ -600,6 +599,7 @@ export default {
         saveQueue.push(saveObjetcs);
 
         if (sheet.id !== this.pageSelected.id) return;
+        if (!activeSheet) activeSheet = sheet.id;
 
         const canvas = this.$refs.canvasEditor.printCanvas;
         const sheetObjectArray = Object.values(this.listObjects);
@@ -647,7 +647,7 @@ export default {
       // therefore when `isShowMpaaingWelcome = false => create portrait mapping
       if (!this.isShowMappingWelcome) {
         // Create portrait mapping setting on the current sheet
-        this.createPortraitSheet(firstSheetId, selectedFolderIds);
+        this.createPortraitSheet(activeSheet, selectedFolderIds);
         await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
       }
 
