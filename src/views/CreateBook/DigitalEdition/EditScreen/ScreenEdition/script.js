@@ -455,6 +455,9 @@ export default {
 
     this.stopAutosaving();
 
+    // close all modal
+    this.toggleModal({ isOpenModal: false });
+
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
 
@@ -2291,7 +2294,7 @@ export default {
       if (!this.isCanvasChanged) return;
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      this.setLoadingState({ value: true, isFreeze: true });
+      this.setLoadingState({ value: false, isFreeze: true });
 
       await this.saveData(this.currentFrameId);
 
@@ -3300,6 +3303,15 @@ export default {
       if (this.isShowCustomMappingModal) {
         this.toggleModal({ isOpenModal: true });
       }
+    },
+    /**
+     * The function is trigger when portrait data has save on Vuex
+     * Fetch mapping config because it has changed to `Portrait mapping` and
+     * Render object on canvas and update mapping icon
+     */
+    async renderPortraits(objects) {
+      await this.fetchSheetMappingConfig();
+      await this.drawObjectsOnCanvas(objects);
     }
   }
 };

@@ -34,7 +34,8 @@ import {
   isAllowSyncData,
   allCurrentFrameObjects,
   isAllowSyncDataSecondary,
-  deletePrintObject
+  deletePrintObject,
+  isPortraitMappingChecker
 } from '@/common/utils';
 import {
   projectMapping,
@@ -974,6 +975,8 @@ export const useSyncData = () => {
 
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
 
+    if (isPortraitMappingChecker(sheetConfig)) return;
+
     if (isAllowSyncDataSecondary(config, sheetConfig)) {
       // if print is secondary format and any object deleted,
       // the corresponding mapping need to be deleted too
@@ -1007,6 +1010,8 @@ export const useSyncData = () => {
     const sheetConfig = await getSheetMappingConfig(sheetId);
 
     const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (isPortraitMappingChecker(sheetConfig)) return;
 
     if (isAllowSyncDataSecondary(config, sheetConfig, true)) {
       // if digital is secondary format and any object deleted,
