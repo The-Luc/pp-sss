@@ -571,6 +571,7 @@ export default {
       const saveQueue = [];
       const updatedSheetIds = [];
       let firstSheetId = null;
+      let shouldRender = false;
 
       Object.values(this.getSheets).forEach(sheet => {
         const leftPageNumber = +sheet?.pageLeftName;
@@ -624,7 +625,7 @@ export default {
           objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
         });
 
-        this.$refs.canvasEditor.drawLayout();
+        shouldRender = true;
       });
 
       await Promise.all(saveQueue);
@@ -651,6 +652,7 @@ export default {
         await Promise.all(updatedSheetIds.map(this.setSheetPortraitConfig));
       }
 
+      shouldRender && this.$refs.canvasEditor.renderPortraits();
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
