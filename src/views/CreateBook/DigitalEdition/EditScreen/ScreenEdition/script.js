@@ -455,6 +455,9 @@ export default {
 
     this.stopAutosaving();
 
+    // close all modal
+    this.toggleModal({ isOpenModal: false });
+
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
 
