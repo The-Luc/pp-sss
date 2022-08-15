@@ -30,7 +30,8 @@ import {
   createMediaObject,
   createPortraitImageObject,
   createSvgObject,
-  createTextBoxObject
+  createTextBoxObject,
+  handleObjectBlur
 } from '@/common/fabricObjects';
 import { isBackground, modifyBgToRenderOnPage } from './background';
 import { DATABASE_DPI } from '../constants';
@@ -702,6 +703,25 @@ export const parseFromAPIShadow = apiShadow => {
     shadowOpacity: 1,
     shadowBlur
   });
+};
+
+/**
+ * To calculate object's shadow after scaling
+ *
+ * @param {Object} shadow
+ * @param {{scaleX: number, scaleY: number}} newScale
+ * @param {{scaleX: number, scaleY: number}} oldScale
+ * @returns calculated shadow after scaling
+ */
+export const getShadowAfterScale = (shadow, newScale, oldScale) => {
+  const { offsetX, offsetY, blur } = shadow;
+
+  return {
+    ...shadow,
+    offsetX: (offsetX * oldScale.scaleX) / newScale.scaleX,
+    offsetY: (offsetY * oldScale.scaleY) / newScale.scaleY,
+    blur: handleObjectBlur(blur, oldScale, newScale)
+  };
 };
 
 /**

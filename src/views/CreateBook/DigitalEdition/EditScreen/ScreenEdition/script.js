@@ -47,7 +47,6 @@ import {
   calcScaleElement,
   createTextBox,
   setTextDimensionAfterScaled,
-  handleObjectBlur,
   handleScalingText,
   mappingElementProperties,
   startDrawBox,
@@ -138,7 +137,8 @@ import {
   isAllowSyncCustomData,
   isCustomMappingChecker,
   getBrokenCustomMapping,
-  isFbBackground
+  isFbBackground,
+  getShadowAfterScale
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1311,15 +1311,10 @@ export default {
       const target = e.transform?.target;
       if (!isEmpty(shadow)) {
         const oldTarget = e.transform;
-        const { offsetX, offsetY, blur } = shadow;
-        target.set({
-          shadow: {
-            ...shadow,
-            offsetX: (offsetX * oldTarget.scaleX) / target.scaleX,
-            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY,
-            blur: handleObjectBlur(blur, oldTarget, target)
-          }
-        });
+
+        const scaledShadow = getShadowAfterScale(shadow, target, oldTarget);
+
+        target.set({ shadow: { ...shadow, ...scaledShadow } });
       }
 
       if (isEmpty(target)) return;
