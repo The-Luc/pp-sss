@@ -266,6 +266,7 @@ export default {
         });
         setItem(CONTENT_MAPPING_MODAL + this.bookId, true);
       }
+      this.$emit('close');
       this.setToolNameSelected('');
     },
     /**

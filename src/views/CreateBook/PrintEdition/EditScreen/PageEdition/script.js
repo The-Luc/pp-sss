@@ -2602,6 +2602,15 @@ export default {
       if (this.isShowCustomMappingModal) {
         this.toggleModal({ isOpenModal: true });
       }
+    },
+    /**
+     * The function is trigger when portrait data has save on Vuex
+     * Fetch mapping config because it has changed to `Portrait mapping` and
+     * Render object on canvas and update mapping icon
+     */
+    async renderPortraits() {
+      await this.fetchSheetMappingConfig();
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

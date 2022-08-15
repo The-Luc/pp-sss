@@ -808,6 +808,7 @@ export default {
       }, {});
 
       const screenWillUpdate = [];
+      let currentCanvasObjects = [];
 
       const framePromise = Object.keys(requiredScreens).map(
         async (screenId, screenIndex) => {
@@ -873,7 +874,7 @@ export default {
           resetObjects(canvas);
 
           if (!isEmpty(background)) filteredObjects.unshift(background);
-          this.$refs.canvasEditor.drawObjectsOnCanvas(filteredObjects);
+          currentCanvasObjects = filteredObjects;
         }
       );
       await Promise.all(framePromise);
@@ -889,6 +890,8 @@ export default {
       this.setToolNameSelected('');
 
       await this.updatePortraitRelated(screenWillUpdate);
+
+      this.$refs.canvasEditor.renderPortraits(currentCanvasObjects);
       this.setLoadingState({ value: false, isFreeze: false });
     },
     /**
