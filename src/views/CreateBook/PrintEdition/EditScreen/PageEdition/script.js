@@ -58,7 +58,8 @@ import {
   getBrokenCustomMapping,
   isCustomMappingChecker,
   isAllowSyncCustomData,
-  isFbBackground
+  isFbBackground,
+  getShadowAfterScale
 } from '@/common/utils';
 
 import {
@@ -75,7 +76,6 @@ import {
   handleGetSvgData,
   addEventListeners,
   setTextDimensionAfterScaled,
-  handleObjectBlur,
   handleScalingText,
   enableTextEditMode,
   createBackgroundFabricObject,
@@ -1428,20 +1428,17 @@ export default {
     handleScaled(e) {
       const shadow = e.target?.shadow;
       const target = e.transform?.target;
+
       if (!isEmpty(shadow)) {
         const oldTarget = e.transform;
-        const { offsetX, offsetY, blur } = shadow;
-        target.set({
-          shadow: {
-            ...shadow,
-            offsetX: (offsetX * oldTarget.scaleX) / target.scaleX,
-            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY,
-            blur: handleObjectBlur(blur, oldTarget, target)
-          }
-        });
+
+        const scaledShadow = getShadowAfterScale(shadow, target, oldTarget);
+
+        target.set({ shadow: { ...shadow, ...scaledShadow } });
       }
 
       if (isEmpty(target)) return;
+
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
       const currentXInch = pxToIn(target.left);
