@@ -74,7 +74,7 @@ export default {
       getAssortedLayouts,
       getPrintLayoutByType
     } = useGetLayouts();
-    const { setNotificationState } = useAppCommon();
+    const { setNotification } = useAppCommon();
 
     return {
       isPrompt,
@@ -94,7 +94,7 @@ export default {
       getCustom,
       getFavoriteLayouts,
       getLayoutElements,
-      setNotificationState
+      setNotification
     };
   },
   data() {
@@ -208,12 +208,13 @@ export default {
           currentSheetThemeId
         );
         if (!themeOpt) {
-          this.setNotificationState({
+          const notification = {
             isShow: true,
             type: 'warning',
             title: 'Warning',
             text: 'Please select a theme for this book'
-          });
+          };
+          this.setNotification({ notification });
         }
         this.themeSelected = themeOpt || this.themesOptions[0];
         return;

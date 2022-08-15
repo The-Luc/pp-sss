@@ -34,35 +34,29 @@ export default {
     Loading
   },
   setup() {
-    const {
-      isLoading,
-      isShowNotification,
-      setNotificationState
-    } = useAppCommon();
+    const { isLoading, notification, setNotification } = useAppCommon();
 
     return {
       isLoading,
-      isShowNotification,
-      setNotificationState
+      notification,
+      setNotification
     };
   },
   computed: {
     ...mapGetters({
       isPrompt: APP_GETTER.IS_PROMPT
-    }),
-    getIsShow() {
-      return this.isShowNotification.isShow;
-    }
+    })
   },
   watch: {
-    getIsShow() {
-      if (this.getIsShow) {
+    'notification.isShow'() {
+      if (this.notification.isShow) {
         Notification({
           type: this.isShowNotification.type,
           title: this.isShowNotification.title,
           text: this.isShowNotification.text
         });
-        this.setNotificationState({ isShow: false });
+
+        this.setNotification({ notification: { isShow: false } });
       }
     }
   }

@@ -24,7 +24,7 @@ export default {
       getBackgroundTypeData,
       getBackgroundData
     } = useDigitalBackgroundMenu();
-    const { setNotificationState } = useAppCommon();
+    const { setNotification } = useAppCommon();
 
     const { backgrounds: appliedBackground } = useBackgroundGetter();
 
@@ -35,7 +35,7 @@ export default {
       getBackgroundTypeData,
       getBackgroundData,
       appliedBackground,
-      setNotificationState
+      setNotification
     };
   },
   data() {
@@ -63,12 +63,13 @@ export default {
       );
       if (!this.selectedType.sub) {
         this.selectedType.sub = this.backgroundTypes.THEME.value[0].id;
-        this.setNotificationState({
+        const notification = {
           isShow: true,
           type: 'warning',
           title: 'Warning',
           text: 'Please select a theme for this book'
-        });
+        };
+        this.setNotificationState({ notification });
       }
 
       this.getBackgrounds();

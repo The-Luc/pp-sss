@@ -18,14 +18,14 @@ export const useAppCommon = () => {
     isDigitalEdition,
     generalInfo,
     isLoading,
-    isShowNotification
+    notification
   } = useGetters({
     activeEdition: APP_GETTERS.ACTIVE_EDITION,
     isPrintEdition: APP_GETTERS.IS_PRINT_ACTIVE,
     isDigitalEdition: APP_GETTERS.IS_DIGITAL_ACTIVE,
     generalInfo: APP_GETTERS.GENERAL_INFO,
     isLoading: APP_GETTERS.IS_LOADING,
-    isShowNotification: APP_GETTERS.IS_SHOW_NOTIFICATION
+    notification: APP_GETTERS.NOTIFICATION
   });
 
   const {
@@ -39,7 +39,7 @@ export const useAppCommon = () => {
     setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
     toggleModal: APP_MUTATES.TOGGLE_MODAL,
     setLoadingState: APP_MUTATES.SET_LOADING_STATE,
-    setNotificationState: APP_MUTATES.SET_NOTIFICATION_STATE
+    setNotification: APP_MUTATES.SET_NOTIFICATION
   });
 
   const setActiveEdition = edition => setEdition({ edition });
@@ -53,7 +53,7 @@ export const useAppCommon = () => {
     setGeneralInfo,
     generalInfo,
     isLoading,
-    isShowNotification,
+    notification,
     toggleModal,
     setLoadingState,
     setNotificationState

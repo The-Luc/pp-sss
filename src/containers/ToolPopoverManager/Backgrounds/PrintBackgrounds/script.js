@@ -32,7 +32,7 @@ export default {
       getBackgroundTypeData,
       getBackgroundData
     } = usePrintBackgroundMenu();
-    const { setNotificationState } = useAppCommon();
+    const { setNotification } = useAppCommon();
 
     return {
       setToolNameSelected,
@@ -41,7 +41,7 @@ export default {
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData,
-      setNotificationState
+      setNotification
     };
   },
   data() {
@@ -76,12 +76,13 @@ export default {
       );
       if (!this.selectedType.sub) {
         this.selectedType.sub = this.backgroundTypes.THEME.value[0].id;
-        this.setNotificationState({
+        const notification = {
           isShow: true,
           type: 'warning',
           title: 'Warning',
           text: 'Please select a theme for this book'
-        });
+        };
+        this.setNotificationState({ notification });
       }
       this.selectedPageType = getBackgroundPageType(
         this.appliedBackground,

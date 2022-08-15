@@ -57,7 +57,7 @@ export const state = {
     isLoading: false,
     isFreeze: false
   },
-  showNotification: {
+  notification: {
     isShow: false,
     type: '',
     title: '',

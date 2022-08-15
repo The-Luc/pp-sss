@@ -31,7 +31,7 @@ class GetterClass extends BaseObject {
   IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
   DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
   IS_LOADING = 'isLoading';
-  IS_SHOW_NOTIFICATION = 'isShowNotification';
+  NOTIFICATION = 'Notification';
   GET_FONTS = 'getFonts';
   GET_UPLOAD_TOKEN = 'getUploadToken';
 
@@ -70,7 +70,7 @@ class MutationClass extends BaseObject {
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
   SET_LOADING_STATE = 'setLoadingState';
-  SET_NOTIFICATION_STATE = 'setNotificationState';
+  SET_NOTIFICATION = 'setNotification';
   SET_FONTS = 'setFonts';
   SET_UPLOAD_TOKEN = 'setUploadToken';
 
