@@ -34,6 +34,7 @@ import {
 } from '@/common/fabricObjects';
 import { isBackground, modifyBgToRenderOnPage } from './background';
 import { DATABASE_DPI } from '../constants';
+import { modifyUrl } from './image';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -711,7 +712,7 @@ export const parseFromAPIShadow = apiShadow => {
  */
 export const splitBase64Image = async imgUrl => {
   const img = await new Promise(r => {
-    fabric.Image.fromURL(imgUrl, image => r(image), {
+    fabric.Image.fromURL(modifyUrl(imgUrl), image => r(image), {
       crossOrigin: 'anonymous'
     });
   });
