@@ -104,6 +104,12 @@ export const mutations = {
 
     state.loadingScreen.isLoading = value;
   },
+  [APP._MUTATES.SET_NOTIFICATION_STATE](state, { isShow, type, title, text }) {
+    state.showNotification.isShow = isShow;
+    state.showNotification.type = type;
+    state.showNotification.title = title;
+    state.showNotification.text = text;
+  },
   [APP._MUTATES.SET_FONTS](state, { fonts }) {
     state.fonts = fonts;
   },

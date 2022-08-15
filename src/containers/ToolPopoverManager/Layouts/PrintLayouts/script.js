@@ -32,7 +32,8 @@ import {
   useActionLayout,
   useCustomLayout,
   useLayoutElements,
-  useGetLayouts
+  useGetLayouts,
+  useAppCommon
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -73,6 +74,7 @@ export default {
       getAssortedLayouts,
       getPrintLayoutByType
     } = useGetLayouts();
+    const { setNotificationState } = useAppCommon();
 
     return {
       isPrompt,
@@ -91,7 +93,8 @@ export default {
       deleteFavorites,
       getCustom,
       getFavoriteLayouts,
-      getLayoutElements
+      getLayoutElements,
+      setNotificationState
     };
   },
   data() {
@@ -204,7 +207,15 @@ export default {
           this.themesOptions,
           currentSheetThemeId
         );
-        this.themeSelected = themeOpt;
+        if (!themeOpt) {
+          this.setNotificationState({
+            isShow: true,
+            type: 'warning',
+            title: 'Warning',
+            text: 'Please select a theme for this book'
+          });
+        }
+        this.themeSelected = themeOpt || this.themesOptions[0];
         return;
       }
 

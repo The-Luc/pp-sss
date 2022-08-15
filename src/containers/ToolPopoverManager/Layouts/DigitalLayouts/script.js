@@ -29,7 +29,8 @@ import {
   useCustomLayout,
   useGetLayouts,
   useApplyDigitalLayout,
-  useObjectProperties
+  useObjectProperties,
+  useAppCommon
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -67,6 +68,7 @@ export default {
       getAssortedLayouts,
       getDigitalLayoutByType
     } = useGetLayouts();
+    const { setNotificationState } = useAppCommon();
 
     return {
       isPrompt,
@@ -87,7 +89,8 @@ export default {
       listObjects,
       getDigitalLayouts,
       getAssortedLayouts,
-      getDigitalLayoutByType
+      getDigitalLayoutByType,
+      setNotificationState
     };
   },
   data() {
@@ -225,7 +228,15 @@ export default {
           this.themesOptions,
           currentSheetThemeId
         );
-        this.themeSelected = themeOpt;
+        if (!themeOpt) {
+          this.setNotificationState({
+            isShow: true,
+            type: 'warning',
+            title: 'Warning',
+            text: 'Please select a theme for this book'
+          });
+        }
+        this.themeSelected = themeOpt || this.themesOptions[0];
       } else {
         const themeSelected = this.themesOptions.find(
           t => t.id === this.defaultThemeId

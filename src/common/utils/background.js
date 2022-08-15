@@ -8,7 +8,6 @@ import {
   OBJECT_TYPE
 } from '@/common/constants';
 import { generateCanvasThumbnail, splitBase64Image } from '.';
-import { Notification } from '@/components/Notification';
 
 export const isFullBackground = ({ pageType }) => {
   return (
@@ -41,15 +40,7 @@ export const isFbBackground = bg =>
  * @returns {Object}                default background type
  */
 const getDefaultType = (themes, themeId) => {
-  const defaultTheme = themes.find(({ id }) => id === themeId);
-  if (!defaultTheme) {
-    Notification({
-      type: 'warning',
-      title: 'Warning',
-      text: 'Please select a theme for this book'
-    });
-  }
-  const sub = defaultTheme || themes[0];
+  const sub = themes.find(({ id }) => id === themeId);
 
   return {
     value: BACKGROUND_TYPE.THEME.id,

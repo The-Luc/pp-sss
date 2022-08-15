@@ -2,7 +2,11 @@ import Backgrounds from '@/components/ToolPopovers/Background';
 
 import { MODAL_TYPES } from '@/common/constants';
 
-import { usePopoverCreationTool, usePrintBackgroundMenu } from '@/hooks';
+import {
+  useAppCommon,
+  usePopoverCreationTool,
+  usePrintBackgroundMenu
+} from '@/hooks';
 
 import { cloneDeep } from 'lodash';
 
@@ -28,6 +32,7 @@ export default {
       getBackgroundTypeData,
       getBackgroundData
     } = usePrintBackgroundMenu();
+    const { setNotificationState } = useAppCommon();
 
     return {
       setToolNameSelected,
@@ -35,7 +40,8 @@ export default {
       currentThemeId,
       toggleModal,
       getBackgroundTypeData,
-      getBackgroundData
+      getBackgroundData,
+      setNotificationState
     };
   },
   data() {
@@ -68,7 +74,15 @@ export default {
         this.backgroundTypes,
         this.currentThemeId
       );
-
+      if (!this.selectedType.sub) {
+        this.selectedType.sub = this.backgroundTypes.THEME.value[0].id;
+        this.setNotificationState({
+          isShow: true,
+          type: 'warning',
+          title: 'Warning',
+          text: 'Please select a theme for this book'
+        });
+      }
       this.selectedPageType = getBackgroundPageType(
         this.appliedBackground,
         this.isHalfSheet

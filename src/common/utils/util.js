@@ -34,7 +34,6 @@ import {
 } from '@/common/fabricObjects';
 import { isBackground, modifyBgToRenderOnPage } from './background';
 import { DATABASE_DPI } from '../constants';
-import { Notification } from '@/components/Notification';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -61,15 +60,7 @@ const mapSubData = (sourceObject, rules, data) => {
  * @returns {Object} Object theme option
  */
 export const getThemeOptSelectedById = (listThemeOpts, themeId) => {
-  const defaultTheme = listThemeOpts.find(themeOpt => themeOpt.id === themeId);
-  if (!defaultTheme) {
-    Notification({
-      type: 'warning',
-      title: 'Warning',
-      text: 'Please select a theme for this book'
-    });
-  }
-  return defaultTheme || listThemeOpts[0];
+  return listThemeOpts.find(themeOpt => themeOpt.id === themeId);
 };
 
 /**
