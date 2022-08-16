@@ -57,6 +57,12 @@ export const state = {
     isLoading: false,
     isFreeze: false
   },
+  notification: {
+    isShow: false,
+    type: '',
+    title: '',
+    text: ''
+  },
   uploadToken: {
     token: null,
     expiredAt: null,

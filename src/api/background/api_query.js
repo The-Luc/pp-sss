@@ -66,6 +66,7 @@ const getPrintBackgrounds = async (
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
+  if (!backgroundTypeSubId) return [];
   const res = await graphqlRequest(backgroundOfThemeQuery, {
     id: backgroundTypeSubId
   });
