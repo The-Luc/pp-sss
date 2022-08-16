@@ -30,10 +30,12 @@ import {
   createMediaObject,
   createPortraitImageObject,
   createSvgObject,
-  createTextBoxObject
+  createTextBoxObject,
+  handleObjectBlur
 } from '@/common/fabricObjects';
 import { isBackground, modifyBgToRenderOnPage } from './background';
 import { DATABASE_DPI } from '../constants';
+import { modifyUrl } from './image';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -704,6 +706,25 @@ export const parseFromAPIShadow = apiShadow => {
 };
 
 /**
+ * To calculate object's shadow after scaling
+ *
+ * @param {Object} shadow
+ * @param {{scaleX: number, scaleY: number}} newScale
+ * @param {{scaleX: number, scaleY: number}} oldScale
+ * @returns calculated shadow after scaling
+ */
+export const getShadowAfterScale = (shadow, newScale, oldScale) => {
+  const { offsetX, offsetY, blur } = shadow;
+
+  return {
+    ...shadow,
+    offsetX: (offsetX * oldScale.scaleX) / newScale.scaleX,
+    offsetY: (offsetY * oldScale.scaleY) / newScale.scaleY,
+    blur: handleObjectBlur(blur, oldScale, newScale)
+  };
+};
+
+/**
  * To split base 64 image into two half
  *
  * @param {String} imgUrl base 64 image url
@@ -711,7 +732,7 @@ export const parseFromAPIShadow = apiShadow => {
  */
 export const splitBase64Image = async imgUrl => {
   const img = await new Promise(r => {
-    fabric.Image.fromURL(imgUrl, image => r(image), {
+    fabric.Image.fromURL(modifyUrl(imgUrl), image => r(image), {
       crossOrigin: 'anonymous'
     });
   });
