@@ -82,7 +82,7 @@ export default {
           title: 'Warning',
           text: 'Please select a theme for this book'
         };
-        this.setNotificationState({ notification });
+        this.setNotification({ notification });
       }
       this.selectedPageType = getBackgroundPageType(
         this.appliedBackground,

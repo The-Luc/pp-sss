@@ -33,7 +33,7 @@ export const useAppCommon = () => {
     setGeneralInfo,
     toggleModal,
     setLoadingState,
-    setNotificationState
+    setNotification
   } = useMutations({
     setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
     setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
@@ -56,6 +56,6 @@ export const useAppCommon = () => {
     notification,
     toggleModal,
     setLoadingState,
-    setNotificationState
+    setNotification
   };
 };

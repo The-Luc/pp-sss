@@ -51,9 +51,9 @@ export default {
     'notification.isShow'() {
       if (this.notification.isShow) {
         Notification({
-          type: this.isShowNotification.type,
-          title: this.isShowNotification.title,
-          text: this.isShowNotification.text
+          type: this.notification.type,
+          title: this.notification.title,
+          text: this.notification.text
         });
 
         this.setNotification({ notification: { isShow: false } });
