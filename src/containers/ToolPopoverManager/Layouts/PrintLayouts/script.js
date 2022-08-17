@@ -21,7 +21,6 @@ import {
   removeItemsFormArray,
   isHalfSheet,
   isHalfRight,
-  getLayoutSelected,
   isCoverLayoutChecker
 } from '@/common/utils';
 import { getItem, setItem } from '@/common/storage';
@@ -193,7 +192,7 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
+      const type = this.layoutTypes[0];
       this.layoutTypeSelected = this.getSelectedType(type);
     },
 
@@ -453,6 +452,9 @@ export default {
         this.themeSelected?.id,
         typeValue
       );
+
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === PRINT_LAYOUT_TYPES.ALL.value) return;
 
       // load more layout of the other themes
       this.extraLayouts = await this.getPrintLayoutByType(

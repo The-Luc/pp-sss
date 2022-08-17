@@ -220,11 +220,6 @@ const getElementDimension = element => {
   return { size, coord, opacity };
 };
 
-export const getLayoutSelected = (sheet, layoutTypes = []) => {
-  const index = layoutTypes.findIndex(l => l.sheetType === sheet.type);
-  return layoutTypes[index];
-};
-
 /**
  *  To calculate the position objects after rotation
  *

@@ -71,10 +71,11 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   const dbTemplates = get(res, 'data.theme.templates', []);
 
   const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
+  const isAll = layoutTypeId === LAYOUT_TYPES.ALL.value;
 
-  const templates = dbTemplates.filter(
-    t => t.layout_use === layoutType || (!t.layout_use && layoutType === 'MISC')
-  );
+  const templates = isAll
+    ? dbTemplates
+    : dbTemplates.filter(t => t.layout_use === layoutType);
 
   return templates.map(t => ({
     id: t.id,
@@ -89,7 +90,9 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
 };
 
 /**
- * To get layout filtered by its themeId and its category
+ * To get layout filtered by its themeId and its category.
+ * Get layouts across THEMES
+ *
  * @param {String} themeId     id of a theme
  * @param {String} categoryId  id of a category
  * @returns array of layout object

@@ -254,6 +254,9 @@ export default {
         this.printLayoutTypeSelected?.value
       );
 
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === PRINT_LAYOUT_TYPES.ALL.value) return;
+
       this.extraPrintLayouts = await this.getPrintLayoutByType(
         this.printThemeSelected?.id,
         this.printLayoutTypeSelected?.value
@@ -276,6 +279,9 @@ export default {
         this.digitalThemeSelected?.id,
         this.digitalLayoutTypeSelected?.value
       );
+
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === DIGITAL_LAYOUT_TYPES.ALL.value) return;
 
       this.extraDigitalLayouts = await this.getDigitalLayoutByType(
         this.digitalThemeSelected?.id,
