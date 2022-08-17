@@ -7,7 +7,8 @@ import { getBackgroundType } from '@/common/utils';
 import {
   usePopoverCreationTool,
   useDigitalBackgroundMenu,
-  useBackgroundGetter
+  useBackgroundGetter,
+  useAppCommon
 } from '@/hooks';
 
 export default {
@@ -23,6 +24,7 @@ export default {
       getBackgroundTypeData,
       getBackgroundData
     } = useDigitalBackgroundMenu();
+    const { setNotification } = useAppCommon();
 
     const { backgrounds: appliedBackground } = useBackgroundGetter();
 
@@ -32,7 +34,8 @@ export default {
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData,
-      appliedBackground
+      appliedBackground,
+      setNotification
     };
   },
   data() {
@@ -58,6 +61,16 @@ export default {
         this.backgroundTypes,
         this.currentThemeId
       );
+      if (!this.selectedType.sub) {
+        this.selectedType.sub = this.backgroundTypes.THEME.value[0].id;
+        const notification = {
+          isShow: true,
+          type: 'warning',
+          title: 'Warning',
+          text: 'Please select a theme for this book'
+        };
+        this.setNotification({ notification });
+      }
 
       this.getBackgrounds();
     },

@@ -21,7 +21,6 @@ import {
   removeItemsFormArray,
   isHalfSheet,
   isHalfRight,
-  getLayoutSelected,
   isCoverLayoutChecker
 } from '@/common/utils';
 import { getItem, setItem } from '@/common/storage';
@@ -32,7 +31,8 @@ import {
   useActionLayout,
   useCustomLayout,
   useLayoutElements,
-  useGetLayouts
+  useGetLayouts,
+  useAppCommon
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -73,6 +73,7 @@ export default {
       getAssortedLayouts,
       getPrintLayoutByType
     } = useGetLayouts();
+    const { setNotification } = useAppCommon();
 
     return {
       isPrompt,
@@ -91,7 +92,8 @@ export default {
       deleteFavorites,
       getCustom,
       getFavoriteLayouts,
-      getLayoutElements
+      getLayoutElements,
+      setNotification
     };
   },
   data() {
@@ -190,7 +192,7 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
+      const type = this.layoutTypes[0];
       this.layoutTypeSelected = this.getSelectedType(type);
     },
 
@@ -204,7 +206,16 @@ export default {
           this.themesOptions,
           currentSheetThemeId
         );
-        this.themeSelected = themeOpt;
+        if (!themeOpt) {
+          const notification = {
+            isShow: true,
+            type: 'warning',
+            title: 'Warning',
+            text: 'Please select a theme for this book'
+          };
+          this.setNotification({ notification });
+        }
+        this.themeSelected = themeOpt || this.themesOptions[0];
         return;
       }
 
@@ -441,6 +452,9 @@ export default {
         this.themeSelected?.id,
         typeValue
       );
+
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === PRINT_LAYOUT_TYPES.ALL.value) return;
 
       // load more layout of the other themes
       this.extraLayouts = await this.getPrintLayoutByType(
