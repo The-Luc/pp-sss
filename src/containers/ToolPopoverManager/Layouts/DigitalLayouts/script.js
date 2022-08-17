@@ -14,11 +14,7 @@ import {
   EVENT_TYPE,
   CONTENT_MAPPING_MODAL
 } from '@/common/constants';
-import {
-  getThemeOptSelectedById,
-  isEmpty,
-  getLayoutSelected
-} from '@/common/utils';
+import { getThemeOptSelectedById, isEmpty } from '@/common/utils';
 import { getItem, setItem } from '@/common/storage';
 import {
   usePopoverCreationTool,
@@ -197,10 +193,12 @@ export default {
         return;
       }
 
-      this.layoutTypeSelected = getLayoutSelected(
-        this.pageSelected,
-        this.layoutTypes
-      );
+      this.layoutTypeSelected = this.layoutTypes[0];
+
+      // this.layoutTypeSelected = getLayoutSelected(
+      //   this.pageSelected,
+      //   this.layoutTypes
+      // );
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet

@@ -364,6 +364,9 @@ export const useGetLayouts = () => {
     return layouts.flat();
   };
 
+  /**
+   *  Get layouts in different themes with same current layout type
+   */
   const getPrintLayoutByType = async (currentThemeId, layoutTypeId) => {
     if (!layoutTypeId) return [];
 
