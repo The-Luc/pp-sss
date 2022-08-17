@@ -12,7 +12,8 @@ import {
   SAVED_AND_FAVORITES_TYPE,
   ASSORTED_TYPE_VALUE,
   EVENT_TYPE,
-  CONTENT_MAPPING_MODAL
+  CONTENT_MAPPING_MODAL,
+  DIGITAL_LAYOUT_TYPES
 } from '@/common/constants';
 import { getThemeOptSelectedById, isEmpty } from '@/common/utils';
 import { getItem, setItem } from '@/common/storage';
@@ -410,6 +411,9 @@ export default {
         this.layoutTypeSelected?.value,
         this.isSupplemental
       );
+
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === DIGITAL_LAYOUT_TYPES.ALL.value) return;
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,

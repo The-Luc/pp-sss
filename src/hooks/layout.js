@@ -160,17 +160,15 @@ export const useGetDigitalLayouts = () => {
 
   const getDigitalLayouts = async (themeId, layoutTypeId) => {
     const layouts = await getDigitalLayoutsApi(themeId);
+    const TYPES = DIGITAL_LAYOUT_TYPES;
 
-    const isSupplemental =
-      layoutTypeId === DIGITAL_LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value;
+    const isSupplemental = layoutTypeId === TYPES.SUPPLEMENTAL_LAYOUTS.value;
 
-    const layoutUse = findKey(
-      DIGITAL_LAYOUT_TYPES,
-      o => o.value === layoutTypeId
-    );
+    const layoutUse = findKey(TYPES, o => o.value === layoutTypeId);
+    const isAll = layoutTypeId === TYPES.ALL.value;
 
-    // get layouts at the theme preview screen
-    if (!layoutTypeId) return layouts;
+    // get layouts at the theme preview screen && layout type is ALL
+    if (!layoutTypeId || isAll) return layouts;
 
     if (isSupplemental) return layouts.filter(l => l.isSupplemental);
 
