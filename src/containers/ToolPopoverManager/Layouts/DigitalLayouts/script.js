@@ -189,17 +189,7 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      if (this.isSupplemental) {
-        this.layoutTypeSelected = this.layoutTypes[0];
-        return;
-      }
-
       this.layoutTypeSelected = this.layoutTypes[0];
-
-      // this.layoutTypeSelected = getLayoutSelected(
-      //   this.pageSelected,
-      //   this.layoutTypes
-      // );
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
