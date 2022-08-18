@@ -714,6 +714,7 @@ export const parseFromAPIShadow = apiShadow => {
  * @returns calculated shadow after scaling
  */
 export const getShadowAfterScale = (shadow, newScale, oldScale) => {
+  if (!shadow) return;
   const { offsetX, offsetY, blur } = shadow;
 
   return {
