@@ -154,6 +154,7 @@ export default {
         type !== ASSORTED_TYPE_VALUE &&
         type !== CUSTOM_LAYOUT_TYPE &&
         type !== SUPPLEMENTAL_TYPE_VALUE &&
+        type !== LAYOUT_TYPES.ALL.value &&
         !isEmpty(this.otherLayouts)
       );
     },

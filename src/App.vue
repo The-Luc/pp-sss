@@ -23,6 +23,7 @@ import { mapGetters } from 'vuex';
 import ModalManager from '@/containers/ModalManager';
 import HeaderControl from '@/views/CreateBook/HeadControl';
 import Loading from '@/components/Modals/Loading';
+import { Notification } from '@/components/Notification';
 import { GETTERS as APP_GETTER } from '@/store/modules/app/const';
 import { useAppCommon } from './hooks';
 
@@ -33,15 +34,31 @@ export default {
     Loading
   },
   setup() {
-    const { isLoading } = useAppCommon();
+    const { isLoading, notification, setNotification } = useAppCommon();
+
     return {
-      isLoading
+      isLoading,
+      notification,
+      setNotification
     };
   },
   computed: {
     ...mapGetters({
       isPrompt: APP_GETTER.IS_PROMPT
     })
+  },
+  watch: {
+    'notification.isShow'() {
+      if (this.notification.isShow) {
+        Notification({
+          type: this.notification.type,
+          title: this.notification.title,
+          text: this.notification.text
+        });
+
+        this.setNotification({ notification: { isShow: false } });
+      }
+    }
   }
 };
 </script>

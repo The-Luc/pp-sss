@@ -105,9 +105,6 @@ export default {
       const { pageLeftName, pageRightName } = this.currentSheet;
 
       return `${pageLeftName} - ${pageRightName}`;
-    },
-    isDisableReset() {
-      return !this.selectedStatus.value;
     }
   },
   async mounted() {
@@ -136,7 +133,6 @@ export default {
      * To show the modal confirm reset content mapping
      */
     showConfirmReset() {
-      if (this.isDisableReset) return;
       this.toggleModal({
         isOpenModal: true
       });

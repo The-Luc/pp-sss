@@ -12,13 +12,10 @@ import {
   SAVED_AND_FAVORITES_TYPE,
   ASSORTED_TYPE_VALUE,
   EVENT_TYPE,
-  CONTENT_MAPPING_MODAL
+  CONTENT_MAPPING_MODAL,
+  DIGITAL_LAYOUT_TYPES
 } from '@/common/constants';
-import {
-  getThemeOptSelectedById,
-  isEmpty,
-  getLayoutSelected
-} from '@/common/utils';
+import { getThemeOptSelectedById, isEmpty } from '@/common/utils';
 import { getItem, setItem } from '@/common/storage';
 import {
   usePopoverCreationTool,
@@ -29,7 +26,8 @@ import {
   useCustomLayout,
   useGetLayouts,
   useApplyDigitalLayout,
-  useObjectProperties
+  useObjectProperties,
+  useAppCommon
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -67,6 +65,7 @@ export default {
       getAssortedLayouts,
       getDigitalLayoutByType
     } = useGetLayouts();
+    const { setNotification } = useAppCommon();
 
     return {
       isPrompt,
@@ -87,7 +86,8 @@ export default {
       listObjects,
       getDigitalLayouts,
       getAssortedLayouts,
-      getDigitalLayoutByType
+      getDigitalLayoutByType,
+      setNotification
     };
   },
   data() {
@@ -192,15 +192,7 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      if (this.isSupplemental) {
-        this.layoutTypeSelected = this.layoutTypes[0];
-        return;
-      }
-
-      this.layoutTypeSelected = getLayoutSelected(
-        this.pageSelected,
-        this.layoutTypes
-      );
+      this.layoutTypeSelected = this.layoutTypes[0];
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
@@ -225,7 +217,16 @@ export default {
           this.themesOptions,
           currentSheetThemeId
         );
-        this.themeSelected = themeOpt;
+        if (!themeOpt) {
+          const notification = {
+            isShow: true,
+            type: 'warning',
+            title: 'Warning',
+            text: 'Please select a theme for this book'
+          };
+          this.setNotification({ notification });
+        }
+        this.themeSelected = themeOpt || this.themesOptions[0];
       } else {
         const themeSelected = this.themesOptions.find(
           t => t.id === this.defaultThemeId
@@ -412,6 +413,9 @@ export default {
         this.layoutTypeSelected?.value,
         this.isSupplemental
       );
+
+      // if layout type is ALL => do not load  extra layouts of other themes
+      if (typeValue === DIGITAL_LAYOUT_TYPES.ALL.value) return;
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,

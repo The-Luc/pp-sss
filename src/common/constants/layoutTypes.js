@@ -20,68 +20,73 @@ export const LAYOUT_SIZE_TYPES = {
 };
 
 export const LAYOUT_TYPES = {
-  COVER: {
+  ALL: {
     value: 1,
+    name: 'All',
+    sheetType: SHEET_TYPE.NORMAL
+  },
+  COVER: {
+    value: 2,
     name: 'Cover',
     sheetType: SHEET_TYPE.COVER
   },
   COLLAGE: {
-    value: 2,
+    value: 3,
     name: 'Collage',
     sheetType: SHEET_TYPE.NORMAL
   },
   LETTER_FROM: {
-    value: 3,
+    value: 4,
     name: 'Letter From...',
     sheetType: SHEET_TYPE.NORMAL
   },
   ADMIN_STAFF: {
-    value: 4,
+    value: 5,
     name: 'Admin & Staff',
     sheetType: SHEET_TYPE.NORMAL
   },
   CLUBS_GROUPS_TEAMS: {
-    value: 5,
+    value: 6,
     name: 'Clubs, Groups & Teams',
     sheetType: SHEET_TYPE.NORMAL
   },
   SIGNATURES: {
-    value: 6,
+    value: 7,
     name: 'Signatures',
     sheetType: SHEET_TYPE.BACK_COVER
   },
   AWARDS_SUPERLATIVES: {
-    value: 7,
+    value: 8,
     name: 'Awards/Superlatives',
     sheetType: SHEET_TYPE.NORMAL
   },
   GRADUATION: {
-    value: 8,
+    value: 9,
     name: 'Graduation',
     sheetType: SHEET_TYPE.NORMAL
   },
   PORTRAIT: {
-    value: 9,
+    value: 10,
     name: 'Portrait',
     sheetType: SHEET_TYPE.NORMAL
   },
   INTRO_OPENING: {
-    value: 10,
+    value: 11,
     name: 'Intro/Opening Page',
     sheetType: SHEET_TYPE.FRONT_COVER
   },
   YEAR_REVIEW: {
-    value: 11,
+    value: 12,
     name: 'Year in Review',
     sheetType: SHEET_TYPE.NORMAL
   },
   SIMPLE: {
-    value: 12,
+    value: 13,
     name: 'Simple',
     sheetType: SHEET_TYPE.NORMAL
   },
   MISC: {
-    value: 13,
+    value: 14,
     name: 'Misc',
     sheetType: SHEET_TYPE.NORMAL
   }

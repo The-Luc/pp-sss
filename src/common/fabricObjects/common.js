@@ -21,7 +21,8 @@ import {
   pxToIn,
   ptToPxPreview,
   inToPxPreview,
-  modifyUrl
+  modifyUrl,
+  getShadowAfterScale
 } from '@/common/utils';
 import { toFabricMediaProp, toFabricPortraitImageProp } from './image';
 import { useObjectControlsOverride } from '@/plugins/fabric';
@@ -468,7 +469,7 @@ export const updateSpecificProp = (element, prop) => {
 };
 
 /**
- * Change property of element
+ * Change property of element of element on canvas
  *
  * @param {Object}  element the element will be change property
  * @param {Object}  prop    new property
@@ -481,7 +482,15 @@ export const updateElement = (element, prop, canvas) => {
 
   const fabricProp = getFabricProp(element, prop);
 
+  const oldScale = { scaleX: element.scaleX, scaleY: element.scaleY };
+
   setElementProp(element, fabricProp);
+
+  const newScale = { scaleX: element.scaleX, scaleY: element.scaleY };
+
+  // the following line of code must placed below the `setElementProp()` function
+  const newShadow = getShadowAfterScale(element.shadow, newScale, oldScale);
+  element.set({ shadow: { ...element.shadow, ...newShadow } });
 
   if (Object.keys(prop).includes('isConstrain')) {
     canvas.set({ uniformScaling: prop.isConstrain });
