@@ -179,9 +179,14 @@ export const useFrameAdd = () => {
     currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
 
-  const { addSupplementalFrame, setCurrentFrameId } = useMutations({
+  const {
+    addSupplementalFrame,
+    setCurrentFrameId,
+    setSupplementalFrame
+  } = useMutations({
     addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
+    setSupplementalFrame: DIGITAL_MUTATES.SET_SUPPLEMENTAL_FRAME
   });
 
   const { createFrames } = useFrameAction();
@@ -195,9 +200,16 @@ export const useFrameAdd = () => {
     const sheetId = currentSheet.value.id;
     const layout = { isSupplemental: true, frames };
 
-    const newFrames = await createFrames(sheetId, layout.frames);
+    const newFrames = await createFrames(
+      sheetId,
+      layout.frames,
+      layout.isSupplemental
+    );
 
     addSupplementalFrame({ frames: newFrames });
+    newFrames.forEach(f => {
+      setSupplementalFrame({ frameId: f.id });
+    });
 
     const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
     setCurrentFrameId({ id: lastAddedFrame.id });
@@ -276,7 +288,7 @@ export const useFrameAction = () => {
    * @param {array<{}>} frames
    * @returns {Promise<array>} created frames
    */
-  const createFrames = async (sheetId, frames) => {
+  const createFrames = async (sheetId, frames, isSupplemental) => {
     const responseFrames = [];
 
     // frames should be created in order so that frame ids will be incrementing numbers
@@ -284,7 +296,7 @@ export const useFrameAction = () => {
       // await for the previous item to finish processing
       await acc;
 
-      const frame = await createFrameApi(sheetId, f);
+      const frame = await createFrameApi(sheetId, f, isSupplemental);
       responseFrames.push(frame);
     }, Promise.resolve());
 

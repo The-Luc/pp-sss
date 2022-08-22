@@ -161,6 +161,9 @@ export const mutations = {
 
     frames[currentFrameId].supplementalLayoutId = id;
   },
+  [DIGITAL._MUTATES.SET_SUPPLEMENTAL_FRAME]({ frames }, { frameId }) {
+    frames[frameId].fromLayout = false;
+  },
   [DIGITAL._MUTATES.REMOVE_OBJECTS](state, { currentPosition }) {
     Object.values(state.objects).forEach(obj => {
       if (obj.position === currentPosition) {
@@ -217,7 +220,6 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.ADD_SUPPLEMENTAL_FRAMES](state, { frames }) {
     if (!frames?.length) return;
-
     frames.forEach(frame => {
       const id = frame.id;
       state.frameIds = [...state.frameIds, id];
