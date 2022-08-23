@@ -2583,9 +2583,11 @@ export default {
     },
     customMappingDeleteObjects(fbObjects) {
       // handle show modal when is in custom mapping and digital is primary
+      const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
-        isPrimaryFormat(this.projectMappingConfig)
+        isPrimaryFormat(this.projectMappingConfig) ||
+        isHideMess
       )
         return;
 

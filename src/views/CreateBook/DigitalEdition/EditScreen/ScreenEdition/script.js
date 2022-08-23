@@ -3006,7 +3006,7 @@ export default {
     },
 
     /**
-     * Handle to show custom mapping modal when editing / adding objects
+     * Handle to show custom mapping modal when editing / adding / delete objects
      */
     async handleShowCustomMappingModal() {
       const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
@@ -3282,9 +3282,11 @@ export default {
     },
     customMappingDeleteObjects(fbObjects) {
       // handle show modal when is in custom mapping and print is primary
+      const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
       if (
         !isCustomMappingChecker(this.sheetMappingConfig) ||
-        isPrimaryFormat(this.projectMappingConfig, true)
+        isPrimaryFormat(this.projectMappingConfig, true) ||
+        isHideMess
       )
         return;
 
