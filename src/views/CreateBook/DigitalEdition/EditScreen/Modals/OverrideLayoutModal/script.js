@@ -98,7 +98,10 @@ export default {
         // if user applies non-mapped layout
         this.isShowNonMapLayoutConfirm = true;
       }
+      return;
     }
+
+    this.isShowCustomConfirm = true;
   },
   methods: {
     async applyLayout() {
