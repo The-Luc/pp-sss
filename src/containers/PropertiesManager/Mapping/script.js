@@ -17,7 +17,8 @@ import {
   useMappingSheet,
   useSavePageData,
   useFrameAction,
-  useFrameOrdering
+  useFrameOrdering,
+  useFrame
 } from '@/hooks';
 
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
@@ -56,6 +57,7 @@ export default {
     const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
     const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
+    const { currentFrame } = useFrame();
     return {
       toggleModal,
       getMappingConfig,
@@ -68,7 +70,8 @@ export default {
       getSheetFrames,
       updateFramesAndThumbnails,
       deleteSheetMappings,
-      updateFrameOrder
+      updateFrameOrder,
+      currentFrame
     };
   },
   data() {
@@ -105,6 +108,9 @@ export default {
       const { pageLeftName, pageRightName } = this.currentSheet;
 
       return `${pageLeftName} - ${pageRightName}`;
+    },
+    isSuplemental() {
+      return !this.currentFrame.fromLayout;
     }
   },
   async mounted() {

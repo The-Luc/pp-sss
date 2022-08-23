@@ -193,9 +193,12 @@ export const useFrameAdd = () => {
 
     // adding 1 supplemental frame
     const sheetId = currentSheet.value.id;
-    const layout = { isSupplemental: true, frames };
+    // handleAddFrame func use to add supplemental frame
+    // so we set fromLayout = false
+    const [frame] = frames;
+    frame.fromLayout = false;
 
-    const newFrames = await createFrames(sheetId, layout.frames);
+    const newFrames = await createFrames(sheetId, [frame]);
 
     addSupplementalFrame({ frames: newFrames });
 
