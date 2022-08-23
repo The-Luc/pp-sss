@@ -12,10 +12,7 @@ import {
 // the purpose of the below line is to make sure every request is unique
 let increasement = 0;
 
-export const createFrameApi = async (sheetId, frameParams, isSupplemental) => {
-  frameParams = isSupplemental
-    ? { ...frameParams, fromLayout: false }
-    : frameParams;
+export const createFrameApi = async (sheetId, frameParams) => {
   const res = await graphqlRequest(createFrameMutation, {
     sheetId,
     frameParams: mappingFrameToApi(frameParams),

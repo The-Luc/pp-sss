@@ -102,7 +102,6 @@ class MutationClass extends BaseObject {
   REORDER_OBJECT_IDS = 'reorderObjectIds';
   SET_SHEET_DATA = 'setSheetData';
   SET_SUPPLEMENTAL_LAYOUT_ID = 'setSupplementalLayoutIdOnFrame';
-  SET_SUPPLEMENTAL_FRAME = 'setSupplementalFrame';
   REMOVE_OBJECTS = 'removeObject';
   SET_BACKGROUND_PROP = 'setBackgroundProp';
   DELETE_BACKGROUND = 'deleteBackground';

@@ -179,14 +179,9 @@ export const useFrameAdd = () => {
     currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
 
-  const {
-    addSupplementalFrame,
-    setCurrentFrameId,
-    setSupplementalFrame
-  } = useMutations({
+  const { addSupplementalFrame, setCurrentFrameId } = useMutations({
     addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
-    setSupplementalFrame: DIGITAL_MUTATES.SET_SUPPLEMENTAL_FRAME
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
   });
 
   const { createFrames } = useFrameAction();
@@ -198,18 +193,14 @@ export const useFrameAdd = () => {
 
     // adding 1 supplemental frame
     const sheetId = currentSheet.value.id;
-    const layout = { isSupplemental: true, frames };
+    // handleAddFrame func use to add supplemental frame
+    // so we set fromLayout = false
+    const [frame] = frames;
+    frame.fromLayout = false;
 
-    const newFrames = await createFrames(
-      sheetId,
-      layout.frames,
-      layout.isSupplemental
-    );
+    const newFrames = await createFrames(sheetId, [frame]);
 
     addSupplementalFrame({ frames: newFrames });
-    newFrames.forEach(f => {
-      setSupplementalFrame({ frameId: f.id });
-    });
 
     const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
     setCurrentFrameId({ id: lastAddedFrame.id });
@@ -288,7 +279,7 @@ export const useFrameAction = () => {
    * @param {array<{}>} frames
    * @returns {Promise<array>} created frames
    */
-  const createFrames = async (sheetId, frames, isSupplemental) => {
+  const createFrames = async (sheetId, frames) => {
     const responseFrames = [];
 
     // frames should be created in order so that frame ids will be incrementing numbers
@@ -296,7 +287,7 @@ export const useFrameAction = () => {
       // await for the previous item to finish processing
       await acc;
 
-      const frame = await createFrameApi(sheetId, f, isSupplemental);
+      const frame = await createFrameApi(sheetId, f);
       responseFrames.push(frame);
     }, Promise.resolve());
 

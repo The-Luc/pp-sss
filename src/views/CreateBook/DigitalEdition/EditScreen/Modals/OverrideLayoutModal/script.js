@@ -74,13 +74,19 @@ export default {
     },
     sheetId() {
       return this.sheetData?.sheetId;
+    },
+    isSuplemental() {
+      return this.sheetData?.isReplaceFrame;
     }
   },
   async mounted() {
-    if (!this.sheetData.isReplaceFrame) {
-      this.sheetMappingConfig = await this.getSheetMappingConfig(this.sheetId);
-      this.imgUrls = await this.getImageSrc();
+    if (this.isSuplemental) {
+      this.isShowCustomConfirm = true;
+      return;
     }
+
+    this.sheetMappingConfig = await this.getSheetMappingConfig(this.sheetId);
+    this.imgUrls = await this.getImageSrc();
 
     const isLayoutMapping = isLayoutMappingChecker(this.sheetMappingConfig);
 
@@ -92,10 +98,7 @@ export default {
         // if user applies non-mapped layout
         this.isShowNonMapLayoutConfirm = true;
       }
-      return;
     }
-
-    this.isShowCustomConfirm = true;
   },
   methods: {
     async applyLayout() {
@@ -119,7 +122,7 @@ export default {
       this.onCloseModal();
     },
     async onAcceptCustomConfirm() {
-      if (this.sheetData.isReplaceFrame) {
+      if (this.isSuplemental) {
         const layout = await this.getLayoutFrames(this.layout.id);
         const frame = layout?.frames[0] || [];
 
