@@ -110,7 +110,7 @@ export default {
       return `${pageLeftName} - ${pageRightName}`;
     },
     isSuplemental() {
-      return !this.currentFrame.fromLayout;
+      return this.isDigital && !this.currentFrame.fromLayout;
     }
   },
   async mounted() {
