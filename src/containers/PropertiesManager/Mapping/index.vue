@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <div v-if="enableContentMapping" class="page_setting">
+      <div v-if="enableContentMapping && !isSuplemental" class="page_setting">
         <div class="page_setting__title">Page/Screen Settings:</div>
         <div class="config__line">
           Current {{ isDigital ? 'Screen' : 'Page(s)' }}:

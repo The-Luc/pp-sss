@@ -65,16 +65,26 @@ export default {
     ConfirmAction
   },
   computed: {
-    layout() {
+    sheetData() {
       const { sheetData } = this.modalData?.props;
-      return sheetData?.layout || {};
+      return sheetData;
+    },
+    layout() {
+      return this.sheetData?.layout || {};
     },
     sheetId() {
-      const { sheetData } = this.modalData?.props;
-      return sheetData?.sheetId;
+      return this.sheetData?.sheetId;
+    },
+    isSuplemental() {
+      return this.sheetData?.isReplaceFrame;
     }
   },
   async mounted() {
+    if (this.isSuplemental) {
+      this.isShowCustomConfirm = true;
+      return;
+    }
+
     this.sheetMappingConfig = await this.getSheetMappingConfig(this.sheetId);
     this.imgUrls = await this.getImageSrc();
 
@@ -115,9 +125,7 @@ export default {
       this.onCloseModal();
     },
     async onAcceptCustomConfirm() {
-      const { sheetData } = this.modalData?.props;
-
-      if (sheetData.isReplaceFrame) {
+      if (this.isSuplemental) {
         const layout = await this.getLayoutFrames(this.layout.id);
         const frame = layout?.frames[0] || [];
 
@@ -127,11 +135,11 @@ export default {
         this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
 
         this.setSupplementalLayoutId({ id: this.layout.id });
-        this.onCancel();
+        this.onCloseCustomConfirm();
         return;
       }
 
-      if (sheetData) {
+      if (this.sheetData) {
         await this.applyLayout();
       }
 
