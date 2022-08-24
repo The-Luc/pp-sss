@@ -5,6 +5,7 @@ export const updateBookMutation = gql`
     update_book(book_id: $bookId, book_params: $params) {
       id
       print_page_numbers
+      title
       page_number_position
       print_theme_id
       digital_theme_id
