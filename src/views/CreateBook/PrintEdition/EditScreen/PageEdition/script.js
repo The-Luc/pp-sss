@@ -2039,10 +2039,10 @@ export default {
 
       this.updateMappingIcon(listFabricObjects);
 
+      this.addPageNumber();
+
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
-
-      this.addPageNumber();
 
       this.setLoadingState({ value: false });
     },
