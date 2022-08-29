@@ -77,7 +77,9 @@ export const useAssets = () => {
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
-  const getInProjectAssets = async (bookId, projectId) => {
+  const getInProjectAssets = async (bookId, projectId, digital) => {
+    if (digital !== undefined)
+      return getInProjectAssetsApi(bookId, projectId, digital);
     return getInProjectAssetsApi(bookId, projectId, isDigital);
   };
 
