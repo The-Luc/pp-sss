@@ -18,7 +18,9 @@ import {
   useSavePageData,
   useFrameAction,
   useFrameOrdering,
-  useFrame
+  useFrame,
+  useAppCommon,
+  useToolBar
 } from '@/hooks';
 
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
@@ -32,7 +34,7 @@ import {
 import { resetObjects, isHalfSheet, loop } from '@/common/utils';
 import { mapMutations } from 'vuex';
 import { updateInProjectApi } from '@/api/savePrint';
-import { getSheetInfoApi } from '@/api/sheet';
+import { usePhotos } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -60,6 +62,9 @@ export default {
     const { savePageData } = useSavePageData();
     const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
     const { currentFrame } = useFrame();
+    const { getInProjectAssets } = usePhotos();
+    const { generalInfo } = useAppCommon();
+    const { updateMediaSidebarOpen } = useToolBar();
     return {
       toggleModal,
       getMappingConfig,
@@ -73,7 +78,10 @@ export default {
       updateFramesAndThumbnails,
       deleteSheetMappings,
       updateFrameOrder,
-      currentFrame
+      currentFrame,
+      generalInfo,
+      getInProjectAssets,
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -166,6 +174,7 @@ export default {
 
       this.$root.$emit(EVENT_TYPE.RESET_MAPPING_TYPE);
       this.onCloseConfirmReset();
+      this.updateMediaSidebarOpen({ isOpen: false });
     },
 
     async resetDigitalEditor() {
@@ -176,22 +185,25 @@ export default {
       const supFrameIds = [];
       const oriFrameIds = [];
       const originalFrames = [];
-      const savePromises = [];
-      const sheet = await getSheetInfoApi(this.currentSheet.id);
-      const { bookId } = sheet;
+      const bookId = this.generalInfo.bookId;
 
+      // remove all in-project assets of the page
+      const inProjectAssetsOfFrames = await Promise.all(
+        frames.map(frame => this.getInProjectAssets(bookId, frame.id, true))
+      );
+      await Promise.all(
+        frames.map((frame, idx) => {
+          const inProjectVariables = {
+            bookId: +bookId,
+            projectId: frame.id,
+            removeAssetIds: inProjectAssetsOfFrames[idx].apiPageAssetIds
+          };
+          return updateInProjectApi(inProjectVariables, true);
+        })
+      );
+
+      // get oriFrameIds and supFrameIds
       frames.forEach(f => {
-        const assetIds = [];
-        f.objects.forEach(o => {
-          if (o.imageId) assetIds.push(o.imageId);
-        });
-        const inProjectVariables = {
-          bookId: +bookId,
-          projectId: f.id,
-          removeAssetIds: assetIds
-        };
-        //remove in_project
-        savePromises.push(updateInProjectApi(inProjectVariables, true));
         if (!f.fromLayout) {
           supFrameIds.push(parseInt(f.id));
           return;
@@ -199,8 +211,6 @@ export default {
         oriFrameIds.push(parseInt(f.id));
         originalFrames.push(f);
       });
-
-      await Promise.all(savePromises);
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
       // numOfFramesNeeded != 0
