@@ -152,7 +152,7 @@ export const getQrrentByIdApi = async (id, projectId) => {
 /**
  * To get in project asset of book and current page / frame
  * @param {String} bookId id of current book
- * @param {String} projectId id of current project (pages / frame)
+ * @param {String | Array} projectId id of current project (pages / frame)
  * @param {Boolean} isDigital is digital edition or not
  * @returns assets id of current project and of whole book
  */
