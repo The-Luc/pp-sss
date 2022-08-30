@@ -31,6 +31,8 @@ import {
 } from '@/api/frame/api_mutation';
 import { resetObjects, isHalfSheet, loop } from '@/common/utils';
 import { mapMutations } from 'vuex';
+import { updateInProjectApi } from '@/api/savePrint';
+import { getSheetInfoApi } from '@/api/sheet';
 
 export default {
   components: {
@@ -154,10 +156,11 @@ export default {
       const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
 
-      this.resetDigitalEditor();
-      this.resetPrintEditor();
-
-      await this.deleteSheetMappings(this.currentSheet.id);
+      await Promise.all([
+        this.resetDigitalEditor(),
+        this.resetPrintEditor(),
+        this.deleteSheetMappings(this.currentSheet.id)
+      ]);
 
       await this.initData();
 
@@ -173,8 +176,22 @@ export default {
       const supFrameIds = [];
       const oriFrameIds = [];
       const originalFrames = [];
+      const savePromises = [];
+      const sheet = await getSheetInfoApi(this.currentSheet.id);
+      const { bookId } = sheet;
 
       frames.forEach(f => {
+        const assetIds = [];
+        f.objects.forEach(o => {
+          if (o.imageId) assetIds.push(o.imageId);
+        });
+        const inProjectVariables = {
+          bookId: +bookId,
+          projectId: f.id,
+          removeAssetIds: assetIds
+        };
+        //remove in_project
+        savePromises.push(updateInProjectApi(inProjectVariables, true));
         if (!f.fromLayout) {
           supFrameIds.push(parseInt(f.id));
           return;
@@ -183,8 +200,10 @@ export default {
         originalFrames.push(f);
       });
 
-      const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+      await Promise.all(savePromises);
 
+      const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
+      // numOfFramesNeeded != 0
       if (numOfFramesNeeded) {
         if (numOfFramesNeeded > 0) {
           const framePromise = loop(numOfFramesNeeded, () =>

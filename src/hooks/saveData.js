@@ -58,12 +58,17 @@ export const useSavePageData = () => {
 
     const isOnLeft = appliedPage ? appliedPage.isLeft : Boolean(leftPageId);
     const isOnRight = appliedPage ? appliedPage.isRight : Boolean(rightPageId);
+    const digital = false;
 
     if (isOnLeft) {
       savePromises.push(handleUpdatePage(leftPageId, leftLayout, leftUrl));
 
       // remove all in-project assets of the page
-      const { apiPageAssetIds } = await getInProjectAssets(bookId, leftPageId);
+      const { apiPageAssetIds } = await getInProjectAssets(
+        bookId,
+        leftPageId,
+        digital
+      );
       const inProjectVariables = {
         bookId: +bookId,
         projectId: leftPageId,
@@ -76,7 +81,11 @@ export const useSavePageData = () => {
       savePromises.push(handleUpdatePage(rightPageId, rightLayout, rightUrl));
 
       // remove all in-project assets of the page
-      const { apiPageAssetIds } = await getInProjectAssets(bookId, rightPageId);
+      const { apiPageAssetIds } = await getInProjectAssets(
+        bookId,
+        rightPageId,
+        digital
+      );
       const inProjectVariables = {
         bookId: +bookId,
         projectId: rightPageId,
