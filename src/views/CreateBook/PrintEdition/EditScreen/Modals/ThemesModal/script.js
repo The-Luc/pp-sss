@@ -12,7 +12,7 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt, useSheet } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { getPrintLayoutsPreviewApi } from '@/api/layout';
+import { getLayoutsByThemeAndTypeApi } from '@/api/layout';
 
 export default {
   components: {
@@ -33,7 +33,7 @@ export default {
     return {
       selectedThemeId: null,
       isPreviewing: false,
-      layoutsOfThemePreview: null
+      layoutsOfThemePreview: []
     };
   },
   computed: {
@@ -96,7 +96,7 @@ export default {
       this.layoutsOfThemePreview = [];
 
       this.selectedThemeId = themeId;
-      this.layoutsOfThemePreview = await getPrintLayoutsPreviewApi(themeId);
+      this.layoutsOfThemePreview = await getLayoutsByThemeAndTypeApi(themeId);
     },
     /**
      * Set preview theme's id empty and close preview
