@@ -459,7 +459,6 @@ export const useLayoutAddingSupport = () => {
         return { ...o, id: getUniqueId() };
       });
     });
-    console.log('layout', layout);
     return layout;
   };
 
