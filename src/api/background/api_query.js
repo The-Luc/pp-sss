@@ -1,3 +1,4 @@
+import { get, uniqBy } from 'lodash';
 import { graphqlRequest } from '../urql';
 
 import { apiBackgroundToModel } from '@/common/mapping';
@@ -67,26 +68,23 @@ const getPrintBackgrounds = async (
   backgroundPageTypeId
 ) => {
   if (!backgroundTypeSubId) return [];
+
   const res = await graphqlRequest(backgroundOfThemeQuery, {
     id: backgroundTypeSubId
   });
 
   if (!isOk(res)) return [];
 
-  const backgrounds = [];
+  const pair = get(res, 'data.template_book_pair');
+  const singles = get(pair, 'template_book.print_template_backgrounds');
+  const doubles = get(pair, 'spread_template_book.print_template_backgrounds');
 
-  res.data.theme.templates.forEach(t => {
-    t.categories.forEach(c => {
-      c.backgrounds.forEach(b => {
-        const index = backgrounds.findIndex(item => item.id === b.id);
-        if (index >= 0) return;
-        backgrounds.push(b);
-      });
-    });
-  });
+  const dbBackgrounds = [...singles, ...doubles].filter(Boolean);
+
+  const uniqBackgrounds = uniqBy(dbBackgrounds, 'id');
 
   return mapBackgrounds(
-    backgrounds,
+    uniqBackgrounds,
     backgroundTypeSubId,
     backgroundTypeId
   ).filter(

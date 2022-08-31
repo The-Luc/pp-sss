@@ -2,8 +2,7 @@ import { graphqlRequest } from '../urql';
 import {
   getDigitalThemesQuery,
   getPrintThemesQuery,
-  getThemeDefaultQuery,
-  themeOptionsQuery
+  getThemeDefaultQuery
 } from './queries';
 import { isOk } from '@/common/utils';
 import { get } from 'lodash';
