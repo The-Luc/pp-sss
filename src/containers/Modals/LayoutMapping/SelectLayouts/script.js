@@ -83,6 +83,7 @@ export default {
       favoritePrintLayouts: [],
       favoriteDigitalLayouts: [],
       themesOptions: [],
+      digitalThemesOptions: [],
       printLayoutTypes: [],
       printThemeSelected: {},
       printDefaultTheme: null,
@@ -136,7 +137,7 @@ export default {
     this.printThemeSelected = this.themesOptions.find(
       t => t.id === this.printDefaultTheme
     );
-    this.digitalThemeSelected = this.themesOptions.find(
+    this.digitalThemeSelected = this.digitalThemesOptions.find(
       t => t.id === this.digitalDefaultTheme
     );
 
@@ -223,6 +224,7 @@ export default {
     },
     async initData() {
       this.themesOptions = await getThemesApi();
+      this.digitalThemesOptions = await getThemesApi(true);
 
       const theme = await this.getDefaultThemeId();
       this.digitalDefaultTheme = theme.digitalDefaultTheme;

@@ -1,5 +1,15 @@
 import { gql } from 'graphql-tag';
 
+const backgroundFragment = gql`
+  fragment backgroundDetail on Background {
+    id
+    image_url
+    name
+    thumbnail
+    page_type
+  }
+`;
+
 export const backgroundCategoriesQuery = gql`
   query backgroundCategories {
     categories(item_type: BACKGROUND) {
@@ -14,14 +24,11 @@ export const backgroundQuery = gql`
     category(id: $id) {
       id
       backgrounds {
-        id
-        image_url
-        name
-        thumbnail
-        page_type
+        ...backgroundDetail
       }
     }
   }
+  ${backgroundFragment}
 `;
 
 // for digital editor
@@ -30,33 +37,32 @@ export const digitalBackgroundQuery = gql`
     category(id: $id) {
       id
       backgrounds(page_type: DIGITAL) {
-        id
-        image_url
-        name
-        thumbnail
-        page_type
+        ...backgroundDetail
       }
     }
   }
+  ${backgroundFragment}
 `;
 
 export const backgroundOfThemeQuery = gql`
   query backgroundOfTheme($id: ID!) {
-    theme(id: $id) {
+    template_book_pair(id: $id) {
       id
-      templates {
-        categories {
-          backgrounds {
-            id
-            image_url
-            name
-            thumbnail
-            page_type
-          }
+      template_book {
+        id
+        print_template_backgrounds {
+          ...backgroundDetail
+        }
+      }
+      spread_template_book {
+        id
+        print_template_backgrounds {
+          ...backgroundDetail
         }
       }
     }
   }
+  ${backgroundFragment}
 `;
 
 export const digitalBackgroundByThemeQuery = gql`
@@ -67,13 +73,10 @@ export const digitalBackgroundByThemeQuery = gql`
         id
         title
         backgrounds {
-          id
-          image_url
-          page_type
-          name
-          thumbnail
+          ...backgroundDetail
         }
       }
     }
   }
+  ${backgroundFragment}
 `;

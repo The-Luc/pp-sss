@@ -1055,8 +1055,8 @@ export default {
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
         mousedblclick: ({ target }) => this.handleDbClickText(target),
         deselected: handleObjectDeselected.bind(null, rect),
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
 
       object.on(events);
@@ -1487,8 +1487,8 @@ export default {
         scaled: this.handleScaled,
         rotated: this.handleRotated,
         moved: this.handleMoved,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
 
       await addPrintShapes(
@@ -1722,8 +1722,8 @@ export default {
         drop: handleDragLeave,
         mousemove: handleMouseMove,
         mousedown: this.handleMouseDown,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
 
       const image = await createImage(newMedia.newObject);
@@ -1820,8 +1820,8 @@ export default {
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut,
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent,
         rotated: this.handleRotated,
         moved: this.handleMoved
       };
@@ -2024,8 +2024,8 @@ export default {
         scaled: this.handleScaled,
         rotated: this.handleRotated,
         moved: this.handleMoved,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
       const svg = await createSvgObject(objectData);
 
@@ -2046,8 +2046,8 @@ export default {
         scaled: this.handleScaled,
         rotated: this.handleRotated,
         moved: this.handleMoved,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
       const clipart = await createClipartObject(objectData);
 
@@ -2070,8 +2070,8 @@ export default {
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
         mousedblclick: ({ target }) => this.handleDbClickText(target),
         deselected: handleObjectDeselected.bind(null, rect),
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       });
     },
     /**
@@ -2106,8 +2106,8 @@ export default {
         drop: handleDragLeave,
         mousemove: handleMouseMove,
         mousedown: this.handleMouseDown,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
       const media = await createMediaObject(
         mediaProperties,
@@ -2130,8 +2130,8 @@ export default {
         scaled: this.handleScaled,
         rotated: this.handleRotated,
         moved: this.handleMoved,
-        mouseover: handleMouseOver,
-        mouseout: handleMouseOut
+        mouseover: this.handleMouseOverEvent,
+        mouseout: this.handleMouseOutEvent
       };
 
       const image = await createPortraitImageObject(properties);
@@ -3309,6 +3309,29 @@ export default {
     async renderPortraits(objects) {
       await this.fetchSheetMappingConfig();
       await this.drawObjectsOnCanvas(objects);
+    },
+    /**
+     * Trigger when user hover on element on canvas
+     *
+     */
+    handleMouseOverEvent(event) {
+      const isAnimationOpen =
+        PROPERTIES_TOOLS.ANIMATION.name === this.propertiesObjectType;
+
+      handleMouseOver(event, isAnimationOpen);
+    },
+
+    /**
+     * Trigger when mouse move out of the element
+     *
+     */
+    handleMouseOutEvent(event) {
+      const isAnimationOpen =
+        PROPERTIES_TOOLS.ANIMATION.name === this.propertiesObjectType;
+
+      if (isAnimationOpen) return;
+
+      handleMouseOut(event);
     }
   }
 };

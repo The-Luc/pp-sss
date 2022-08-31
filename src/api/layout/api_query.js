@@ -41,6 +41,19 @@ const getPageType = layout =>
     ? LAYOUT_PAGE_TYPE.FULL_PAGE.id
     : LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
+const mapLayout = (template, themeId) => {
+  const { id, layout_type, preview_image_url, title } = template;
+  return {
+    id,
+    type: layout_type,
+    themeId,
+    previewImageUrl: preview_image_url,
+    name: title,
+    isFavorites: false,
+    pageType: getPageType(template),
+    mappings: layoutElementMappings(template)
+  };
+};
 /**
  *  To get previewImageUrl of layouts of a theme
  * @param {String} themeId id of a theme
@@ -68,25 +81,23 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
-  const dbTemplates = get(res, 'data.theme.templates', []);
+  const pair = get(res, 'data.template_book_pair', []);
+
+  const pageLayout = pair.template_book.templates.map(t =>
+    mapLayout(t, themeId)
+  );
+  const spreadLayout = pair.spread_template_book.templates.map(t =>
+    mapLayout(t, themeId)
+  );
+
+  const dbTemplates = [...pageLayout, ...spreadLayout];
 
   const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
   const isAll = layoutTypeId === LAYOUT_TYPES.ALL.value;
 
-  const templates = isAll
+  return isAll
     ? dbTemplates
     : dbTemplates.filter(t => t.layout_use === layoutType);
-
-  return templates.map(t => ({
-    id: t.id,
-    type: layoutType,
-    themeId,
-    previewImageUrl: t.preview_image_url,
-    name: t.title,
-    isFavorites: false,
-    pageType: getPageType(t),
-    mappings: layoutElementMappings(t)
-  }));
 };
 
 /**
@@ -107,22 +118,21 @@ export const getPrintLayoutsByTypeApi = async layoutTypeId => {
   });
 
   if (!isOk(res)) return [];
-  const dbThemes = get(res, 'data.themes', []);
 
-  return dbThemes
-    .map(theme =>
-      theme.templates.map(t => ({
-        id: t.id,
-        type: layoutType,
-        themeId: theme.id,
-        previewImageUrl: t.preview_image_url,
-        name: t.title,
-        isFavorites: false,
-        pageType: getPageType(t),
-        mappings: layoutElementMappings(t)
-      }))
-    )
-    .flat();
+  const pairs = get(res, 'data.template_book_pairs', []);
+
+  const templates = pairs.map(pair => {
+    const { template_book, spread_template_book } = pair;
+
+    const pages = template_book.templates.map(t => mapLayout(t, pair.id));
+
+    const spreads = spread_template_book.templates.map(t =>
+      mapLayout(t, pair.id)
+    );
+    return [...pages, ...spreads];
+  });
+
+  return templates.flat();
 };
 
 export const getPrintLayoutById = async id => {
