@@ -29,10 +29,19 @@ export const templateFragment = gql`
 
 export const getLayoutsQuery = gql`
   query getLayouts($themeId: ID!) {
-    theme(id: $themeId) {
+    template_book_pair(id: $themeId) {
       id
-      templates {
-        ...templateDetail
+      template_book {
+        id
+        templates {
+          ...templateDetail
+        }
+      }
+      spread_template_book {
+        id
+        templates {
+          ...templateDetail
+        }
       }
     }
   }
@@ -41,10 +50,19 @@ export const getLayoutsQuery = gql`
 
 export const getLayoutsByTypeQuery = gql`
   query getLayoutByType($layoutUse: TemplateLayoutUseType!) {
-    themes {
+    template_book_pairs {
       id
-      templates(layout_use: $layoutUse) {
-        ...templateDetail
+      template_book {
+        id
+        templates(layout_use: $layoutUse) {
+          ...templateDetail
+        }
+      }
+      spread_template_book {
+        id
+        templates(layout_use: $layoutUse) {
+          ...templateDetail
+        }
       }
     }
   }

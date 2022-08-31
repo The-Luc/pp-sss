@@ -56,7 +56,7 @@
           :extra-layouts="extraDigitalLayouts"
           :layout-id="digitalLayoutId"
           :text-display="digitalText"
-          :themes-options="themesOptions"
+          :themes-options="digitalThemesOptions"
           :layout-types="digitalLayoutTypes"
           :theme-selected="digitalThemeSelected"
           :disabled-theme-opts="isDisableDigitalTheme"

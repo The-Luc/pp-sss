@@ -57,7 +57,7 @@ export const useBackgroundMenu = () => {
   const getBackgroundTypeData = async () => {
     const [categories, themes] = await Promise.all([
       getBackgroundCategoriesApi(),
-      getThemesApi()
+      getThemesApi(isDigital)
     ]);
     return {
       [BACKGROUND_TYPE_NAME.THEME]: {
