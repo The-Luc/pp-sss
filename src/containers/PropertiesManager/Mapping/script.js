@@ -20,7 +20,8 @@ import {
   useFrameOrdering,
   useFrame,
   useAppCommon,
-  useToolBar
+  useToolBar,
+  useAnimation
 } from '@/hooks';
 
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
@@ -61,7 +62,8 @@ export default {
     const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
     const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
-    const { currentFrame } = useFrame();
+    const { currentFrame, setFrames } = useFrame();
+    const { updatePlayOutIds, updatePlayInIds } = useAnimation();
     const { getInProjectAssets } = usePhotos();
     const { generalInfo } = useAppCommon();
     const { updateMediaSidebarOpen } = useToolBar();
@@ -79,9 +81,12 @@ export default {
       deleteSheetMappings,
       updateFrameOrder,
       currentFrame,
+      setFrames,
       generalInfo,
       getInProjectAssets,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      updatePlayOutIds,
+      updatePlayInIds
     };
   },
   data() {
@@ -133,8 +138,7 @@ export default {
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
       deleteBackgroundDigital: DIGITAL_MUTATES.DELETE_BACKGROUND,
-      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS,
-      setFrames: DIGITAL_MUTATES.SET_FRAMES
+      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS
     }),
     async onChangeMappingStatus(item) {
       const mappingStatus = item.value;
@@ -213,7 +217,7 @@ export default {
       });
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
-      // numOfFramesNeeded != 0
+      // numOfFramesNeeded != 0 => add/remove frame
       if (numOfFramesNeeded) {
         if (numOfFramesNeeded > 0) {
           const framePromise = loop(numOfFramesNeeded, () =>
@@ -255,6 +259,10 @@ export default {
           };
         });
       await this.updateFramesAndThumbnails(willUpdateFrames);
+
+      //update store
+      this.updatePlayInIds({ playOutIds: [] });
+      this.updatePlayOutIds({ playOutIds: [] });
 
       this.clearDigitalObjects({ objectList: [] });
       this.deleteBackgroundDigital();
