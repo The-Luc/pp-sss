@@ -524,8 +524,17 @@ export const invalidateLayoutMapping = (_, __, cache) => {
     .filter(cacheInfo => cacheInfo.fieldName === 'theme')
     .map(cacheInfo => String(cacheInfo.arguments.id));
 
+  const pairIds = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cacheInfo => cacheInfo.fieldName === 'template_book_pair')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
+
   themeIds.forEach(id =>
     cache.invalidate({ __typename: 'Query' }, 'theme', { id })
+  );
+
+  pairIds.forEach(id =>
+    cache.invalidate({ __typename: 'Query' }, 'template_book_pair', { id })
   );
 };
 
