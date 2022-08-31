@@ -450,6 +450,8 @@ export const useLayoutAddingSupport = () => {
 
     // generate unique id for objects
     layout.frames.forEach(frame => {
+      frame.playInIds = [];
+      frame.playOutIds = [];
       // copy id to idFromLayout field for text and iamge objects, which is used for layout mapping
       frame.objects = frame.objects.map(o => {
         if (isPpTextObject(o) || isPpImageObject(o)) o.idFromLayout = o.id;
