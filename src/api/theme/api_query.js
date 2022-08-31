@@ -1,7 +1,42 @@
 import { graphqlRequest } from '../urql';
-import { getThemeDefaultQuery, themeOptionsQuery } from './queries';
+import {
+  getDigitalThemesQuery,
+  getPrintThemesQuery,
+  getThemeDefaultQuery,
+  themeOptionsQuery
+} from './queries';
 import { isOk } from '@/common/utils';
 import { get } from 'lodash';
+
+const getPrintThemeApi = async () => {
+  const res = await graphqlRequest(getPrintThemesQuery);
+
+  if (!isOk(res)) return [];
+
+  const pairs = get(res, 'data.template_book_pairs');
+
+  return pairs.map(item => ({
+    id: item.id,
+    name: item.template_book.name,
+    value: item.id,
+    previewImageUrl: item.preview_image_url
+  }));
+};
+
+const getDigitalThemeApi = async () => {
+  const res = await graphqlRequest(getDigitalThemesQuery);
+
+  if (!isOk(res)) return [];
+
+  const themes = get(res, 'data.themes');
+
+  return themes.map(item => ({
+    id: item.id,
+    name: item.name,
+    value: item.id,
+    previewImageUrl: item.digital_preview_image_url
+  }));
+};
 
 /**
  * Get list of theme
@@ -9,23 +44,7 @@ import { get } from 'lodash';
  * @returns {Promise<Array>} theme list
  */
 export const getThemesApi = async (isDigital = false) => {
-  const res = await graphqlRequest(themeOptionsQuery);
-
-  if (!isOk(res)) return [];
-
-  const getPreviewImageUrl = item => {
-    const path = 'template_book_pair.template_book.preview_image_url';
-    const printPreview = get(item, path) || item.preview_image_url;
-
-    return isDigital ? item.digital_preview_image_url : printPreview;
-  };
-
-  return res.data.themes.map(item => ({
-    id: item.id,
-    name: item.name,
-    value: item.id,
-    previewImageUrl: getPreviewImageUrl(item)
-  }));
+  return isDigital ? getDigitalThemeApi() : getPrintThemeApi();
 };
 
 export const getDefaultThemeApi = async bookId => {
