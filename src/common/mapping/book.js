@@ -1,6 +1,6 @@
 import { mapObject, apiToBaseDate } from '@/common/utils';
 
-import { COVER_TYPE, DELIVERY_OPTION } from '@/common/constants';
+import { COVER_TYPE, DELIVERY_OPTION, DEFAULT_COLOR } from '@/common/constants';
 
 /**
  * Convert book data from API to data of Book Model
@@ -58,6 +58,11 @@ export const bookMapping = book => {
           },
           font_size: {
             name: 'fontSize'
+          },
+          color: {
+            name: 'color',
+            parse: val => (val ? val : DEFAULT_COLOR.COLOR),
+            isForce: true
           }
         }
       },

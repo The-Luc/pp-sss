@@ -1996,7 +1996,10 @@ export default {
     async drawObjectsOnCanvas(objects) {
       resetObjects(window.printCanvas);
 
-      if (isEmpty(objects)) return;
+      if (isEmpty(objects)) {
+        this.addPageNumber();
+        return;
+      }
 
       this.setLoadingState({ value: true });
 
@@ -2040,9 +2043,9 @@ export default {
       this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
-      window.printCanvas.requestRenderAll();
 
       this.addPageNumber();
+      window.printCanvas.requestRenderAll();
 
       this.setLoadingState({ value: false });
     },

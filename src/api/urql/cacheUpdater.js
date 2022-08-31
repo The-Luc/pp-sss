@@ -20,6 +20,7 @@ import { getUserImageStyleQuery } from '../image/queries';
 import {
   getAlbumCategoryQuery,
   getCommunityAlbumsQuery,
+  getInProjectAssetsQuery,
   getUserAlbumsQuery
 } from '../media/queries';
 
@@ -523,8 +524,17 @@ export const invalidateLayoutMapping = (_, __, cache) => {
     .filter(cacheInfo => cacheInfo.fieldName === 'theme')
     .map(cacheInfo => String(cacheInfo.arguments.id));
 
+  const pairIds = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cacheInfo => cacheInfo.fieldName === 'template_book_pair')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
+
   themeIds.forEach(id =>
     cache.invalidate({ __typename: 'Query' }, 'theme', { id })
+  );
+
+  pairIds.forEach(id =>
+    cache.invalidate({ __typename: 'Query' }, 'template_book_pair', { id })
   );
 };
 
@@ -559,6 +569,56 @@ export const createPortraitSheet = (res, args, cache) => {
     data => {
       if (data) {
         data.sheet.portrait_sheet_setting = setting;
+      }
+      return data;
+    }
+  );
+};
+
+export const createAssetCache = (res, args, cache) => {
+  const projectId = get(args, 'designable_id');
+  const type = get(args, 'designable_type');
+  const assetParams = get(res, 'create_asset_designable');
+  const bookId = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cacheInfo => cacheInfo.fieldName === 'book')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
+  cache.updateQuery(
+    {
+      query: getInProjectAssetsQuery,
+      variables: { bookId: bookId[0], projectId, type }
+    },
+    data => {
+      if (data) {
+        data.book.in_project_assets.push({ ...assetParams });
+      }
+      return data;
+    }
+  );
+};
+
+export const deleteAssetCache = (_, args, cache) => {
+  const projectId = get(args, 'designable_id');
+  const type = get(args, 'designable_type');
+  const bookId = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cacheInfo => cacheInfo.fieldName === 'book')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
+  const asset_id = get(args, 'asset_id');
+  cache.updateQuery(
+    {
+      query: getInProjectAssetsQuery,
+      variables: { bookId: bookId[0], projectId: +projectId, type }
+    },
+    data => {
+      if (data) {
+        const in_project_assets = data.book.in_project_assets;
+
+        const assetIndex = in_project_assets.findIndex(
+          asset => asset.id === asset_id
+        );
+
+        in_project_assets.splice(assetIndex, 1);
       }
       return data;
     }

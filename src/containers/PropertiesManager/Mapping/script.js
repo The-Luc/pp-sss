@@ -18,7 +18,10 @@ import {
   useSavePageData,
   useFrameAction,
   useFrameOrdering,
-  useFrame
+  useFrame,
+  useAppCommon,
+  useToolBar,
+  useAnimation
 } from '@/hooks';
 
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
@@ -31,6 +34,8 @@ import {
 } from '@/api/frame/api_mutation';
 import { resetObjects, isHalfSheet, loop } from '@/common/utils';
 import { mapMutations } from 'vuex';
+import { updateInProjectApi } from '@/api/savePrint';
+import { usePhotos } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -57,7 +62,11 @@ export default {
     const { updateFrameOrder } = useFrameOrdering();
     const { savePageData } = useSavePageData();
     const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
-    const { currentFrame } = useFrame();
+    const { currentFrame, setFrames } = useFrame();
+    const { updatePlayOutIds, updatePlayInIds } = useAnimation();
+    const { getInProjectAssets } = usePhotos();
+    const { generalInfo } = useAppCommon();
+    const { updateMediaSidebarOpen } = useToolBar();
     return {
       toggleModal,
       getMappingConfig,
@@ -71,7 +80,13 @@ export default {
       updateFramesAndThumbnails,
       deleteSheetMappings,
       updateFrameOrder,
-      currentFrame
+      currentFrame,
+      setFrames,
+      generalInfo,
+      getInProjectAssets,
+      updateMediaSidebarOpen,
+      updatePlayOutIds,
+      updatePlayInIds
     };
   },
   data() {
@@ -123,8 +138,7 @@ export default {
       clearDigitalObjectsAndThumbnail:
         DIGITAL_MUTATES.DELETE_OBJECTS_AND_THUMBNAIL,
       deleteBackgroundDigital: DIGITAL_MUTATES.DELETE_BACKGROUND,
-      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS,
-      setFrames: DIGITAL_MUTATES.SET_FRAMES
+      deleteBackgroundPrint: PRINT_MUTATES.CLEAR_BACKGROUNDS
     }),
     async onChangeMappingStatus(item) {
       const mappingStatus = item.value;
@@ -154,15 +168,17 @@ export default {
       const params = { mappingType: MAPPING_TYPES.CUSTOM.value };
       await updateSheetApi(this.currentSheet.id, params);
 
-      this.resetDigitalEditor();
-      this.resetPrintEditor();
-
-      await this.deleteSheetMappings(this.currentSheet.id);
+      await Promise.all([
+        this.resetDigitalEditor(),
+        this.resetPrintEditor(),
+        this.deleteSheetMappings(this.currentSheet.id)
+      ]);
 
       await this.initData();
 
       this.$root.$emit(EVENT_TYPE.RESET_MAPPING_TYPE);
       this.onCloseConfirmReset();
+      this.updateMediaSidebarOpen({ isOpen: false });
     },
 
     async resetDigitalEditor() {
@@ -173,7 +189,24 @@ export default {
       const supFrameIds = [];
       const oriFrameIds = [];
       const originalFrames = [];
+      const bookId = this.generalInfo.bookId;
 
+      // remove all in-project assets of the page
+      const inProjectAssetsOfFrames = await Promise.all(
+        frames.map(frame => this.getInProjectAssets(bookId, frame.id, true))
+      );
+      await Promise.all(
+        frames.map((frame, idx) => {
+          const inProjectVariables = {
+            bookId: +bookId,
+            projectId: frame.id,
+            removeAssetIds: inProjectAssetsOfFrames[idx].apiPageAssetIds
+          };
+          return updateInProjectApi(inProjectVariables, true);
+        })
+      );
+
+      // get oriFrameIds and supFrameIds
       frames.forEach(f => {
         if (!f.fromLayout) {
           supFrameIds.push(parseInt(f.id));
@@ -184,7 +217,7 @@ export default {
       });
 
       const numOfFramesNeeded = numberOfOriginalFrame - originalFrames.length;
-
+      // numOfFramesNeeded != 0 => add/remove frame
       if (numOfFramesNeeded) {
         if (numOfFramesNeeded > 0) {
           const framePromise = loop(numOfFramesNeeded, () =>
@@ -226,6 +259,10 @@ export default {
           };
         });
       await this.updateFramesAndThumbnails(willUpdateFrames);
+
+      //update store
+      this.updatePlayInIds({ playOutIds: [] });
+      this.updatePlayOutIds({ playOutIds: [] });
 
       this.clearDigitalObjects({ objectList: [] });
       this.deleteBackgroundDigital();

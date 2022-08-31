@@ -1,18 +1,23 @@
 import { gql } from 'graphql-tag';
 
-export const themeOptionsQuery = gql`
+export const getDigitalThemesQuery = gql`
   query themeOptions {
     themes {
       id
       name
-      preview_image_url
       digital_preview_image_url
-      template_book_pair {
+    }
+  }
+`;
+
+export const getPrintThemesQuery = gql`
+  query themeOptions {
+    template_book_pairs {
+      id
+      preview_image_url
+      template_book {
         id
-        template_book {
-          id
-          preview_image_url
-        }
+        name
       }
     }
   }

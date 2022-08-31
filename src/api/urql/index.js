@@ -29,7 +29,9 @@ import {
   updateProjectMappingConfig,
   invalidateLayoutMapping,
   deletePortraitSheet,
-  createPortraitSheet
+  createPortraitSheet,
+  createAssetCache,
+  deleteAssetCache
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -80,7 +82,9 @@ const urqlClient = createClient({
           delete_template_element_mappings: invalidateLayoutMapping,
           create_bulk_template_element_mapping: invalidateLayoutMapping,
           delete_portrait_sheet_setting: deletePortraitSheet,
-          create_portrait_sheet_setting: createPortraitSheet
+          create_portrait_sheet_setting: createPortraitSheet,
+          create_asset_designable: createAssetCache,
+          delete_assets_designable: deleteAssetCache
         }
       }
     }),

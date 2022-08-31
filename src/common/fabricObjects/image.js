@@ -421,11 +421,12 @@ const handleHoverVideo = target => {
 };
 
 /**
- * Handle when hover image
+ * Handle when hover element
  * @param {Object} target - fabric object
+ * @param {Boolean} isAnimationOpen - whether animation property open or not, if it open, do not show mapping icon
  */
-export const handleMouseOver = ({ target }) => {
-  renderMappingIcon(target);
+export const handleMouseOver = ({ target }, isAnimationOpen) => {
+  isAnimationOpen || renderMappingIcon(target);
 
   // handle render crop control icon
   if (target?.objectType !== OBJECT_TYPE.IMAGE) return;
@@ -434,7 +435,7 @@ export const handleMouseOver = ({ target }) => {
 };
 
 /**
- * Handle when leave image
+ * Handle when leave element
  * @param {Object} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
