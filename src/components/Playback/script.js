@@ -571,9 +571,9 @@ export default {
 
         const objectIds = objects.filter(o => !isBackground(o)).map(o => o.id);
 
-        if (playInIds.length === 1) playInIds[0] = [...objectIds];
+        if (playInIds.length <= 1) playInIds[0] = [...objectIds];
 
-        if (playOutIds.length === 1) playOutIds[0] = [...objectIds];
+        if (playOutIds.length <= 1) playOutIds[0] = [...objectIds];
       });
     }
   }

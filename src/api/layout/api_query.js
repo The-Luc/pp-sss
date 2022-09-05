@@ -82,13 +82,11 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
 
   if (!isOk(res)) return [];
   const pair = get(res, 'data.template_book_pair', []);
+  const pageTemplates = get(pair, 'template_book.templates', []);
+  const spreadTemplates = get(pair, 'spread_template_book.templates', []);
 
-  const pageLayout = pair.template_book.templates.map(t =>
-    mapLayout(t, themeId)
-  );
-  const spreadLayout = pair.spread_template_book.templates.map(t =>
-    mapLayout(t, themeId)
-  );
+  const pageLayout = pageTemplates.map(t => mapLayout(t, themeId));
+  const spreadLayout = spreadTemplates.map(t => mapLayout(t, themeId));
 
   const dbTemplates = [...pageLayout, ...spreadLayout];
 
@@ -122,13 +120,12 @@ export const getPrintLayoutsByTypeApi = async layoutTypeId => {
   const pairs = get(res, 'data.template_book_pairs', []);
 
   const templates = pairs.map(pair => {
-    const { template_book, spread_template_book } = pair;
+    const pageTemplates = get(pair, 'template_book.templates', []);
+    const spreadTemplates = get(pair, 'spread_template_book.templates', []);
 
-    const pages = template_book.templates.map(t => mapLayout(t, pair.id));
+    const pages = pageTemplates.map(t => mapLayout(t, pair.id));
 
-    const spreads = spread_template_book.templates.map(t =>
-      mapLayout(t, pair.id)
-    );
+    const spreads = spreadTemplates.map(t => mapLayout(t, pair.id));
     return [...pages, ...spreads];
   });
 
